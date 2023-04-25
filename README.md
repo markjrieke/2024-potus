@@ -27,3 +27,13 @@ Vaguely, the following:
 - FTE pulled in for polling
 - Exclusion of Traflagar, Rasmussen, Center Street
 - GH action for publishing
+
+### references
+
+- Linzer 2013 paper
+- Pierre Kemp 2016 model
+- Economist 2020 model
+- Abramovitz time-for-change
+- FTE
+- FRED
+- Census
