@@ -37,3 +37,14 @@ Vaguely, the following:
 - FTE
 - FRED
 - Census
+
+### notes on abramovitz data
+
+- Incumbent net approval pulled from FiveThirtyEight’s averages on the
+  day before the presidential election. If the exact date is not
+  available due to data resolution, (these are manually pulled) the net
+  approval from the closest day *prior* to election day is used instead.
+- Third party flag is set to 1 whenever an individual third party
+  candidate garners more than 5% of the national popular vote.
+- Abramovitz 2012 mod can be found
+  [here](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf)
