@@ -6,6 +6,14 @@ execute:
   message: false
 ---
 
+Here's a quick exploration of some abramovitz data. This is ~pseudo-close~ to Abramovitz' actual model. Here, the incumbent party's voteshare (not two-party voteshare!!!) is estimated by the incumbent president's approval, whether or not the incumbent is running, and the presence of a third party in the race. 
+
+$$
+\begin{align*}
+\text{Inc. Voteshare} & = \alpha + \beta_1 \ \text{Inc. Net Appr.} + \beta_2 \ \text{Inc. Running} + \beta_3 \ \text{Third Party}
+\end{align*}
+$$
+
 ```{r}
 library(tidyverse)
 library(riekelib)
@@ -37,6 +45,12 @@ glm(inc_vote ~ inc_approval + inc_running + third_party,
   geom_line() + 
   facet_wrap(~third_party)
 ```
+
+This is a bit more involved. Using Democrats as a test case, this model looks at the party voteshare based on an interaction between the incumbent party and approval and whether or not a third party is present.
+
+$$
+\text{Dem Voteshare} = \alpha + \beta_1 \ \text{Inc. Party} + \beta_2 \ \text{Inc. Net Appr.} + \beta_3 \ \text{Inc. Party} \times \text{Inc. Net Appr.} + \beta_4 \ \text{Third Party}
+$$
 
 ```{r}
 model_data <- 
@@ -73,5 +87,132 @@ glm(dem ~ inc_party*(inc_approval) + third_party,
   labs(title = glue::glue("**Democratic Voteshare in the Presence of Third Parties**"),
        x = "Incumbent Net Approval",
        y = "Democratic Voteshare")
+```
+
+Alrighty, here's Abramovitz' actual model (w/o adjustment for partisanship):
+
+$$
+\text{Inc. 2PV} = \alpha + \beta_1 \ \text{Inc. Net App.} + \beta_2 \ \text{Q2GDP Growth} + \beta_3 \ \text{Inc. Running}
+$$
+
+```{r}
+# blegh - figure out a better way to read this in...
+gdp <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1317&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=GDP&scale=left&cosd=1947-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-05-03&revision_date=2023-05-03&nd=1947-01-01")
+
+cpi <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1317&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPIAUCSL&scale=left&cosd=1947-01-01&coed=2023-03-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-05-03&revision_date=2023-05-03&nd=1947-01-01")
+
+max_cpi <- max(cpi$CPIAUCSL)
+
+gdp %>%
+  left_join(cpi) %>%
+  rename_with(str_to_lower) %>%
+  rename(cpi = cpiaucsl) %>%
+  mutate(gdp_adjust = gdp*max_cpi/cpi) %>%
+  pivot_longer(starts_with("gdp")) %>%
+  ggplot(aes(x = date, 
+             y = value,
+             color = name)) + 
+  geom_line() +
+  scale_color_manual(values = c("gray60", "black")) + 
+  theme_rieke() +
+  scale_y_comma() +
+  labs(x = NULL,
+       y = NULL)
+```
+
+```{r}
+gdp %>%
+  left_join(cpi) %>%
+  rename_with(str_to_lower) %>%
+  rename(cpi = cpiaucsl) %>%
+  mutate(gdp_adjust = gdp*max_cpi/cpi,
+         gdp_growth = (gdp_adjust - lag(gdp_adjust, n = 4))/lag(gdp_adjust, n = 4)) %>%
+  ggplot(aes(x = date,
+             y = gdp_growth)) + 
+  geom_line() +
+  scale_y_percent() +
+  theme_rieke()
+```
+
+```{r}
+model_gdp <- 
+  gdp %>%
+  left_join(cpi) %>%
+  rename_with(str_to_lower) %>%
+  rename(cpi = cpiaucsl) %>%
+  mutate(gdp_adjust = gdp*max_cpi/cpi,
+         gdp_growth = (gdp_adjust - lag(gdp_adjust, n = 4))/lag(gdp_adjust, n = 4),
+         quarter = quarter(date),
+         year = year(date)) %>%
+  filter(quarter == 3) %>%
+  select(year, gdp_growth)
+
+model_data <- 
+  abramovitz %>%
+  left_join(model_gdp) %>%
+  mutate(inc_2pv = if_else(inc_party == "dem", dem/(dem + rep), rep/(dem + rep))) %>%
+  select(inc_2pv,
+         inc_running,
+         inc_approval = fte_net_inc_approval,
+         gdp_growth,
+         year) %>%
+  mutate(inc_approval = inc_approval/100)
+
+model_data %>%
+  pivot_longer(c(inc_approval, gdp_growth),
+               names_to = "x_var",
+               values_to = "x") %>%
+  ggplot(aes(x = x,
+             y = inc_2pv)) +
+  geom_point() +
+  facet_wrap(~x_var, scales = "free_x") +
+  theme_rieke() + 
+  scale_xy_percent()
+```
+
+```{r}
+glm(inc_2pv ~ inc_approval + gdp_growth + inc_running,
+    family = quasibinomial(),
+    data = model_data) %>%
+  broom::augment(type.predict = "response") %>%
+  left_join(model_data) %>%
+  ggplot(aes(x = inc_2pv, 
+             y = .fitted,
+             label = year)) + 
+  geom_text() + 
+  geom_abline(linetype = "dashed") +
+  theme_rieke() + 
+  scale_xy_percent()
+```
+
+```{r}
+glm(inc_2pv ~ inc_approval + gdp_growth + inc_running,
+    family = quasibinomial(),
+    data = model_data) %>%
+  broom::augment(type.predict = "response",
+                 newdata = crossing(inc_approval = seq(from = min(model_data$inc_approval),
+                                                       to = max(model_data$inc_approval),
+                                                       length.out = 30),
+                                    gdp_growth = seq(from = -0.05,
+                                                     to = 0.05,
+                                                     length.out = 3),
+                                    inc_running = 0:1)) %>%
+  mutate(inc_running = paste0("incumbent running: ", inc_running),
+         gdp_growth = paste0("gdp growth: ", scales::label_percent()(gdp_growth))) %>%
+  ggplot(aes(x = inc_approval,
+             y = .fitted,
+             color = inc_running)) + 
+  geom_line() +
+  geom_hline(yintercept = 0.5,
+             linetype = "dashed",
+             alpha = 0.5) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed",
+             alpha = 0.5) + 
+  facet_wrap(~gdp_growth) +
+  scale_xy_percent() + 
+  theme_rieke() +
+  theme(legend.position = "top",
+        legend.title = element_blank())
 ```
 
