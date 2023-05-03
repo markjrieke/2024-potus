@@ -42,5 +42,6 @@ Vaguely, the following:
 * Incumbent net approval pulled from FiveThirtyEight's averages on the day before the presidential election. If the exact date is not available due to data resolution, (these are manually pulled) the net approval from the closest day *prior* to election day is used instead.
 * Third party flag is set to 1 whenever an individual third party candidate garners more than 5% of the national popular vote.
 * Abramovitz 2012 mod can be found [here](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf)
+* For Biden's net approval, pulling the *All Polls* variant of [FiveThirtyEight's presidential approval tracker](https://projects.fivethirtyeight.com/biden-approval-rating/?cid=rrpromo) (this is consistent with what's displayed for the previous presidents).
 
 
