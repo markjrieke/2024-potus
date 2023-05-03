@@ -35,13 +35,19 @@ glm(inc_vote ~ inc_approval + inc_running + third_party,
     family = quasibinomial(),
     data = model_data) %>%
   broom::augment(type.predict = "response",
+                 se_fit = TRUE,
                  newdata = crossing(inc_approval = seq(from = -1, to = 1, by = 0.1),
                                     inc_running = 0:1,
                                     third_party = 0:1)) %>%
+  mutate(lower = .fitted - .se.fit,
+         upper = .fitted + .se.fit) %>%
   ggplot(aes(x = inc_approval,
-             y = .fitted,
-             color = as.character(inc_running))) + 
-  geom_line() + 
+             y = .fitted)) + 
+  geom_ribbon(aes(ymin = lower,
+                  ymax = upper,
+                  fill = as.character(inc_running)),
+              alpha = 0.25) + 
+  geom_line(aes(color = as.character(inc_running))) + 
   facet_wrap(~third_party)
 ```
 
@@ -75,16 +81,23 @@ glm(dem ~ inc_party*(inc_approval) + third_party,
                                                        to = max(model_data$inc_approval), 
                                                        by = 0.01),
                                     third_party = 0:1),
-                 type.predict = "response") %>%
+                 type.predict = "response",
+                 se_fit = TRUE) %>%
+  mutate(lower = .fitted - .se.fit,
+         upper = .fitted + .se.fit) %>%
   ggplot(aes(x = inc_approval,
-             y = .fitted,
-             color = inc_party)) + 
-  geom_line() +
+             y = .fitted)) +
+  geom_ribbon(aes(ymin = lower,
+                  ymax = upper,
+                  fill = inc_party),
+              alpha = 0.25) + 
+  geom_line(aes(color = inc_party)) +
   geom_point(data = model_data,
              mapping = aes(x = inc_approval,
                            y = dem,
                            color = inc_party)) + 
   scale_color_brewer(palette = "Set1", direction = -1) +
+  scale_fill_brewer(palette = "Set1", direction = -1) + 
   riekelib::scale_xy_percent() + 
   facet_wrap(~paste0("third_party: ", third_party)) +
   riekelib::theme_rieke() +
@@ -205,6 +218,7 @@ glm(inc_2pv ~ inc_approval + gdp_growth + inc_running,
     family = quasibinomial(),
     data = model_data) %>%
   broom::augment(type.predict = "response",
+                 se_fit = TRUE,
                  newdata = crossing(inc_approval = seq(from = min(model_data$inc_approval),
                                                        to = max(model_data$inc_approval),
                                                        length.out = 30),
@@ -213,11 +227,16 @@ glm(inc_2pv ~ inc_approval + gdp_growth + inc_running,
                                                      length.out = 3),
                                     inc_running = 0:1)) %>%
   mutate(inc_running = paste0("incumbent running: ", inc_running),
-         gdp_growth = paste0("gdp growth: ", scales::label_percent()(gdp_growth))) %>%
+         gdp_growth = paste0("gdp growth: ", scales::label_percent()(gdp_growth)),
+         lower = .fitted - .se.fit,
+         upper = .fitted + .se.fit) %>%
   ggplot(aes(x = inc_approval,
-             y = .fitted,
-             color = inc_running)) + 
-  geom_line() +
+             y = .fitted)) +
+  geom_ribbon(aes(ymin = lower,
+                  ymax = upper,
+                  fill = inc_running),
+              alpha = 0.25) + 
+  geom_line(aes(color = inc_running)) +
   geom_hline(yintercept = 0.5,
              linetype = "dashed",
              alpha = 0.5) +
