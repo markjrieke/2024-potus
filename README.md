@@ -48,3 +48,8 @@ Vaguely, the following:
   candidate garners more than 5% of the national popular vote.
 - Abramovitz 2012 mod can be found
   [here](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf)
+- For Biden’s net approval, pulling the *All Polls* variant of
+  [FiveThirtyEight’s presidential approval
+  tracker](https://projects.fivethirtyeight.com/biden-approval-rating/?cid=rrpromo)
+  (this is consistent with what’s displayed for the previous
+  presidents).
