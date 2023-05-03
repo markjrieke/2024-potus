@@ -1,0 +1,77 @@
+---
+title: "01-abramovitz"
+format: gfm
+execute: 
+  warning: false
+  message: false
+---
+
+```{r}
+library(tidyverse)
+library(riekelib)
+
+abramovitz <- read_csv("../../data/abramovitz.csv")
+
+model_data <- 
+  abramovitz %>%
+  select(year, 
+         inc_party,
+         inc_running,
+         dem,
+         rep,
+         inc_approval = fte_net_inc_approval,
+         third_party = third_party_present) %>%
+  mutate(inc_vote = if_else(inc_party == "dem", dem, rep),
+         inc_approval = inc_approval/100)
+
+glm(inc_vote ~ inc_approval + inc_running + third_party,
+    family = quasibinomial(),
+    data = model_data) %>%
+  broom::augment(type.predict = "response",
+                 newdata = crossing(inc_approval = seq(from = -1, to = 1, by = 0.1),
+                                    inc_running = 0:1,
+                                    third_party = 0:1)) %>%
+  ggplot(aes(x = inc_approval,
+             y = .fitted,
+             color = as.character(inc_running))) + 
+  geom_line() + 
+  facet_wrap(~third_party)
+```
+
+```{r}
+model_data <- 
+  abramovitz %>%
+  select(dem,
+         rep,
+         inc_party, 
+         inc_running,
+         inc_approval = fte_net_inc_approval,
+         third_party = third_party_present) %>%
+  mutate(inc_approval = inc_approval/100)
+
+glm(dem ~ inc_party*(inc_approval) + third_party,
+    family = quasibinomial(),
+    data = model_data) %>% 
+  broom::augment(newdata = crossing(inc_party = c("dem", "rep"),
+                                    inc_approval = seq(from = min(model_data$inc_approval), 
+                                                       to = max(model_data$inc_approval), 
+                                                       by = 0.01),
+                                    third_party = 0:1),
+                 type.predict = "response") %>%
+  ggplot(aes(x = inc_approval,
+             y = .fitted,
+             color = inc_party)) + 
+  geom_line() +
+  geom_point(data = model_data,
+             mapping = aes(x = inc_approval,
+                           y = dem,
+                           color = inc_party)) + 
+  scale_color_brewer(palette = "Set1", direction = -1) +
+  riekelib::scale_xy_percent() + 
+  facet_wrap(~paste0("third_party: ", third_party)) +
+  riekelib::theme_rieke() +
+  labs(title = glue::glue("**Democratic Voteshare in the Presence of Third Parties**"),
+       x = "Incumbent Net Approval",
+       y = "Democratic Voteshare")
+```
+
