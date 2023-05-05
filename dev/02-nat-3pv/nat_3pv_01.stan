@@ -7,10 +7,10 @@ parameters {
 }
 transformed parameters {
   simplex[3] theta;
-  theta = softmax(append_row(alpha, 1.0));
+  theta = softmax(append_row(alpha, log(10)));
 }
 model {
-  alpha ~ normal(0, 1);
+  alpha ~ normal(log(80), 0.1);
 
   for (i in 1:N) {
     R[i,]' ~ dirichlet(theta);
