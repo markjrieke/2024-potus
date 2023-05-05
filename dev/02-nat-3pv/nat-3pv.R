@@ -62,6 +62,19 @@ model_data <-
   left_join(pid) %>%
   left_join(iid)
 
+# priors -----------------------------------------------------------------------
+
+gtools::rdirichlet(5000, c(80, 80, 10)) %>%
+  as_tibble() %>%
+  rename(dem = V1,
+         rep = V2,
+         other = V3) %>%
+  pivot_longer(everything()) %>%
+  ggplot(aes(x = name,
+             y = value)) +
+  ggdist::stat_histinterval() +
+  coord_flip()
+
 # model ------------------------------------------------------------------------
 
 R <-
@@ -106,7 +119,7 @@ draws %>%
   ggplot(aes(x = parameter,
              y = value,
              fill = fill)) +
-  ggdist::stat_histinterval(breaks = seq(from = 0, to = 0.7, by = 0.01)) +
+  ggdist::stat_histinterval(breaks = seq(from = 0, to = 0.7, by = 0.001)) +
   scale_fill_identity() +
   scale_y_percent() +
   coord_flip() +
@@ -115,3 +128,4 @@ draws %>%
        x = NULL,
        y = NULL)
 
+ggquicksave("dev/02-nat-3pv/nat_3pv_01.png")
