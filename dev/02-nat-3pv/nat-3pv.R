@@ -36,7 +36,8 @@ model_data <-
          inc_running,
          inc_approval = fte_net_inc_approval,
          third_party = third_party_present,
-         gdp_growth) %>%
+         gdp_growth,
+         total_votes) %>%
   mutate(inc_status = case_when(inc_dem == 1 ~ "inc dem running",
                                 inc_rep == 1 ~ "inc rep running",
                                 inc_running == 0 & inc_party == "dem" ~ "inc dem party",
@@ -64,7 +65,10 @@ model_data <-
 
 # priors -----------------------------------------------------------------------
 
-gtools::rdirichlet(5000, c(80, 80, 10)) %>%
+prob <- c(0.475, 0.475, 0.05)
+weight <- 150
+
+gtools::rdirichlet(5000, weight*prob) %>%
   as_tibble() %>%
   rename(dem = V1,
          rep = V2,
@@ -82,10 +86,15 @@ R <-
   select(dem, rep, other) %>%
   as.matrix()
 
+prior_dr <- log(weight*prob[1])
+prior_other <- log(weight*prob[3])
+
 stan_data <-
   list(
     N = nrow(R),
-    R = R
+    R = R,
+    prior_dr = prior_dr,
+    prior_other = prior_other
   )
 
 model <- cmdstanr::cmdstan_model("dev/02-nat-3pv/nat_3pv_01.stan")
@@ -129,3 +138,150 @@ draws %>%
        y = NULL)
 
 ggquicksave("dev/02-nat-3pv/nat_3pv_01.png")
+
+# model 2 ----------------------------------------------------------------------
+
+# re-characterize as a multinomial
+R <-
+  model_data %>%
+  mutate(dem = round(dem*total_votes),
+         rep = round(rep*total_votes),
+         other = total_votes - dem - rep,
+         across(c(dem, rep, other), as.integer)) %>%
+  select(dem, rep, other) %>%
+  as.matrix()
+
+stan_data <-
+  list(
+    N = nrow(R),
+    R = R,
+    prior_dr = prior_dr,
+    prior_other = prior_other
+  )
+
+model <- cmdstanr::cmdstan_model("dev/02-nat-3pv/nat_3pv_02.stan")
+
+fit <-
+  model$sample(
+    data = stan_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    seed = 2024
+  )
+
+draws <- fit$draws(variables = "theta", format = "df")
+
+draws %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("theta"),
+               names_to = "parameter",
+               values_to = "value") %>%
+  mutate(parameter = case_match(parameter,
+                                "theta[1]" ~ "Democrat",
+                                "theta[2]" ~ "Republican",
+                                "theta[3]" ~ "Other"),
+         fill = case_match(parameter,
+                           "Democrat" ~ RColorBrewer::brewer.pal(3, "Set1")[2],
+                           "Republican" ~ RColorBrewer::brewer.pal(3, "Set1")[1],
+                           "Other" ~ "gray60"),
+         parameter = fct_reorder(parameter, value)) %>%
+  ggplot(aes(x = parameter,
+             y = value,
+             fill = fill)) +
+  ggdist::stat_histinterval(breaks = seq(from = 0, to = 0.7, by = 0.001)) +
+  scale_fill_identity() +
+  scale_y_percent() +
+  coord_flip() +
+  theme_rieke() +
+  labs(title = "**Simple mean-only model**",
+       subtitle = "Reparameterized as a multinomial model",
+       x = NULL,
+       y = NULL)
+
+ggquicksave("dev/02-nat-3pv/nat_3pv_02.png")
+
+# model 3 ----------------------------------------------------------------------
+
+# priors
+tibble(alpha_1 = rnorm(5000, prior_dr, 0.1),
+       alpha_2 = rnorm(5000, prior_dr, 0.1),
+       other = prior_other,
+       inc_status_12 = rnorm(5000, 0.125, 0.1),
+       inc_status_22 = rnorm(5000, -0.125, 0.1)) %>%
+  mutate(theta_1 = alpha_1 + inc_status_12,
+         theta_2 = alpha_2 + inc_status_22,
+         probs = pmap(list(theta_1, theta_2, other),
+                      ~softmax(c(..1, ..2, ..3))),
+         p_1 = map_dbl(probs, ~.x[1]),
+         p_2 = map_dbl(probs, ~.x[2]),
+         p_3 = map_dbl(probs, ~.x[3])) %>%
+  select(starts_with("p_")) %>%
+  pivot_longer(everything(),
+               names_to = "candidate",
+               values_to = "prob") %>%
+  ggplot(aes(x = candidate,
+             y = prob)) +
+  ggdist::stat_histinterval() +
+  coord_flip()
+
+stan_data <-
+  list(
+    N = nrow(R),
+    R = R,
+    prior_dr = prior_dr,
+    prior_other = prior_other,
+    iid = model_data$iid
+  )
+
+model <- cmdstanr::cmdstan_model("dev/02-nat-3pv/nat_3pv_03.stan")
+
+fit <-
+  model$sample(
+    data = stan_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    seed = 2024
+  )
+
+draws <- fit$draws(variables = "theta", format = "df")
+
+draws %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("theta"),
+               names_to = "parameter",
+               values_to = "pct") %>%
+  separate(parameter, c("rowid", "party"), ",") %>%
+  mutate(rowid = as.integer(str_remove(rowid, "theta\\[")),
+         party = as.integer(str_remove(party , "\\]")),
+         party = case_match(party,
+                            1 ~ "dem",
+                            2 ~ "rep",
+                            3 ~ "other")) %>%
+  group_by(rowid, party) %>%
+  summarise(.pred = quantile(pct, probs = 0.5),
+            .pred_lower = quantile(pct, probs = 0.1),
+            .pred_upper = quantile(pct, probs = 0.9)) %>%
+  ungroup() %>%
+  left_join(model_data %>%
+              rowid_to_column() %>%
+              select(rowid, dem, rep, other) %>%
+              pivot_longer(c(dem, rep, other),
+                           names_to = "party",
+                           values_to = "pct")) %>%
+  ggplot(aes(x = pct,
+             y = .pred,
+             ymin = .pred_lower,
+             ymax = .pred_upper)) +
+  geom_point() +
+  geom_errorbar() +
+  geom_abline(linetype = "dashed") +
+  scale_xy_percent() +
+  facet_wrap(~party, scales = "free") +
+  theme_rieke()
+
+
+
