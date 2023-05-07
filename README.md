@@ -53,3 +53,6 @@ Vaguely, the following:
   tracker](https://projects.fivethirtyeight.com/biden-approval-rating/?cid=rrpromo)
   (this is consistent with what’s displayed for the previous
   presidents).
+- Ref [this
+  post](https://eleafeit.com/posts/2021-05-23-parameterization-of-multinomial-logit-models-in-stan/)
+  for some notes on identification in categorical models
