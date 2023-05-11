@@ -56,3 +56,7 @@ Vaguely, the following:
 - Ref [this
   post](https://eleafeit.com/posts/2021-05-23-parameterization-of-multinomial-logit-models-in-stan/)
   for some notes on identification in categorical models
+- Also, identification for categorical (multinomial) models is covered
+  in the stan user guide
+  [here](https://mc-stan.org/docs/stan-users-guide/multi-logit.html) and
+  [here](https://mc-stan.org/docs/stan-users-guide/parameterizing-centered-vectors.html).
