@@ -1,6 +1,10 @@
 # re-creating this walkthrough as a multinomial
 # https://eleafeit.com/posts/2021-05-23-parameterization-of-multinomial-logit-models-in-stan/
 
+# also referencing the stan docs here/here
+# https://mc-stan.org/docs/stan-users-guide/multi-logit.html
+# https://mc-stan.org/docs/stan-users-guide/parameterizing-centered-vectors.html
+
 # setup ------------------------------------------------------------------------
 
 library(tidyverse)
@@ -141,3 +145,111 @@ p6 <- rstan::stan(model_code = m6, data=d2, iter=1000, chains=2, seed=19730715)
 shifted_alpha <- d2$alpha - (1/d2$J)*sum(d2$alpha)
 bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(p6, pars = "alpha"),
                              true = shifted_alpha)
+
+# stan multi logit -------------------------------------------------------------
+
+N <- 100
+K <- 3
+D <- 2
+
+beta <- matrix(nrow = D, ncol = K)
+
+beta[1,] <- c(1, 1, -1)
+beta[2,] <- c(-2, 2, 0)
+
+x <- matrix(nrow = N, ncol = D)
+
+x[,1] <- 1
+x[,2] <- sample(0:1, nrow(x), replace = TRUE)
+
+x_beta <- x %*% beta
+
+y <- vector(length = N)
+
+for (i in 1:N) {
+  y[i] <- sample(1:3, 1, prob = softmax(x_beta[i,]))
+}
+
+stan_data <-
+  list(
+    K = K,
+    N = N,
+    D = D,
+    y = y,
+    x = x
+  )
+
+mnl1_code <- "
+data {
+  int K;
+  int N;
+  int D;
+  array[N] int y;
+  matrix[N, D] x;
+}
+parameters {
+  matrix[D, K] beta;
+}
+model {
+  matrix[N, K] x_beta = x * beta;
+
+  to_vector(beta) ~ normal(0, 5);
+
+  for (n in 1:N) {
+    y[n] ~ categorical_logit(x_beta[n]');
+
+  }
+}
+"
+
+mnl1 <-
+  rstan::stan(
+    model_code = mnl1_code,
+    data = stan_data,
+    chains = 1
+  )
+
+mnl1 %>%
+  rethinking::precis(pars = "beta",
+                     depth = 3)
+
+mnl2_code <- "
+data {
+  int K;
+  int N;
+  int D;
+  array[N] int y;
+  matrix[N, D] x;
+}
+transformed data {
+  vector[D] zeros = rep_vector(0, D);
+}
+parameters {
+  matrix[D, K - 1] beta_raw;
+}
+transformed parameters {
+  matrix[D, K] beta = append_col(beta_raw, zeros);
+}
+model {
+  matrix[N, K] x_beta = x * beta;
+
+  to_vector(beta) ~ normal(0, 5);
+
+  for (n in 1:N) {
+    y[n] ~ categorical_logit(x_beta[n]');
+
+  }
+}
+"
+
+mnl2 <-
+  rstan::stan(
+    model_code = mnl2_code,
+    data = stan_data,
+    chains = 1
+  )
+
+mnl2 %>%
+  rethinking::precis(pars = "beta", depth = 3)
+
+
