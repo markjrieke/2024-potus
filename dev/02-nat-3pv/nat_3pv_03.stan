@@ -1,35 +1,34 @@
 data {
   int<lower=0> N; // number of rows in the training dataset
+  int<lower=2> K; // number of possible choices
+  int<lower=1> D; // number of predictors (including intercept parameter)
   array[N,3] int R; // results of each election
-  real prior_dr; // prior for d/r alpha - on log scale
-  real prior_other; // prior for other alpha - on log scale
-  array[N] int iid; // index for incumbent status
+  matrix[N,D] x; // model matrix
 }
 parameters {
-  vector[2] alpha_raw;
-  matrix[2,4] inc_status;
+  matrix[D, K-1] beta_raw;
 }
 transformed parameters {
-  vector[3] alpha;
-  array[N] simplex[3] theta;
+  matrix[D, K] beta;
+  matrix[N,K] x_beta;
 
-  alpha = append_row(alpha_raw, -sum(alpha_raw));
+  // sum-to-zero parameterization of each predictor (D in total)
+  for (d in 1:D) {
+    beta[d,] = append_col(beta_raw[d,], -sum(beta_raw[d,]));
+  }
 
-  // for (i in 1:N) {
-  //   for (j in 1:2) {
-  //     theta[i,j] = alpha[j] + inc_status[j,iid[i]];
-  //   }
-  //   theta[i,3] = alpha[3];
-  //   theta[i] = softmax(theta[i]);
-  // }
-
+  x_beta = x * beta;
 }
 model {
-  // alpha ~ normal(prior_dr, 0.1);
-  // to_vector(inc_status) ~ normal(0, 0.1);
+  to_vector(beta) ~ normal(0, 5);
 
   for (i in 1:N) {
-    R[i,] ~ multinomial(alpha + inc_status);
+    R[i,] ~ multinomial(softmax(x_beta[i,]'));
   }
 }
-
+generated quantities {
+  matrix[N,K] prob;
+  for (i in 1:N) {
+    prob[i,] = to_row_vector(softmax(x_beta[i,]'));
+  }
+}
