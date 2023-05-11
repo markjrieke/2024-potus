@@ -386,5 +386,59 @@ bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl4, pars = "beta[2,1]"), true
 bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl4, pars = "beta[2,2]"), true = shifted_beta[2,2])
 bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl4, pars = "beta[2,3]"), true = shifted_beta[2,3])
 
+# lets add a continuous predictor ----------------------------------------------
+
+x <- cbind(x, rnorm(nrow(x)))
+beta <- rbind(beta, c(-0.1, 0.5, 0.2))
+x_beta <- x %*% beta
+
+y <- matrix(nrow = N, ncol = K)
+
+for (i in 1:N) {
+  y[i,] <- t(rmultinom(1, 30, softmax(x_beta[i,])))
+}
+
+D <- 3
+
+stan_data <-
+  list(
+    K = K,
+    N = N,
+    D = D,
+    y = y,
+    x = x
+  )
+
+mnl5 <-
+  rstan::stan(
+    model_code = mnl4_code,
+    data = stan_data,
+    chains = 1
+  )
+
+mnl5 %>%
+  rethinking::precis(pars = "beta", depth = 3)
+
+shifted_beta <- matrix(nrow = D, ncol = K)
+
+for (i in 1:D) {
+  shifted_beta[i,] <- beta[i,] - (1/K)*sum(beta[i,])
+}
+
+# dont @ me, i know this is bad, idc
+# i just gotta figure out this mn sampling shindig
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[1,1]"), true = shifted_beta[1,1])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[1,2]"), true = shifted_beta[1,2])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[1,3]"), true = shifted_beta[1,3])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[2,1]"), true = shifted_beta[2,1])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[2,2]"), true = shifted_beta[2,2])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[2,3]"), true = shifted_beta[2,3])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[3,1]"), true = shifted_beta[3,1])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[3,2]"), true = shifted_beta[3,2])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl5, pars = "beta[3,3]"), true = shifted_beta[3,3])
+
+
+
+
 
 
