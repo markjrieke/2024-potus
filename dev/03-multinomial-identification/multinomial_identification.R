@@ -148,7 +148,7 @@ bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(p6, pars = "alpha"),
 
 # stan multi logit -------------------------------------------------------------
 
-N <- 100
+N <- 500
 K <- 3
 D <- 2
 
@@ -252,4 +252,58 @@ mnl2 <-
 mnl2 %>%
   rethinking::precis(pars = "beta", depth = 3)
 
+mnl3_code <- "
+data {
+  int K;
+  int N;
+  int D;
+  array[N] int y;
+  matrix[N, D] x;
+}
+transformed data {
+  vector[D] zeros = rep_vector(0, D);
+}
+parameters {
+  matrix[D, K - 1] beta_raw;
+}
+transformed parameters {
+  matrix[D, K] beta;
+  vector[D] beta_append;
 
+  for (d in 1:D) {
+    beta_append[d] = -sum(beta_raw[d,]);
+  }
+
+  beta = append_col(beta_raw, beta_append);
+}
+model {
+  matrix[N, K] x_beta = x * beta;
+
+  to_vector(beta) ~ normal(0, 5);
+
+  for (n in 1:N) {
+    y[n] ~ categorical_logit(x_beta[n]');
+
+  }
+}
+"
+
+mnl3 <-
+  rstan::stan(
+    model_code = mnl3_code,
+    data = stan_data,
+    chains = 1
+  )
+
+mnl3 %>%
+  rethinking::precis(pars = "beta", depth = 3)
+
+shifted_beta <- beta - (1/K)*sum(beta)
+
+# dont @ me
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl3, pars = "beta[1,1]"), true = shifted_beta[1,1])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl3, pars = "beta[1,2]"), true = shifted_beta[1,2])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl3, pars = "beta[1,3]"), true = shifted_beta[1,3])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl3, pars = "beta[2,1]"), true = shifted_beta[2,1])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl3, pars = "beta[2,2]"), true = shifted_beta[2,2])
+bayesplot::mcmc_recover_hist(rstan::As.mcmc.list(mnl3, pars = "beta[2,3]"), true = shifted_beta[2,3])
