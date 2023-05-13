@@ -287,5 +287,71 @@ fit$summary("prob") %>%
 
 ggquicksave("dev/02-nat-3pv/nat_3pv_03.png")
 
+# model w/multiple predictors --------------------------------------------------
 
+# reparameterize back to dirichlet
+R <-
+  model_data %>%
+  select(dem, rep, other) %>%
+  as.matrix()
+
+stan_data <-
+  list(
+    N = nrow(R),
+    K = 3,
+    N_inc_party = max(model_data$pid),
+    N_inc_status = max(model_data$iid),
+    R = R,
+    iid = model_data$iid,
+    pid = model_data$pid
+  )
+
+model <- cmdstanr::cmdstan_model("dev/02-nat-3pv/nat_3pv_04.stan")
+
+fit <-
+  model$sample(
+    data = stan_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    seed = 2024
+  )
+
+draws <- fit$draws(variables = "prob", format = "df")
+
+draws %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("prob"),
+               values_to = "pct") %>%
+  mutate(name = str_remove_all(name, "prob\\[|\\]")) %>%
+  separate(name, c("rowid", "party")) %>%
+  mutate(across(c(rowid, party), as.integer),
+         party = case_match(party,
+                            1 ~ "dem",
+                            2 ~ "rep",
+                            3 ~ "other")) %>%
+  group_by(party, rowid) %>%
+  tidybayes::median_qi(pct, .width = c(0.5, 0.66, 0.95)) %>%
+  left_join(model_data %>%
+              select(dem, rep, other) %>%
+              rowid_to_column() %>%
+              pivot_longer(c(dem, rep, other),
+                           names_to = "party",
+                           values_to = "pct_actual"),
+            by = c("rowid", "party")) %>%
+  ggplot(aes(x = pct_actual,
+             y = pct,
+             ymin = .lower,
+             ymax = .upper,
+             color = party)) +
+  geom_abline(linetype = "dashed",
+              color = "gray40") +
+  ggdist::geom_pointinterval(alpha = 0.25) +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
+  scale_xy_percent() +
+  theme_rieke() +
+  labs(title = "**Multiple predictors, poor priors**")
+
+ggquicksave("dev/02-nat-3pv/nat_3pv_04.png")
 
