@@ -355,3 +355,185 @@ draws %>%
 
 ggquicksave("dev/02-nat-3pv/nat_3pv_04.png")
 
+# better priors ----------------------------------------------------------------
+
+sims <- 1000
+sigma <- 0.125
+
+bind_cols(inc_party_raw_11 = rnorm(sims, 0.5, sigma),
+          inc_party_raw_12 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_21 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_22 = rnorm(sims, 0.5, sigma)) %>%
+  mutate(inc_party_raw_13 = -(inc_party_raw_11 + inc_party_raw_12),
+         inc_party_raw_23 = -(inc_party_raw_21 + inc_party_raw_22),
+         inc_party_1 = pmap(list(inc_party_raw_11,
+                                 inc_party_raw_12,
+                                 inc_party_raw_13),
+                            ~softmax(c(..1, ..2, ..3))),
+         inc_party_2 = pmap(list(inc_party_raw_21,
+                                 inc_party_raw_22,
+                                 inc_party_raw_23),
+                            ~softmax(c(..1, ..2, ..3)))) %>%
+  select(inc_party_1, inc_party_2) %>%
+  mutate(dem_1 = map_dbl(inc_party_1, ~.x[1]),
+         rep_1 = map_dbl(inc_party_1, ~.x[2]),
+         oth_1 = map_dbl(inc_party_1, ~.x[3]),
+         dem_2 = map_dbl(inc_party_2, ~.x[1]),
+         rep_2 = map_dbl(inc_party_2, ~.x[2]),
+         oth_2 = map_dbl(inc_party_2, ~.x[3])) %>%
+  select(dem_1:oth_2) %>%
+  pivot_longer(everything(),
+               names_to = "party",
+               values_to = "pct") %>%
+  separate(party, c("party", "inc_party"), "_") %>%
+  mutate(inc_party = paste0("inc_party: ", inc_party)) %>%
+  ggplot(aes(x = party,
+             y = pct,
+             color = party,
+             fill = party)) +
+  ggdist::stat_histinterval(alpha = 0.5) +
+  scale_y_percent() +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
+  NatParksPalettes::scale_fill_natparks_d("Triglav") +
+  facet_wrap(~inc_party) +
+  coord_flip() +
+  theme_rieke() +
+  labs(title = "**Prior setting for _inc_party_ only**",
+       subtitle = "\u03bc = 0.5/0.4<br> \u03c3 = 0.125",
+       x = NULL,
+       y = NULL) +
+  theme(legend.position = "none")
+
+ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior.png")
+
+bind_cols(alpha_raw_1 = rnorm(sims, 0.4, sigma),
+          alpha_raw_2 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_11 = rnorm(sims, 0.5, sigma),
+          inc_party_raw_12 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_21 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_22 = rnorm(sims, 0.5, sigma)) %>%
+  mutate(alpha_raw_3 = -(alpha_raw_1 + alpha_raw_2),
+         inc_party_raw_13 = -(inc_party_raw_11 + inc_party_raw_12),
+         inc_party_raw_23 = -(inc_party_raw_21 + inc_party_raw_22),
+         out_11 = alpha_raw_1 + inc_party_raw_11,
+         out_12 = alpha_raw_2 + inc_party_raw_12,
+         out_13 = alpha_raw_3 + inc_party_raw_13,
+         out_21 = alpha_raw_1 + inc_party_raw_21,
+         out_22 = alpha_raw_2 + inc_party_raw_22,
+         out_23 = alpha_raw_3 + inc_party_raw_23,
+         prob_1 = pmap(list(out_11, out_12, out_13),
+                       ~softmax(c(..1, ..2, ..3))),
+         prob_2 = pmap(list(out_21, out_22, out_23),
+                       ~softmax(c(..1, ..2, ..3)))) %>%
+  select(prob_1, prob_2) %>%
+  mutate(dem_1 = map_dbl(prob_1, ~.x[1]),
+         rep_1 = map_dbl(prob_1, ~.x[2]),
+         oth_1 = map_dbl(prob_1, ~.x[3]),
+         dem_2 = map_dbl(prob_2, ~.x[1]),
+         rep_2 = map_dbl(prob_2, ~.x[2]),
+         oth_2 = map_dbl(prob_2, ~.x[3])) %>%
+  select(dem_1:oth_2) %>%
+  pivot_longer(everything(),
+               names_to = "party",
+               values_to = "pct") %>%
+  separate(party, c("party", "inc_party"), "_") %>%
+  mutate(inc_party = paste0("inc_party: ", inc_party)) %>%
+  ggplot(aes(x = party,
+             y = pct,
+             color = party,
+             fill = party)) +
+  ggdist::stat_histinterval(alpha = 0.5,
+                            breaks = seq(from = 0, to = 0.75,
+                                         by = 0.0125)) +
+  scale_y_percent() +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
+  NatParksPalettes::scale_fill_natparks_d("Triglav") +
+  facet_wrap(~inc_party) +
+  coord_flip() +
+  theme_rieke() +
+  labs(title = "**Prior setting for _\u03b1_ and _inc_party_**",
+       subtitle = "\u03b1 = 0.4<br>\u03bc = 0.5/0.4<br>\u03c3 = 0.125",
+       x = NULL,
+       y = NULL) +
+  theme(legend.position = "none")
+
+ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior_02.png")
+
+bind_cols(alpha_raw_1 = rnorm(sims, 0.4, sigma),
+          alpha_raw_2 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_11 = rnorm(sims, 0.5, sigma),
+          inc_party_raw_12 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_21 = rnorm(sims, 0.4, sigma),
+          inc_party_raw_22 = rnorm(sims, 0.5, sigma),
+          third_party_11 = rnorm(sims, -0.3, sigma),
+          third_party_12 = rnorm(sims, -0.3, sigma)) %>%
+  mutate(alpha_raw_3 = -(alpha_raw_1 + alpha_raw_2),
+         inc_party_raw_13 = -(inc_party_raw_11 + inc_party_raw_12),
+         inc_party_raw_23 = -(inc_party_raw_21 + inc_party_raw_22),
+         third_party_13 = -(third_party_11 + third_party_12),
+         out_110 = alpha_raw_1 + inc_party_raw_11,
+         out_120 = alpha_raw_2 + inc_party_raw_12,
+         out_130 = alpha_raw_3 + inc_party_raw_13,
+         out_210 = alpha_raw_1 + inc_party_raw_21,
+         out_220 = alpha_raw_2 + inc_party_raw_22,
+         out_230 = alpha_raw_3 + inc_party_raw_23,
+         out_111 = out_110 + third_party_11,
+         out_121 = out_120 + third_party_12,
+         out_131 = out_130 + third_party_13,
+         out_211 = out_210 + third_party_11,
+         out_221 = out_220 + third_party_12,
+         out_231 = out_230 + third_party_13,
+         prob_10 = pmap(list(out_110, out_120, out_130),
+                        ~softmax(c(..1, ..2, ..3))),
+         prob_20 = pmap(list(out_210, out_220, out_230),
+                        ~softmax(c(..1, ..2, ..3))),
+         prob_11 = pmap(list(out_111, out_121, out_131),
+                        ~softmax(c(..1, ..2, ..3))),
+         prob_21 = pmap(list(out_211, out_221, out_231),
+                        ~softmax(c(..1, ..2, ..3)))) %>%
+  select(starts_with("prob")) %>%
+  mutate(dem_10 = map_dbl(prob_10, ~.x[1]),
+         rep_10 = map_dbl(prob_10, ~.x[2]),
+         oth_10 = map_dbl(prob_10, ~.x[3]),
+         dem_20 = map_dbl(prob_20, ~.x[1]),
+         rep_20 = map_dbl(prob_20, ~.x[2]),
+         oth_20 = map_dbl(prob_20, ~.x[3]),
+         dem_11 = map_dbl(prob_11, ~.x[1]),
+         rep_11 = map_dbl(prob_11, ~.x[2]),
+         oth_11 = map_dbl(prob_11, ~.x[3]),
+         dem_21 = map_dbl(prob_21, ~.x[1]),
+         rep_21 = map_dbl(prob_21, ~.x[2]),
+         oth_21 = map_dbl(prob_21, ~.x[3])) %>%
+  select(-starts_with("prob")) %>%
+  pivot_longer(everything(),
+               names_to = "party",
+               values_to = "pct") %>%
+  separate(party, c("party", "inc_party"), "_") %>%
+  mutate(third_party = as.integer(str_sub(inc_party, 2)),
+         inc_party = as.integer(str_sub(inc_party, 1, 1)),
+         third_party = paste0("third_party: ", third_party),
+         inc_party = paste0("inc_party: ", inc_party)) %>%
+  ggplot(aes(x = party,
+             y = pct,
+             color = party,
+             fill = party)) +
+  ggdist::stat_histinterval(alpha = 0.5,
+                            breaks = seq(from = 0, to = 0.8,
+                                         by = 0.0125)) +
+  scale_y_percent() +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
+  NatParksPalettes::scale_fill_natparks_d("Triglav") +
+  facet_grid(vars(inc_party), vars(third_party)) +
+  coord_flip() +
+  theme_rieke() +
+  labs(title = "**Prior setting for _\u03b1_, _third_party_, and _inc_party_**",
+       subtitle = paste("\u03b1 = 0.4",
+                        "\u03bc = 0.5/0.4 (inc_party)",
+                        "\u03bc = -0.3 (third_party)",
+                        "\u03c3 = 0.125",
+                        sep = "<br>"),
+       x = NULL,
+       y = NULL) +
+  theme(legend.position = "none")
+
+ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior_03.png")
