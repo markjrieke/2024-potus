@@ -283,7 +283,7 @@ fit$summary("prob") %>%
   NatParksPalettes::scale_color_natparks_d("Triglav") +
   theme_rieke() +
   labs(title = "**Multinomial model with indicator for 3rd party**",
-       subtitle = "Probs need to switch back to Dirichlet mod wiht smart priors")
+       subtitle = "Probs need to switch back to Dirichlet mod with smart priors")
 
 ggquicksave("dev/02-nat-3pv/nat_3pv_03.png")
 
