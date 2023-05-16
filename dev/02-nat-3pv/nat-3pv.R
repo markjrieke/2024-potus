@@ -537,3 +537,196 @@ bind_cols(alpha_raw_1 = rnorm(sims, 0.4, sigma),
   theme(legend.position = "none")
 
 ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior_03.png")
+
+# idr: inc dem running
+# idp: inc dem party
+# irr: inc rep running
+# irp: inc rep party
+
+sims <- 1000
+sigma <- 0.125
+
+even <- 0.475
+inc_bonus <- 0.025
+wt <- 1.75
+
+# sim raw parameters
+bind_cols(inc_approval = rnorm(sims, 0.0646, 0.256), # mean/std dev of model data
+
+          # incumbency status
+          idr_1 = rnorm(sims, (even + inc_bonus)*wt, sigma),
+          idr_2 = rnorm(sims, (even - inc_bonus)*wt, sigma),
+          idp_1 = rnorm(sims, wt*0.5, sigma),
+          idp_2 = rnorm(sims, wt*0.5, sigma),
+          irr_1 = rnorm(sims, (even - inc_bonus)*wt, sigma),
+          irr_2 = rnorm(sims, (even + inc_bonus)*wt, sigma),
+          irp_1 = rnorm(sims, wt*0.5, sigma),
+          irp_2 = rnorm(sims, wt*0.5, sigma),
+
+          # third party
+          third_party_1 = rnorm(sims, -0.3, sigma),
+          third_party_2 = rnorm(sims, -0.3, sigma),
+
+          # approval
+          # assumption is that as approval increases, both d/r will increase
+          # (i.e., less approval = more 3rd party voters)
+          # more of the disapproval handled by interaction later
+          net_app_1 = rnorm(sims, 0.125, sigma),
+          net_app_2 = rnorm(sims, 0.125, sigma),
+
+          # interaction between incumbency status//net approval
+          idr_app_1 = rnorm(sims, 0.125, sigma),
+          idr_app_2 = rnorm(sims, -0.125, sigma),
+          idp_app_1 = rnorm(sims, 0.05, sigma),
+          idp_app_2 = rnorm(sims, -0.05, sigma),
+          irr_app_1 = rnorm(sims, -0.125, sigma),
+          irr_app_2 = rnorm(sims, 0.125, sigma),
+          irp_app_1 = rnorm(sims, -0.05, sigma),
+          irp_app_2 = rnorm(sims, 0.05, sigma)) %>%
+
+  # sum-to-zero constraint for 3rd party/other
+  mutate(idr_3 = -(idr_1 + idr_2),
+         idp_3 = -(idp_1 + idp_2),
+         irr_3 = -(irr_1 + irr_2),
+         irp_3 = -(irp_1 + irp_2),
+         net_app_3 = -(net_app_1 + net_app_2),
+         third_party_3 = -(third_party_1 + third_party_2),
+         idr_app_3 = -(idr_app_1 + idr_app_2),
+         idp_app_3 = -(idp_app_1 + idp_app_2),
+         irr_app_3 = -(irr_app_1 + irr_app_2),
+         irp_app_3 = -(irp_app_1 + irp_app_2)) %>%
+
+  # apply linear model
+  mutate(
+         # w/o third party
+         out_idr_1 = idr_1 + (net_app_1 + idr_app_1)*inc_approval,
+         out_idr_2 = idr_2 + (net_app_2 + idr_app_2)*inc_approval,
+         out_idr_3 = idr_3 + (net_app_3 + idr_app_3)*inc_approval,
+         out_idp_1 = idp_1 + (net_app_1 + idp_app_1)*inc_approval,
+         out_idp_2 = idp_2 + (net_app_2 + idp_app_2)*inc_approval,
+         out_idp_3 = idp_3 + (net_app_3 + idp_app_3)*inc_approval,
+         out_irr_1 = irr_1 + (net_app_1 + irr_app_1)*inc_approval,
+         out_irr_2 = irr_2 + (net_app_2 + irr_app_2)*inc_approval,
+         out_irr_3 = irr_3 + (net_app_3 + irr_app_3)*inc_approval,
+         out_irp_1 = irp_1 + (net_app_1 + irp_app_1)*inc_approval,
+         out_irp_2 = irp_2 + (net_app_2 + irp_app_2)*inc_approval,
+         out_irp_3 = irp_3 + (net_app_3 + irp_app_3)*inc_approval,
+
+         # w/third party
+         out_idr_1t = out_idr_1 + third_party_1,
+         out_idr_2t = out_idr_2 + third_party_2,
+         out_idr_3t = out_idr_3 + third_party_3,
+         out_idp_1t = out_idp_1 + third_party_1,
+         out_idp_2t = out_idp_2 + third_party_2,
+         out_idp_3t = out_idp_3 + third_party_3,
+         out_irr_1t = out_irr_1 + third_party_1,
+         out_irr_2t = out_irr_2 + third_party_2,
+         out_irr_3t = out_irr_3 + third_party_3,
+         out_irp_1t = out_irp_1 + third_party_1,
+         out_irp_2t = out_irp_2 + third_party_2,
+         out_irp_3t = out_irp_3 + third_party_3) %>%
+
+  # convert to probabilities
+  mutate(
+         # w/o third party
+         prob_idr = pmap(list(out_idr_1, out_idr_2, out_idr_3), ~softmax(c(..1, ..2, ..3))),
+         prob_idp = pmap(list(out_idp_1, out_idp_2, out_idp_3), ~softmax(c(..1, ..2, ..3))),
+         prob_irr = pmap(list(out_irr_1, out_irr_2, out_irr_3), ~softmax(c(..1, ..2, ..3))),
+         prob_irp = pmap(list(out_irp_1, out_irp_2, out_irp_3), ~softmax(c(..1, ..2, ..3))),
+
+         # w/third party
+         prob_idrt = pmap(list(out_idr_1t, out_idr_2t, out_idr_3t), ~softmax(c(..1, ..2, ..3))),
+         prob_idpt = pmap(list(out_idp_1t, out_idp_2t, out_idp_3t), ~softmax(c(..1, ..2, ..3))),
+         prob_irrt = pmap(list(out_irr_1t, out_irr_2t, out_irr_3t), ~softmax(c(..1, ..2, ..3))),
+         prob_irpt = pmap(list(out_irp_1t, out_irp_2t, out_irp_3t), ~softmax(c(..1, ..2, ..3)))) %>%
+
+  # clean up
+  select(inc_approval, starts_with("prob")) %>%
+
+  # extract probabilities
+  mutate(
+         # w/o third party
+         prob_idr_1 = map_dbl(prob_idr, ~.x[1]),
+         prob_idr_2 = map_dbl(prob_idr, ~.x[2]),
+         prob_idr_3 = map_dbl(prob_idr, ~.x[3]),
+         prob_idp_1 = map_dbl(prob_idp, ~.x[1]),
+         prob_idp_2 = map_dbl(prob_idp, ~.x[2]),
+         prob_idp_3 = map_dbl(prob_idp, ~.x[3]),
+         prob_irr_1 = map_dbl(prob_irr, ~.x[1]),
+         prob_irr_2 = map_dbl(prob_irr, ~.x[2]),
+         prob_irr_3 = map_dbl(prob_irr, ~.x[3]),
+         prob_irp_1 = map_dbl(prob_irp, ~.x[1]),
+         prob_irp_2 = map_dbl(prob_irp, ~.x[2]),
+         prob_irp_3 = map_dbl(prob_irp, ~.x[3]),
+
+         # w/third party
+         prob_idr_1t = map_dbl(prob_idrt, ~.x[1]),
+         prob_idr_2t = map_dbl(prob_idrt, ~.x[2]),
+         prob_idr_3t = map_dbl(prob_idrt, ~.x[3]),
+         prob_idp_1t = map_dbl(prob_idpt, ~.x[1]),
+         prob_idp_2t = map_dbl(prob_idpt, ~.x[2]),
+         prob_idp_3t = map_dbl(prob_idpt, ~.x[3]),
+         prob_irr_1t = map_dbl(prob_irrt, ~.x[1]),
+         prob_irr_2t = map_dbl(prob_irrt, ~.x[2]),
+         prob_irr_3t = map_dbl(prob_irrt, ~.x[3]),
+         prob_irp_1t = map_dbl(prob_irpt, ~.x[1]),
+         prob_irp_2t = map_dbl(prob_irpt, ~.x[2]),
+         prob_irp_3t = map_dbl(prob_irpt, ~.x[3])) %>%
+
+  # clean up (again)
+  select(-c(prob_idr, prob_idp, prob_irr, prob_irp,
+            prob_idrt, prob_idpt, prob_irrt, prob_irpt)) %>%
+
+  # prep for plotting
+  pivot_longer(starts_with("prob"),
+               names_to = "inc_status",
+               values_to = "pct") %>%
+  mutate(inc_status = str_remove(inc_status, "prob_")) %>%
+  separate(inc_status, c("inc_status", "party"), "_") %>%
+  mutate(third_party = if_else(str_sub(party, -1L) == "t", "third party", "no third party"),
+         party = str_remove(party, "t"),
+         party = as.integer(party),
+         inc_status = case_match(inc_status,
+                                 "idr" ~ "inc dem running",
+                                 "idp" ~ "inc dem party",
+                                 "irr" ~ "inc rep running",
+                                 "irp" ~ "inc rep party"),
+         party = case_match(party,
+                            1 ~ "dem",
+                            2 ~ "rep",
+                            3 ~ "other"),
+         across(c(inc_status, third_party), str_to_title)) %>%
+
+  # plot
+  ggplot(aes(x = inc_approval,
+             y = pct,
+             color = party)) +
+  geom_point(alpha = 0.15) +
+  geom_hline(yintercept = 0.5,
+             linetype = "dashed") +
+  geom_smooth(se = FALSE) +
+  geom_point(data = model_data %>%
+               select(dem, rep, other, inc_status, inc_approval, third_party) %>%
+               mutate(third_party = if_else(third_party == 0, "no third party", "third party"),
+                      across(c(inc_status, third_party), str_to_title)) %>%
+               pivot_longer(c(dem, rep, other),
+                            names_to = "party",
+                            values_to = "pct"),
+             size = 4,
+             shape = 24,
+             fill = "white") +
+  NatParksPalettes::scale_colour_natparks_d("Triglav") +
+  scale_xy_percent() +
+  facet_grid(rows = vars(third_party),
+             cols = vars(inc_status)) +
+  theme_rieke() +
+  labs(title = "**Prior simulations for National Presidential Election Results**",
+       subtitle = paste("Model based on incumbent status, approval, and the presence of a third party on the ticket",
+                        "Points show actual election results",
+                        sep = "<br>"),
+       x = "Incumbent Net Approval",
+       y = NULL,
+       caption = "1,000 prior simulations") +
+  theme(legend.position = "none")
+
+ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior_04.png")
