@@ -575,14 +575,14 @@ bind_cols(inc_approval = rnorm(sims, 0.0646, 0.256), # mean/std dev of model dat
           net_app_2 = rnorm(sims, 0.125, sigma),
 
           # interaction between incumbency status//net approval
-          idr_app_1 = rnorm(sims, 0.125, sigma),
-          idr_app_2 = rnorm(sims, -0.125, sigma),
-          idp_app_1 = rnorm(sims, 0.05, sigma),
-          idp_app_2 = rnorm(sims, -0.05, sigma),
-          irr_app_1 = rnorm(sims, -0.125, sigma),
-          irr_app_2 = rnorm(sims, 0.125, sigma),
-          irp_app_1 = rnorm(sims, -0.05, sigma),
-          irp_app_2 = rnorm(sims, 0.05, sigma)) %>%
+          idr_app_1 = rnorm(sims, 0.15, sigma),
+          idr_app_2 = rnorm(sims, -0.15, sigma),
+          idp_app_1 = rnorm(sims, 0.075, sigma),
+          idp_app_2 = rnorm(sims, -0.075, sigma),
+          irr_app_1 = rnorm(sims, -0.15, sigma),
+          irr_app_2 = rnorm(sims, 0.15, sigma),
+          irp_app_1 = rnorm(sims, -0.075, sigma),
+          irp_app_2 = rnorm(sims, 0.075, sigma)) %>%
 
   # sum-to-zero constraint for 3rd party/other
   mutate(idr_3 = -(idr_1 + idr_2),
@@ -730,3 +730,9 @@ bind_cols(inc_approval = rnorm(sims, 0.0646, 0.256), # mean/std dev of model dat
   theme(legend.position = "none")
 
 ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior_04.png")
+
+# okay, actually model now -----------------------------------------------------
+
+# R ~ inc_status + net_app + net_app_inc + third_party
+
+
