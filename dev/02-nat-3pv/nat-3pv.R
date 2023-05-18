@@ -733,6 +733,93 @@ ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior_04.png")
 
 # okay, actually model now -----------------------------------------------------
 
-# R ~ inc_status + net_app + net_app_inc + third_party
+stan_data <-
+  list(
+    N = nrow(R),
+    K = ncol(R),
+    N_inc_status = max(iid$iid),
+    R = R,
+    iid = model_data$iid,
+    inc_approval = model_data$inc_approval,
+    third_party = model_data$third_party,
+    gq_inc_approval = seq(from = -0.6, to = 0.6, length.out = 30)
+  )
 
+model <- cmdstanr::cmdstan_model("dev/02-nat-3pv/nat_3pv_05.stan")
 
+fit <-
+  model$sample(
+    data = stan_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    seed = 2024
+  )
+
+draws <- fit$draws(variables = "prob_gq", format = "df")
+
+draws %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("prob"),
+               names_to = "variable",
+               values_to = "pct") %>%
+  nest(draws = -variable) %>%
+  mutate(variable = str_remove_all(variable, "prob_gq\\[|\\]"),
+         inc_status = case_match(as.integer(str_sub(variable, 1, 1)),
+                                 1 ~ "Inc Dem Running",
+                                 2 ~ "Inc Dem Party",
+                                 3 ~ "Inc Rep Running",
+                                 4 ~ "Inc Rep Party"),
+         third_party = case_match(as.integer(str_sub(variable, 3, 3)),
+                                  1 ~ "No Third Party",
+                                  2 ~ "Third Party"),
+         party = case_match(as.integer(str_sub(variable, -1, -1)),
+                            1 ~ "dem",
+                            2 ~ "rep",
+                            3 ~ "other"),
+         inc_approval = as.integer(str_sub(variable, 5, -3)) - 1,
+         inc_approval = inc_approval/max(inc_approval)*(1.2) - 0.6) %>%
+  select(-variable) %>%
+  relocate(draws, .after = inc_approval) %>%
+  unnest(draws) %>%
+  group_by(inc_status, third_party, party, inc_approval) %>%
+  ggplot(aes(x = inc_approval,
+             y = pct,
+             fill = party,
+             color = party)) +
+  tidybayes::stat_lineribbon(alpha = 0.35,
+                             .width = c(0.8)) +
+  geom_point(data = model_data %>%
+                      select(dem, rep, other, inc_status, inc_approval, third_party) %>%
+                      pivot_longer(c(dem, rep, other),
+                                   names_to = "party",
+                                   values_to = "pct") %>%
+                      mutate(inc_status = str_to_title(inc_status),
+                             third_party = if_else(third_party == 0,
+                                                   "No Third Party",
+                                                   "Third Party")),
+             aes(fill = party),
+             color = "white",
+             shape = 21,
+             size = 3) +
+  scale_xy_percent() +
+  NatParksPalettes::scale_fill_natparks_d("Triglav") +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
+  facet_grid(cols = vars(inc_status),
+             rows = vars(third_party)) +
+  theme_rieke() +
+  theme(legend.position = "none") +
+  labs(title = "**National Popular Vote for Presidential Elections**",
+       subtitle = glue::glue("Modelled popular vote based on incumbent status, approval, and the presence of a third party on the ticket",
+                             "Points show actual results of previous elections",
+                             .sep = "<br>"),
+       x = "Incumbent Net Approval",
+       y = NULL,
+       caption = glue::glue("Shaded interval indicates 80% posterior credible interval",
+                            "based on 2,000 MCMC samples",
+                            .sep = "<br>"))
+
+ggquicksave("dev/02-nat-3pv/nat_3pv_05.png",
+            width = 12,
+            height = 8)
