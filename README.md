@@ -38,7 +38,7 @@ Vaguely, the following:
 - FRED
 - Census
 
-### notes on abramovitz data
+### notes on abramovitz data/nat-3pv
 
 - Incumbent net approval pulled from FiveThirtyEight’s averages on the
   day before the presidential election. If the exact date is not
@@ -53,6 +53,9 @@ Vaguely, the following:
   tracker](https://projects.fivethirtyeight.com/biden-approval-rating/?cid=rrpromo)
   (this is consistent with what’s displayed for the previous
   presidents).
+
+### multinomial identification notes
+
 - Ref [this
   post](https://eleafeit.com/posts/2021-05-23-parameterization-of-multinomial-logit-models-in-stan/)
   for some notes on identification in categorical models
@@ -60,3 +63,15 @@ Vaguely, the following:
   in the stan user guide
   [here](https://mc-stan.org/docs/stan-users-guide/multi-logit.html) and
   [here](https://mc-stan.org/docs/stan-users-guide/parameterizing-centered-vectors.html).
+
+### 3pvi notes
+
+- Cook PVI pulled from [this
+  table](https://www.cookpolitical.com/cook-pvi/2022-partisan-voting-index/state-map-and-list).
+- 80/20 weighted split between two most recent elections just pulled
+  from excel’s solver (\~78%, so rounded to a clean 80%).
+
+### misc notes
+
+- [density database](https://densitydb.github.io/) gives statewide
+  population weighted density estimates.

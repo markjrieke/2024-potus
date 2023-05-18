@@ -53,3 +53,7 @@ Vaguely, the following:
 
 * Cook PVI pulled from [this table](https://www.cookpolitical.com/cook-pvi/2022-partisan-voting-index/state-map-and-list).
 * 80/20 weighted split between two most recent elections just pulled from excel's solver (~78%, so rounded to a clean 80%). 
+
+### misc notes
+
+* [density database](https://densitydb.github.io/) gives statewide population weighted density estimates.
