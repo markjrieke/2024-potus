@@ -6,7 +6,7 @@ cpvi <- read_csv("data/cpvi.csv")
 # 20: 0.513 / 0.468 / 0.019
 # 16: 0.482 / 0.461 / 0.057
 
-# 3pvi weighting set to 80/20 for 2020/2016
+# 3pvi weighting set to 75/25 for 2020/2016
 
 pvi_3 <-
   cpvi %>%
@@ -18,9 +18,9 @@ pvi_3 <-
          pvi_3d16 = dem_16 - 0.482,
          pvi_3r16 = rep_16 - 0.461,
          pvi_3o16 = other_16 - 0.057,
-         pvi_3d = pvi_3d20*0.8 + pvi_3d16*0.2,
-         pvi_3r = pvi_3r20*0.8 + pvi_3r16*0.2,
-         pvi_3o = pvi_3o20*0.8 + pvi_3o16*0.2) %>%
+         pvi_3d = pvi_3d20*0.75 + pvi_3d16*0.25,
+         pvi_3r = pvi_3r20*0.75 + pvi_3r16*0.25,
+         pvi_3o = pvi_3o20*0.75 + pvi_3o16*0.25) %>%
   select(State,
          CPVI,
          dem_20, rep_20, other_20,
