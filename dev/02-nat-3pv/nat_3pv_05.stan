@@ -72,7 +72,7 @@ model {
   real sigma = 0.125;
   real even = 0.475;
   real inc_bonus = 0.025;
-  real wt = 1.75;
+  real wt = 2;
 
   // incumbency status
   // incumbent running gets a boost; incumbent party doesn't (handled by interaction)
@@ -96,12 +96,12 @@ model {
 
   // interaction between incumbency status/net approval
   // an incumbent party gets a bigger boost when their incumbent is running
-  inc_status_approval_raw[1,1] ~ normal(0.15, sigma);
-  inc_status_approval_raw[1,2] ~ normal(-0.15, sigma);
+  inc_status_approval_raw[1,1] ~ normal(0.2, sigma);
+  inc_status_approval_raw[1,2] ~ normal(-0.2, sigma);
   inc_status_approval_raw[2,1] ~ normal(0.075, sigma);
   inc_status_approval_raw[2,2] ~ normal(-0.075, sigma);
-  inc_status_approval_raw[3,1] ~ normal(-0.15, sigma);
-  inc_status_approval_raw[3,2] ~ normal(0.15, sigma);
+  inc_status_approval_raw[3,1] ~ normal(-0.2, sigma);
+  inc_status_approval_raw[3,2] ~ normal(0.2, sigma);
   inc_status_approval_raw[4,1] ~ normal(-0.075, sigma);
   inc_status_approval_raw[4,2] ~ normal(0.075, sigma);
 

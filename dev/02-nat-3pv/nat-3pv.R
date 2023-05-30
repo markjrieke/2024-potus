@@ -548,7 +548,7 @@ sigma <- 0.125
 
 even <- 0.475
 inc_bonus <- 0.025
-wt <- 1.75
+wt <- 2
 
 # sim raw parameters
 bind_cols(inc_approval = rnorm(sims, 0.0646, 0.256), # mean/std dev of model data
@@ -564,8 +564,8 @@ bind_cols(inc_approval = rnorm(sims, 0.0646, 0.256), # mean/std dev of model dat
           irp_2 = rnorm(sims, wt*0.5, sigma),
 
           # third party
-          third_party_1 = rnorm(sims, -0.3, sigma),
-          third_party_2 = rnorm(sims, -0.3, sigma),
+          third_party_1 = rnorm(sims, -0.35, sigma),
+          third_party_2 = rnorm(sims, -0.35, sigma),
 
           # approval
           # assumption is that as approval increases, both d/r will increase
@@ -575,12 +575,12 @@ bind_cols(inc_approval = rnorm(sims, 0.0646, 0.256), # mean/std dev of model dat
           net_app_2 = rnorm(sims, 0.125, sigma),
 
           # interaction between incumbency status//net approval
-          idr_app_1 = rnorm(sims, 0.15, sigma),
-          idr_app_2 = rnorm(sims, -0.15, sigma),
+          idr_app_1 = rnorm(sims, 0.2, sigma),
+          idr_app_2 = rnorm(sims, -0.2, sigma),
           idp_app_1 = rnorm(sims, 0.075, sigma),
           idp_app_2 = rnorm(sims, -0.075, sigma),
-          irr_app_1 = rnorm(sims, -0.15, sigma),
-          irr_app_2 = rnorm(sims, 0.15, sigma),
+          irr_app_1 = rnorm(sims, -0.2, sigma),
+          irr_app_2 = rnorm(sims, 0.2, sigma),
           irp_app_1 = rnorm(sims, -0.075, sigma),
           irp_app_2 = rnorm(sims, 0.075, sigma)) %>%
 
