@@ -544,7 +544,7 @@ ggquicksave("dev/02-nat-3pv/nat_3pv_05_prior_03.png")
 # irp: inc rep party
 
 sims <- 1000
-sigma <- 0.125
+sigma <- 0.15
 
 even <- 0.475
 inc_bonus <- 0.025
