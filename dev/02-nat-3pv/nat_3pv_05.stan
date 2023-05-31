@@ -69,7 +69,7 @@ model {
   // 4: incumbent rep party
 
   // global values repurposed for prior setting
-  real sigma = 0.125;
+  real sigma = 0.15;
   real even = 0.475;
   real inc_bonus = 0.025;
   real wt = 2;
@@ -87,7 +87,7 @@ model {
 
   // third party
   // both d/r lose ground evenly in the presence of a third party
-  beta_third_party_raw ~ normal(-0.3, sigma);
+  beta_third_party_raw ~ normal(-0.35, sigma);
 
   // approval
   // assumption is that as approval increases, both d/r will increase
