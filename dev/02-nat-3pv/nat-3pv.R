@@ -823,3 +823,125 @@ draws %>%
 ggquicksave("dev/02-nat-3pv/nat_3pv_05.png",
             width = 12,
             height = 8)
+
+# plot nat 3pv for states ------------------------------------------------------
+
+stan_data$gq_inc_approval[13] # biden sitting at ~ -10 right now
+
+pvi_3 <-
+  read_csv("dev/04-3pvi/3pvi.csv")
+
+state_draws <-
+  draws %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("prob"),
+               names_to = "variable",
+               values_to = "pct") %>%
+  nest(draws = -variable) %>%
+  mutate(variable = str_remove_all(variable, "prob_gq\\[|\\]"),
+         inc_status = case_match(as.integer(str_sub(variable, 1, 1)),
+                                 1 ~ "Inc Dem Running",
+                                 2 ~ "Inc Dem Party",
+                                 3 ~ "Inc Rep Running",
+                                 4 ~ "Inc Rep Party"),
+         third_party = case_match(as.integer(str_sub(variable, 3, 3)),
+                                  1 ~ "No Third Party",
+                                  2 ~ "Third Party"),
+         party = case_match(as.integer(str_sub(variable, -1, -1)),
+                            1 ~ "dem",
+                            2 ~ "rep",
+                            3 ~ "other"),
+         inc_approval = as.integer(str_sub(variable, 5, -3)) - 1,
+         inc_approval = inc_approval/max(inc_approval)*(1.2) - 0.6) %>%
+  filter(inc_status == "Inc Dem Running",
+         third_party == "No Third Party",
+         near(inc_approval, stan_data$gq_inc_approval[12])) %>%
+  select(party, draws) %>%
+  nplyr::nest_select(draws, pct) %>%
+  pivot_wider(names_from = party,
+              values_from = draws) %>%
+  bind_cols(pvi_3,
+            .) %>%
+  nplyr::nest_rename_with(dem, ~paste0(.x, "_dem")) %>%
+  nplyr::nest_rename_with(rep, ~paste0(.x, "_rep")) %>%
+  nplyr::nest_rename_with(other, ~paste0(.x, "_other")) %>%
+  unnest(c(dem, rep, other)) %>%
+  mutate(dem = pct_dem + pvi_3d,
+         rep = pct_rep + pvi_3r,
+         other = pct_other + pvi_3o) %>%
+  mutate(across(c(dem, rep, other),
+                ~case_when(.x < 0 ~ 0,
+                           .x > 1 ~ 1,
+                           TRUE ~ .x)),
+         dem_margin = dem - rep)
+
+state_draws %>%
+  select(state, dem_margin) %>%
+  group_by(state) %>%
+  mutate(win = if_else(dem_margin > 0, 1, 0),
+         win = sum(win)/2000) %>%
+  ungroup() %>%
+  mutate(win = scales::label_percent(accuracy = 1)(win),
+         state = paste(state, win),
+         state = fct_reorder(state, dem_margin)) %>%
+  group_by(state) %>%
+  tidybayes::median_qi(dem_margin, .width = c(0.5, 0.8, 0.95)) %>%
+  ggplot(aes(x = state,
+             y = dem_margin,
+             ymin = .lower,
+             ymax = .upper,
+             color = dem_margin)) +
+  geom_hline(yintercept = 0,
+             linetype = "dashed",
+             linewidth = 0.5) +
+  ggdist::geom_pointinterval() +
+  scale_color_gradientn(colors = NatParksPalettes::NatParksPalettes$Triglav[[1]][3:1],
+                        limits = c(-1, 1)) +
+  coord_flip() +
+  scale_y_percent() +
+  theme_rieke() +
+  theme(legend.position = "none") +
+  labs(title = "**Prior model of Democratic Margin**",
+       subtitle = "Based on an incumbent approval of **-14%**",
+       x = NULL,
+       y = NULL,
+       caption = paste("Posterior interval based on 2,000 MCMC samples",
+                       "Pointwidths indicate 50/80/95% posterior credible intervals",
+                       sep = "<br>"))
+
+ggquicksave("dev/02-nat-3pv/prior_model.png",
+            width = 9,
+            height = 12)
+
+state_draws %>%
+  filter(state %in% c("Texas", "Nevada", "Virginia")) %>%
+  select(state, dem, rep, other) %>%
+  pivot_longer(-state,
+               names_to = "party",
+               values_to = "pct") %>%
+  mutate(state = fct_relevel(state, "Texas", "Nevada", "Virginia")) %>%
+  ggplot(aes(x = state,
+             y = pct,
+             fill = party,
+             color = party)) +
+  ggdist::stat_histinterval(alpha = 0.75,
+                            slab_alpha = 0.5,
+                            breaks = seq(from = 0,
+                                         to = 0.75,
+                                         by = 0.00625)) +
+  NatParksPalettes::scale_fill_natparks_d("Triglav") +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
+  scale_y_percent() +
+  coord_flip() +
+  theme_rieke() +
+  theme(legend.position = "none") +
+  labs(title = "**Prior voteshare model for select states**",
+       subtitle = "Based on an incumbent approval of **-14%**",
+       x = NULL,
+       y = NULL,
+       caption = paste("Posterior interval based on 2,000 MCMC samples",
+                       "Pointwidths indicate 66/95% posterior credible intervals",
+                       sep = "<br>"))
+
+ggquicksave("dev/02-nat-3pv/prior_model_select.png")
+
