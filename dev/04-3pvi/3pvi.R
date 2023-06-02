@@ -64,3 +64,8 @@ pvi_3 %>%
 riekelib::ggquicksave("dev/04-3pvi/3pvi.png",
                       width = 9,
                       height = 12)
+
+pvi_3 %>%
+  select(state = State,
+         starts_with("pvi_3")) %>%
+  write_csv("dev/04-3pvi/3pvi.csv")
