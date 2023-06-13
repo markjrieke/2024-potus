@@ -14,10 +14,23 @@ Vaguely, the following:
 - simplex of probabilities - use other as the pivot
 - each candidate gets their own linear model
 - Linear model has offset terms for pollster, mode, population, state,
-  and date
+  and date, plus a region invariant polling bias.
 - state offset is set by a gaussian process using mahalonobis distance
   between the states
-- date offset is set by a gaussian process over time
+- date offset is set by a gaussian process over time.
+- Parameters for estimating the national vote distribution are the
+  population weighted average of the state variables (one less set of
+  parameters).
+
+So, vaguely, for each party:
+
+$$
+\begin{align*}
+\phi_{\text{state, date}} & = \beta_{\text{state, date}} + \beta_{\text{pollster}} + \beta_{\text{mode}} + \beta_{\text{population}} + \beta_{\text{state}} + \beta_{\text{noise}} \\
+\beta_{\text{state, date}} & \sim \text{Gaussian process} \dots \\
+\beta_{\text{state}} & \sim \text{Gaussian process} \dots
+\end{align*}
+$$
 
 ### loose workflow
 
