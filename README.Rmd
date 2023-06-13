@@ -68,3 +68,11 @@ $$
 ### misc notes
 
 * [density database](https://densitydb.github.io/) gives statewide population weighted density estimates.
+* how others forecast
+  * [Economist](https://github.com/TheEconomist/us-potus-model/tree/master) --- Bayesian logistic regression model
+  * [DDHQ](https://forecast.decisiondeskhq.com/methodology) --- ensemble of ridge, random forest, elastic net, and gradient boosts
+  * [Race2WH](https://twitter.com/loganr2wh/status/1575673680364859392) --- normal approximation of candidate voteshare
+  * [JHKForecasts](https://projects.jhkforecasts.com/presidential-forecast/forecast_methodology) --- simulation methods based on a normal approximation under the central limit theorem
+  * [Cory McCartran, Data for Progress](https://github.com/CoryMcCartan/midterms-22) --- Bayesian model with a student-t response
+  * [FTE](https://fivethirtyeight.com/features/how-fivethirtyeights-2020-presidential-forecast-works-and-whats-different-because-of-covid-19/) --- dig into once not on the MH network
+  * [NYT](https://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html) --- dig into once not on the MH network
