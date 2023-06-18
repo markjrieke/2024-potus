@@ -53,7 +53,61 @@ states <- read_csv("data/statewide_results.csv")
 gdp <- fetch_gdp()
 cpi <- fetch_cpi()
 
-# wrangle ----------------------------------------------------------------------
+# wrangle economic data --------------------------------------------------------
+
+max_cpi <-
+  cpi %>%
+  filter(DATE == max(DATE)) %>%
+  pull(CPIAUCSL)
+
+cpi <-
+  cpi %>%
+  rename_with(str_to_lower) %>%
+  rename(cpi = cpiaucsl) %>%
+  mutate(inflation = max_cpi/cpi)
+
+# adjust gdp for inflation
+real_gdp <-
+  gdp %>%
+  rename_with(str_to_lower) %>%
+  left_join(cpi) %>%
+  select(-cpi) %>%
+  mutate(real_gdp = gdp*inflation) %>%
+  select(date, real_gdp)
+
+# append national data with real gdp growth
+abramovitz <-
+  abramovitz %>%
+  mutate(begin_quarter = mdy(paste0("7/1/", year - 1)),
+         end_quarter = mdy(paste0("7/1/", year))) %>%
+  left_join(real_gdp, by = c("begin_quarter" = "date")) %>%
+  rename(begin_gdp = real_gdp) %>%
+  left_join(real_gdp, by = c("end_quarter" = "date")) %>%
+  rename(end_gdp = real_gdp) %>%
+  mutate(real_gdp_growth = end_gdp/begin_gdp - 1) %>%
+  select(-ends_with("quarter"),
+         -ends_with("gdp"))
+
+# quick plot!
+abramovitz %>%
+  ggplot(aes(x = year,
+             y = real_gdp_growth,
+             fill = inc_party)) +
+  geom_col(alpha = 0.75) +
+  scale_fill_manual(values = c("royalblue", "red")) +
+  scale_y_percent() +
+  theme_rieke() +
+  theme(legend.position = "none") +
+  labs(title = "**2nd Quarter Annualized Real GDP Growth**",
+       subtitle = glue::glue("In election years with an incumbent ",
+                             "**{color_text('Democrat', 'royalblue')}** or ",
+                             "**{color_text('Republican', 'red')}**"),
+       x = NULL,
+       y = NULL)
+
+ggquicksave("dev/05-state-priors/real_gdp_growth.png")
+
+# wrangle state data -----------------------------------------------------------
 
 # get pvi of each state for a given year
 state_results <-
@@ -100,14 +154,17 @@ state_results <-
          inc_party,
          inc_dem,
          inc_rep,
-         inc_approval = fte_net_inc_approval) %>%
+         inc_approval = fte_net_inc_approval,
+         real_gdp_growth) %>%
   mutate(inc_status = case_when(inc_dem == 1 ~ "inc dem running",
                                 inc_dem == 0 & inc_party == "dem" ~ "inc dem party",
                                 inc_rep == 1 ~ "inc rep running",
                                 inc_rep == 0 & inc_party == "rep" ~ "inc rep party"),
          inc_approval = inc_approval/100) %>%
-  select(year, inc_approval, inc_status) %>%
+  select(year, inc_approval, inc_status, real_gdp_growth) %>%
   right_join(state_results, by = "year")
+
+####################### WORK TO DO BRUH START HERE #############################
 
 # prep for modeling ------------------------------------------------------------
 
