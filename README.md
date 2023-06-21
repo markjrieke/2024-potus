@@ -105,3 +105,18 @@ $$
     — dig into once not on the MH network
   - [NYT](https://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html)
     — dig into once not on the MH network
+
+### prior thoughts
+
+Here’s what I’m looking at for the prior linear model for a given party
+in a given state:
+
+$$
+\begin{align*}
+\phi &= \alpha_{\text{national}} + \alpha_{\text{state}} \\
+\alpha_{\text{national}} &= \gamma_{\text{political}} + \gamma_{\text{economic}} \\
+\gamma_{\text{political}} &= \beta_{\text{inc status}} + (\beta_{\text{approval}} + \beta_{\text{approval} \times \text{inc status}})A + \beta_{\text{third party}} \\
+\gamma_{\text{economic}} &= (\beta_{\text{GDP}} + \beta_{\text{GDP} \times \text{inc status}})G \\
+\alpha_{\text{state}} &= \beta_{\text{3D}}P_{\text{3D}} + \beta_{\text{3R}}P_{\text{3R}} + \beta_{\text{3O}}P_{\text{3O}}
+\end{align*}
+$$
