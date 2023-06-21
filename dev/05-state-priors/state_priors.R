@@ -234,6 +234,23 @@ bind_cols(# incumbency status
           irp_app_1 = rnorm(sims, -0.1, sigma),
           irp_app_2 = rnorm(sims, 0.1, sigma),
 
+          # economic growth
+          # similar assumption to approval, as it increases both d/r will increase
+          # (i.e., less economic growth = more third party voters)
+          # more of the growth related info handled by interaction later
+          gdp_1 = rnorm(sims, 0.125, sigma),
+          gdp_2 = rnorm(sims, 0.125, sigma),
+
+          # interaction between economic growth and incumbency status
+          idr_gdp_1 = rnorm(sims, 0.25, sigma),
+          idr_gdp_2 = rnorm(sims, -0.25, sigma),
+          idp_gdp_1 = rnorm(sims, 0.1, sigma),
+          idp_gdp_2 = rnorm(sims, -0.1, sigma),
+          irr_gdp_1 = rnorm(sims, -0.25, sigma),
+          irr_gdp_2 = rnorm(sims, 0.25, sigma),
+          irp_gdp_1 = rnorm(sims, -0.1, sigma),
+          irp_gdp_2 = rnorm(sims, 0.1, sigma),
+
           # local pvi,
           pvi_3d_1 = rnorm(sims, 1, sigma),
           pvi_3d_2 = rnorm(sims, -1, sigma),
@@ -253,6 +270,11 @@ bind_cols(# incumbency status
          idp_app_3 = -(idp_app_1 + idp_app_2),
          irr_app_3 = -(irr_app_1 + irr_app_2),
          irp_app_3 = -(irp_app_1 + irp_app_2),
+         gdp_3 = -(gdp_1 + gdp_2),
+         idr_gdp_3 = -(idr_gdp_1 + idr_gdp_2),
+         idp_gdp_3 = -(idp_gdp_1 + idp_gdp_2),
+         irr_gdp_3 = -(irr_gdp_1 + irr_gdp_2),
+         irp_gdp_3 = -(irp_gdp_1 + irp_gdp_2),
          pvi_3d_3 = -(pvi_3d_1 + pvi_3d_2),
          pvi_3r_3 = -(pvi_3r_1 + pvi_3r_2),
          pvi_3o_3 = -(pvi_3o_1 + pvi_3o_2)) %>%
