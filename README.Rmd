@@ -90,3 +90,35 @@ $$
 \alpha_{\text{state}} &= \beta_{\text{3D}}P_{\text{3D}} + \beta_{\text{3R}}P_{\text{3R}} + \beta_{\text{3O}}P_{\text{3O}}
 \end{align*}
 $$
+
+### report structure
+
+* Introduction
+* Background
+  * Early methodologies
+  * Current methodologies
+  * Polling as a measurement tool
+    * Sources of truth, sources of bias
+    * DGP
+* Specification
+  * Overview
+  * Prior Model (Fundamentals)
+    * National indicators
+      * Political indicators
+      * Economic indicators
+    * Statewide indicators
+  * Polling Model
+    * Sources of polling bias
+    * Time-series component (election day prior + gaussian process)
+    * Aggregation of state and national polls
+    * Forecast
+* Application: 2020 Election
+  * Overview
+  * Prior Model
+  * Polling Model
+  * Evaluation
+* Discussion
+  * Quantity vs. quality
+  * Further work
+  
+Include notes abt. how people had no trust in polling after 2016
