@@ -164,6 +164,16 @@ state_results <-
   select(year, inc_approval, inc_status, real_gdp_growth) %>%
   right_join(state_results, by = "year")
 
+# prep for modeling ------------------------------------------------------------
+
+state_results <-
+  state_results %>%
+  mutate(iid = case_match(inc_status,
+                          "inc dem running" ~ 1,
+                          "inc dem party" ~ 2,
+                          "inc rep running" ~ 3,
+                          "inc rep party" ~ 4))
+
 ####################### WORK TO DO BRUH START HERE #############################
 
 # prep for modeling ------------------------------------------------------------
