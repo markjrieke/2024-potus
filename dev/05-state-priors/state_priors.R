@@ -172,7 +172,84 @@ state_results <-
                           "inc dem running" ~ 1,
                           "inc dem party" ~ 2,
                           "inc rep running" ~ 3,
-                          "inc rep party" ~ 4))
+                          "inc rep party" ~ 4),
+         iid = as.integer(iid),
+         other = if_else(other == 0, 0.001, other),
+         across(c(democratic, republican, other),
+                ~.x/(democratic + republican + other)))
+
+R <-
+  state_results %>%
+  select(democratic, republican, other) %>%
+  as.matrix()
+
+# prior model 01 ---------------------------------------------------------------
+
+prior_data <-
+  list(
+    N = nrow(R),
+    K = ncol(R),
+    R = R,
+    N_inc_status = 4,
+    iid = state_results$iid
+  )
+
+prior_model_01 <-
+  cmdstanr::cmdstan_model("dev/05-state-priors/state_priors_01.stan")
+
+prior_fit_01 <-
+  prior_model_01$sample(
+    data = prior_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    seed = 2024
+  )
+
+# prior model 01 predictions ---------------------------------------------------
+
+prior_fit_01$draws("prob", format = "df") %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("prob"),
+               names_to = "variable",
+               values_to = "pct") %>%
+  group_by(variable) %>%
+  summarise(.pred = quantile(pct, probs = 0.5),
+            .pred_lower = quantile(pct, probs = 0.1),
+            .pred_upper = quantile(pct, probs = 0.9)) %>%
+  separate(variable, c("rowid", "party"), ",") %>%
+  mutate(rowid = as.integer(str_sub(rowid, 6)),
+         party = as.integer(str_sub(party, 1, 1)),
+         party = case_match(party,
+                            1 ~ "democratic",
+                            2 ~ "republican",
+                            3 ~ "other")) %>%
+  left_join(state_results %>%
+              select(democratic, republican, other) %>%
+              rowid_to_column() %>%
+              pivot_longer(c(democratic, republican, other),
+                           names_to = "party",
+                           values_to = "result")) %>%
+  ggplot(aes(x = result,
+             y = .pred,
+             ymin = .pred_lower,
+             ymax = .pred_upper,
+             color = party)) +
+  geom_pointrange(alpha = 0.25) +
+  geom_abline(linetype = "dashed",
+              linewidth = 0.25) +
+  scale_xy_percent() +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
+  theme_rieke() +
+  theme(legend.position = "none") +
+  labs(title = "**State Prior Model 01**",
+       subtitle = "Based on incumbency",
+       x = "Result",
+       y = "Prediction",
+       caption = "Based on 2,000 MCMC samples")
+
+ggquicksave("dev/05-state-priors/state_prior_pred_01.png")
 
 ####################### WORK TO DO BRUH START HERE #############################
 
@@ -181,10 +258,12 @@ state_results <-
 R <-
   state_results %>%
   select(democratic, republican, other) %>%
+  filter(other > 0) %>%
   as.matrix()
 
-state_results <-
+state_results_zonk <-
   state_results %>%
+  filter(other > 0) %>%
   mutate(iid = case_match(inc_status,
                           "inc dem running" ~ 1,
                           "inc dem party" ~ 2,
@@ -195,7 +274,7 @@ state_results <-
 
 stan_data <-
   list(
-    N = nrow(state_results),
+    N = nrow(R),
     K = ncol(R),
     R = R,
     N_inc_status = 4,
