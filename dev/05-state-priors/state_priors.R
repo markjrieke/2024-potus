@@ -209,7 +209,132 @@ prior_fit_01 <-
 
 # prior model 01 predictions ---------------------------------------------------
 
-prior_fit_01$draws("prob", format = "df") %>%
+plot_predictions <- function(fit) {
+
+  fit$draws("prob", format = "df") %>%
+    as_tibble() %>%
+    pivot_longer(starts_with("prob"),
+                 names_to = "variable",
+                 values_to = "pct") %>%
+    group_by(variable) %>%
+    summarise(.pred = quantile(pct, probs = 0.5),
+              .pred_lower = quantile(pct, probs = 0.1),
+              .pred_upper = quantile(pct, probs = 0.9)) %>%
+    separate(variable, c("rowid", "party"), ",") %>%
+    mutate(rowid = as.integer(str_sub(rowid, 6)),
+           party = as.integer(str_sub(party, 1, 1)),
+           party = case_match(party,
+                              1 ~ "democratic",
+                              2 ~ "republican",
+                              3 ~ "other")) %>%
+    left_join(state_results %>%
+                select(democratic, republican, other) %>%
+                rowid_to_column() %>%
+                pivot_longer(c(democratic, republican, other),
+                             names_to = "party",
+                             values_to = "result")) %>%
+    ggplot(aes(x = result,
+               y = .pred,
+               ymin = .pred_lower,
+               ymax = .pred_upper,
+               color = party)) +
+    geom_pointrange(alpha = 0.25) +
+    geom_abline(linetype = "dashed",
+                linewidth = 0.25) +
+    scale_xy_percent() +
+    NatParksPalettes::scale_color_natparks_d("Triglav") +
+    theme_rieke() +
+    theme(legend.position = "none")
+
+}
+
+prior_fit_01 %>%
+  plot_predictions() +
+  labs(title = "**State Prior Model 01**",
+       subtitle = "Based on incumbency",
+       x = "Result",
+       y = "Prediction",
+       caption = "Based on 2,000 MCMC samples")
+
+ggquicksave("dev/05-state-priors/state_prior_pred_01.png")
+
+# prior model 02 ---------------------------------------------------------------
+
+prior_data <-
+  list(
+    N = nrow(R),
+    K = ncol(R),
+    R = R,
+    N_inc_status = 4,
+    iid = state_results$iid,
+    pvi_3d = rethinking::standardize(state_results$pvi_3d),
+    pvi_3r = rethinking::standardize(state_results$pvi_3r)
+  )
+
+prior_model_02 <-
+  cmdstanr::cmdstan_model("dev/05-state-priors/state_priors_02.stan")
+
+prior_fit_02 <-
+  prior_model_02$sample(
+    data = prior_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    seed = 2024
+  )
+
+prior_fit_02 %>%
+  plot_predictions() +
+  labs(title = "**State Prior Model 02**",
+       subtitle = "Based on incumbency and partisanship",
+       x = "Result",
+       y = "Prediction",
+       caption = "Based on 2,000 MCMC samples")
+
+ggquicksave("dev/05-state-priors/state_prior_pred_02.png")
+
+# prior model 03 ---------------------------------------------------------------
+
+# hmm something funky is going on & need to redo this model
+# either the model is wrong or the previously done prior check was wrong
+
+prior_data <-
+  list(
+    N = nrow(R),
+    K = ncol(R),
+    R = R,
+    N_inc_status = 4,
+    iid = state_results$iid,
+    pvi_3d = rethinking::standardize(state_results$pvi_3d),
+    pvi_3r = rethinking::standardize(state_results$pvi_3r),
+    third_party = state_results$third_party_flag
+  )
+
+prior_model_03 <-
+  cmdstanr::cmdstan_model("dev/05-state-priors/state_priors_03.stan")
+
+prior_fit_03 <-
+  prior_model_03$sample(
+    data = prior_data,
+    chains = 4,
+    parallel_chains = 4,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    seed = 2024
+  )
+
+prior_fit_03 %>%
+  plot_predictions() +
+  labs(title = "**State Prior Model 03**",
+       subtitle = "Based on incumbency, partisanship, and the presence of a third party",
+       x = "Result",
+       y = "Prediction",
+       caption = "Based on 2,000 MCMC samples")
+
+ggquicksave("dev/05-state-priors/state_prior_pred_03.png")
+
+prior_fit_03$draws("prob", format = "df") %>%
   as_tibble() %>%
   pivot_longer(starts_with("prob"),
                names_to = "variable",
@@ -242,50 +367,14 @@ prior_fit_01$draws("prob", format = "df") %>%
   scale_xy_percent() +
   NatParksPalettes::scale_color_natparks_d("Triglav") +
   theme_rieke() +
-  theme(legend.position = "none") +
-  labs(title = "**State Prior Model 01**",
-       subtitle = "Based on incumbency",
-       x = "Result",
-       y = "Prediction",
-       caption = "Based on 2,000 MCMC samples")
-
-ggquicksave("dev/05-state-priors/state_prior_pred_01.png")
+  theme(legend.position = "none")
 
 ####################### WORK TO DO BRUH START HERE #############################
-
-# prep for modeling ------------------------------------------------------------
-
-R <-
-  state_results %>%
-  select(democratic, republican, other) %>%
-  filter(other > 0) %>%
-  as.matrix()
-
-state_results_zonk <-
-  state_results %>%
-  filter(other > 0) %>%
-  mutate(iid = case_match(inc_status,
-                          "inc dem running" ~ 1,
-                          "inc dem party" ~ 2,
-                          "inc rep running" ~ 3,
-                          "inc rep party" ~ 4),
-         iid = as.integer(iid),
-         third_party_flag = as.integer(third_party_flag))
-
-stan_data <-
-  list(
-    N = nrow(R),
-    K = ncol(R),
-    R = R,
-    N_inc_status = 4,
-    iid = state_results$iid,
-    third_party = state_results$third_party_flag
-  )
 
 # prior model ------------------------------------------------------------------
 
 sims <- 1000
-sigma <- 0.25
+sigma <- 0.15
 
 even <- 0.475
 inc_bonus <- 0.025
@@ -302,140 +391,94 @@ bind_cols(# incumbency status
           irp_1 = rnorm(sims, wt*0.5, sigma),
           irp_2 = rnorm(sims, wt*0.5, sigma),
 
-          # third party
+          # 3pvi
+          beta_3d1 = rnorm(sims, 0.15, sigma),
+          beta_3d2 = rnorm(sims, -0.15, sigma),
+          beta_3r1 = rnorm(sims, -0.15, sigma),
+          beta_3r2 = rnorm(sims, 0.15, sigma),
+
+          # third party presence!
           third_party_1 = rnorm(sims, -0.35, sigma),
-          third_party_2 = rnorm(sims, -0.35, sigma),
+          third_party_2 = rnorm(sims, -0.35, sigma)) %>%
 
-          # approval
-          # assumption is that as approval increases, both d/r will increase
-          # (i.e., less approval = more 3rd party voters)
-          # more of the disapproval handled by interaction later
-          net_app_1 = rnorm(sims, 0.125, sigma),
-          net_app_2 = rnorm(sims, 0.125, sigma),
-
-          # interaction between incumbency status//net approval
-          idr_app_1 = rnorm(sims, 0.25, sigma),
-          idr_app_2 = rnorm(sims, -0.25, sigma),
-          idp_app_1 = rnorm(sims, 0.1, sigma),
-          idp_app_2 = rnorm(sims, -0.1, sigma),
-          irr_app_1 = rnorm(sims, -0.25, sigma),
-          irr_app_2 = rnorm(sims, 0.25, sigma),
-          irp_app_1 = rnorm(sims, -0.1, sigma),
-          irp_app_2 = rnorm(sims, 0.1, sigma),
-
-          # economic growth
-          # similar assumption to approval, as it increases both d/r will increase
-          # (i.e., less economic growth = more third party voters)
-          # more of the growth related info handled by interaction later
-          gdp_1 = rnorm(sims, 0.125, sigma),
-          gdp_2 = rnorm(sims, 0.125, sigma),
-
-          # interaction between economic growth and incumbency status
-          idr_gdp_1 = rnorm(sims, 0.25, sigma),
-          idr_gdp_2 = rnorm(sims, -0.25, sigma),
-          idp_gdp_1 = rnorm(sims, 0.1, sigma),
-          idp_gdp_2 = rnorm(sims, -0.1, sigma),
-          irr_gdp_1 = rnorm(sims, -0.25, sigma),
-          irr_gdp_2 = rnorm(sims, 0.25, sigma),
-          irp_gdp_1 = rnorm(sims, -0.1, sigma),
-          irp_gdp_2 = rnorm(sims, 0.1, sigma),
-
-          # local pvi,
-          pvi_3d_1 = rnorm(sims, 1, sigma),
-          pvi_3d_2 = rnorm(sims, -1, sigma),
-          pvi_3r_1 = rnorm(sims, -1, sigma),
-          pvi_3r_2 = rnorm(sims, 1, sigma),
-          pvi_3o_1 = rnorm(sims, -1, sigma),
-          pvi_3o_2 = rnorm(sims, -1, sigma)) %>%
-
-  # sum-to-zero constraint for 3rd party/other
+  # sum-to-zero constraint on raw parameters
   mutate(idr_3 = -(idr_1 + idr_2),
          idp_3 = -(idp_1 + idp_2),
          irr_3 = -(irr_1 + irr_2),
          irp_3 = -(irp_1 + irp_2),
-         net_app_3 = -(net_app_1 + net_app_2),
-         third_party_3 = -(third_party_1 + third_party_2),
-         idr_app_3 = -(idr_app_1 + idr_app_2),
-         idp_app_3 = -(idp_app_1 + idp_app_2),
-         irr_app_3 = -(irr_app_1 + irr_app_2),
-         irp_app_3 = -(irp_app_1 + irp_app_2),
-         gdp_3 = -(gdp_1 + gdp_2),
-         idr_gdp_3 = -(idr_gdp_1 + idr_gdp_2),
-         idp_gdp_3 = -(idp_gdp_1 + idp_gdp_2),
-         irr_gdp_3 = -(irr_gdp_1 + irr_gdp_2),
-         irp_gdp_3 = -(irp_gdp_1 + irp_gdp_2),
-         pvi_3d_3 = -(pvi_3d_1 + pvi_3d_2),
-         pvi_3r_3 = -(pvi_3r_1 + pvi_3r_2),
-         pvi_3o_3 = -(pvi_3o_1 + pvi_3o_2)) %>%
-  nest(data = everything()) %>%
+         beta_3d3 = -(beta_3d1 + beta_3d2),
+         beta_3r3 = -(beta_3r1 + beta_3r2),
+         third_party_3 = -(third_party_1 + third_party_2)) %>%
 
-  bind_cols(state_results,
-            prior_sims = .) %>%
+  # join to data & select relevant cols for data
+  nest(data = everything()) %>%
+  bind_cols(state_results %>%
+              mutate(across(starts_with("pvi"),
+                            ~rethinking::standardize(.x))),
+            parameters = .) %>%
   rowid_to_column() %>%
+  select(rowid,
+         iid,
+         starts_with("pvi"),
+         third_party_flag,
+         data) %>%
   unnest(data) %>%
 
+  # select beta_inc_status
+  mutate(inc_1 = case_match(iid,
+                            1 ~ idr_1,
+                            2 ~ idp_1,
+                            3 ~ irr_1,
+                            4 ~ irp_1),
+         inc_2 = case_match(iid,
+                            1 ~ idr_2,
+                            2 ~ idp_2,
+                            3 ~ irr_2,
+                            4 ~ irp_2),
+         inc_3 = case_match(iid,
+                            1 ~ idr_3,
+                            2 ~ idp_3,
+                            3 ~ irr_3,
+                            4 ~ irp_3)) %>%
+  select(-starts_with("idr"),
+         -starts_with("idp"),
+         -starts_with("irr"),
+         -starts_with("irp")) %>%
+
   # apply linear model
-  mutate(# independent of incumbency
-         out_1 = pvi_3d_1*pvi_3d + pvi_3r_1*pvi_3r + pvi_3o_1*pvi_3o + third_party_1*third_party_flag,
-         out_2 = pvi_3d_2*pvi_3d + pvi_3r_2*pvi_3r + pvi_3o_2*pvi_3o + third_party_2*third_party_flag,
-         out_3 = pvi_3d_3*pvi_3d + pvi_3r_3*pvi_3r + pvi_3o_3*pvi_3o + third_party_3*third_party_flag,
+  mutate(phi_1 = inc_1 + pvi_3d*beta_3d1 + pvi_3r*beta_3r1 + third_party_flag*third_party_1,
+         phi_2 = inc_2 + pvi_3d*beta_3d2 + pvi_3r*beta_3r2 + third_party_flag*third_party_2,
+         phi_3 = inc_3 + pvi_3d*beta_3d3 + pvi_3r*beta_3r3 + third_party_flag*third_party_3) %>%
+  select(rowid, starts_with("phi")) %>%
 
-         # incumbency param
-         inc_1 = case_when(inc_status == "inc dem running" ~ idr_1,
-                           inc_status == "inc dem party" ~ idp_1,
-                           inc_status == "inc rep running" ~ irr_1,
-                           inc_status == "inc rep party" ~ irp_1),
-         inc_2 = case_when(inc_status == "inc dem running" ~ idr_2,
-                           inc_status == "inc dem party" ~ idp_2,
-                           inc_status == "inc rep running" ~ irr_2,
-                           inc_status == "inc rep party" ~ irp_2),
-         inc_3 = case_when(inc_status == "inc dem running" ~ idr_3,
-                           inc_status == "inc dem party" ~ idp_3,
-                           inc_status == "inc rep running" ~ irr_3,
-                           inc_status == "inc rep party" ~ irp_3),
+  # extract individual party probabilities
+  mutate(prob = pmap(list(phi_1, phi_2, phi_3), ~softmax(c(..1, ..2, ..3))),
+         .pred_dem = map_dbl(prob, ~.x[1]),
+         .pred_rep = map_dbl(prob, ~.x[2]),
+         .pred_oth = map_dbl(prob, ~.x[3])) %>%
+  select(rowid, starts_with(".pred")) %>%
 
-         out_1 = out_1 + inc_1,
-         out_2 = out_2 + inc_2,
-         out_3 = out_3 + inc_3) %>%
-
-  # convert to probabilities
-  mutate(prob = pmap(list(out_1, out_2, out_3), ~softmax(c(..1, ..2, ..3)))) %>%
-
-  # extract probabilities
-  mutate(prob_1 = map_dbl(prob, ~.x[1]),
-         prob_2 = map_dbl(prob, ~.x[2]),
-         prob_3 = map_dbl(prob, ~.x[3])) %>%
-
-  # clean up (again)
-  select(rowid, starts_with("prob_")) %>%
-
-  # summarise with range
-  pivot_longer(starts_with("prob"),
+  # summarise with upper/lower bounds
+  pivot_longer(starts_with(".pred"),
                names_to = "party",
-               values_to = "pct") %>%
+               values_to = ".pred_pct") %>%
   group_by(rowid, party) %>%
-  summarise(.pred = quantile(pct, probs = 0.5),
-            .pred_lower = quantile(pct, probs = 0.05),
-            .pred_upper = quantile(pct, probs = 0.95)) %>%
+  summarise(.pred = quantile(.pred_pct, probs = 0.5),
+            .pred_lower = quantile(.pred_pct, probs = 0.1),
+            .pred_upper = quantile(.pred_pct, probs = 0.9)) %>%
   ungroup() %>%
 
-  # prep for plotting
+  # join together with actual results
   mutate(party = case_match(party,
-                            "prob_1" ~ "democratic",
-                            "prob_2" ~ "republican",
-                            "prob_3" ~ "other")) %>%
+                            ".pred_dem" ~ "democratic",
+                            ".pred_rep" ~ "republican",
+                            ".pred_oth" ~ "other")) %>%
   left_join(state_results %>%
-              select(democratic,
-                     republican,
-                     other,
-                     inc_status,
-                     third_party_flag) %>%
+              select(democratic, republican, other) %>%
               rowid_to_column() %>%
               pivot_longer(c(democratic, republican, other),
                            names_to = "party",
                            values_to = "result")) %>%
-  mutate(inc_status = str_to_title(inc_status),
-         third_party_flag = paste("Third Party:", third_party_flag)) %>%
 
   # plot!
   ggplot(aes(x = result,
@@ -445,21 +488,15 @@ bind_cols(# incumbency status
              color = party)) +
   geom_pointrange(alpha = 0.25) +
   geom_abline(linetype = "dashed",
-              linewidth = 0.25) +
-  NatParksPalettes::scale_color_natparks_d("Triglav") +
+              linewidth = 0.5) +
   scale_xy_percent() +
-  facet_grid(rows = vars(third_party_flag),
-             cols = vars(inc_status)) +
+  NatParksPalettes::scale_color_natparks_d("Triglav") +
   theme_rieke() +
   theme(legend.position = "none") +
-  labs(title = "**Prior Simulation of Statewide Presidential Results**",
-       subtitle = paste("Model based on incumbent status, approval, 3PVI, and the presence of a third party on the ticket",
-                        "Points show actual election results",
-                        sep = "<br>"),
+  labs(title = "**Prior simulation of state results in presidential elections**",
+       subtitle = "Based on incumbency, partisanship, and the presence of a third party on the ticket",
        x = "Result",
-       y = "Prior Prediction",
-       caption = "1,000 prior simulations")
+       y = "Prior prediction",
+       caption = "Based on 1,000 prior simulations")
 
-ggquicksave("dev/05-state-priors/prior_model.png",
-            width = 12,
-            height = 8)
+
