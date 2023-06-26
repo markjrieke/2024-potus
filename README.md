@@ -15,8 +15,11 @@ Vaguely, the following:
 - each candidate gets their own linear model
 - Linear model has offset terms for pollster, mode, population, state,
   and date, plus a region invariant polling bias.
-- state offset is set by a gaussian process using mahalonobis distance
-  between the states
+- state offset is set by a gaussian process using a distance vector
+  between the states:
+  - box-cox transform
+  - normalize
+  - euclidean
 - date offset is set by a gaussian process over time.
 - Parameters for estimating the national vote distribution are the
   population weighted average of the state variables (one less set of
@@ -50,6 +53,7 @@ $$
 - FTE
 - FRED
 - Census
+- [Gelman/Microsoft](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/04/forecasting-with-nonrepresentative-polls.pdf)
 
 ### notes on abramovitz data/nat-3pv
 
@@ -115,8 +119,8 @@ $$
 \begin{align*}
 \phi &= \alpha_{\text{national}} + \alpha_{\text{state}} \\
 \alpha_{\text{national}} &= \gamma_{\text{political}} + \gamma_{\text{economic}} \\
-\gamma_{\text{political}} &= \beta_{\text{inc status}} + (\beta_{\text{approval}} + \beta_{\text{approval} \times \text{inc status}})A + \beta_{\text{third party}} \\
-\gamma_{\text{economic}} &= (\beta_{\text{GDP}} + \beta_{\text{GDP} \times \text{inc status}})G \\
+\gamma_{\text{political}} &= \beta_{\text{inc status}} + \beta_{\text{app}\ \times\ \text{inc status}}A + \beta_{\text{third party}} \\
+\gamma_{\text{economic}} &= \beta_{\text{GDP}\ \times\ \text{inc status}}G \\
 \alpha_{\text{state}} &= \beta_{\text{3D}}P_{\text{3D}} + \beta_{\text{3R}}P_{\text{3R}} + \beta_{\text{3O}}P_{\text{3O}}
 \end{align*}
 $$
@@ -152,3 +156,10 @@ $$
   - Further work
 
 Include notes abt. how people had no trust in polling after 2016
+
+Further work:
+
+- Prior dichotimizes the presence of a third party. There is definitely
+  a better way to handle this.
+- Gets closer to the DGP, but doesn’t match it. Many candidates are
+  collectively swept into the “other” category.
