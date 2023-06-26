@@ -499,4 +499,5 @@ bind_cols(# incumbency status
        y = "Prior prediction",
        caption = "Based on 1,000 prior simulations")
 
+ggquicksave("dev/05-state-priors/prior_model.png")
 
