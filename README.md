@@ -161,5 +161,8 @@ Further work:
 
 - Prior dichotimizes the presence of a third party. There is definitely
   a better way to handle this.
+- Prior does not take into account the eras of polarization — i.e., a
+  poor approval rating today is less catastrophic to the incumbent
+  president than would be in the 60s-70s.
 - Gets closer to the DGP, but doesn’t match it. Many candidates are
   collectively swept into the “other” category.
