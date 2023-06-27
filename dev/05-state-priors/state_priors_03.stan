@@ -68,7 +68,7 @@ model {
   // 4: incumbent rep party
 
   // global values repurposed for prior setting
-  real sigma = 0.25;
+  real sigma = 0.15;
   real even = 0.475;
   real inc_bonus = 0.025;
   real wt = 2;
@@ -83,12 +83,14 @@ model {
   inc_status_raw[4,1] ~ normal(wt*0.5, sigma);
   inc_status_raw[4,2] ~ normal(wt*0.5, sigma);
 
+  // pvi
+  beta_3d_raw[1] ~ normal(0.15, sigma);
+  beta_3d_raw[2] ~ normal(-0.15, sigma);
+  beta_3r_raw[1] ~ normal(-0.15, sigma);
+  beta_3r_raw[2] ~ normal(0.15, sigma);
+
   // third party
   beta_third_party_raw ~ normal(-0.35, sigma);
-
-  // pvi
-  beta_3d_raw ~ normal(0, 0.25*sigma);
-  beta_3r_raw ~ normal(0, 0.25*sigma);
 
   // fit model
   for (i in 1:N) {
