@@ -83,7 +83,7 @@ $$
   
 ### prior thoughts
 
-Here's what I'm looking at for the prior linear model for a given party in a given state:
+Here's what I'm looking at for the prior **heuristic** for a given party in a given state:
 
 $$
 \begin{align*}
@@ -106,7 +106,7 @@ $$
     * DGP
 * Specification
   * Overview
-  * Prior Model (Fundamentals)
+  * Prior (Fundamentals)
     * National indicators
       * Political indicators
       * Economic indicators
@@ -131,5 +131,6 @@ Further work:
 
 * Prior dichotimizes the presence of a third party. There is definitely a better way to handle this.
 * Prior does not take into account the eras of polarization --- i.e., a poor approval rating today is less catastrophic to the incumbent president than would be in the 60s-70s.
+* Sans a change in methodology, the prior will be set by a heuristic model (an informed heuristic, but a heuristic nonetheless).The heuristic generates plausible priors *but* the underlying model is not good at fitting to historical data. This is fine in the sense that the results of the prior model's output should be heavily skeptical of third parties and that strong performance of a third party is inherently an unexpected result, but it leaves room for improvement.
 * Gets closer to the DGP, but doesn't match it. Many candidates are collectively swept into the "other" category.
 

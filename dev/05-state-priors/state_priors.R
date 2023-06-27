@@ -296,9 +296,6 @@ ggquicksave("dev/05-state-priors/state_prior_pred_02.png")
 
 # prior model 03 ---------------------------------------------------------------
 
-# hmm something funky is going on & need to redo this model
-# either the model is wrong or the previously done prior check was wrong
-
 prior_data <-
   list(
     N = nrow(R),
@@ -333,41 +330,6 @@ prior_fit_03 %>%
        caption = "Based on 2,000 MCMC samples")
 
 ggquicksave("dev/05-state-priors/state_prior_pred_03.png")
-
-prior_fit_03$draws("prob", format = "df") %>%
-  as_tibble() %>%
-  pivot_longer(starts_with("prob"),
-               names_to = "variable",
-               values_to = "pct") %>%
-  group_by(variable) %>%
-  summarise(.pred = quantile(pct, probs = 0.5),
-            .pred_lower = quantile(pct, probs = 0.1),
-            .pred_upper = quantile(pct, probs = 0.9)) %>%
-  separate(variable, c("rowid", "party"), ",") %>%
-  mutate(rowid = as.integer(str_sub(rowid, 6)),
-         party = as.integer(str_sub(party, 1, 1)),
-         party = case_match(party,
-                            1 ~ "democratic",
-                            2 ~ "republican",
-                            3 ~ "other")) %>%
-  left_join(state_results %>%
-              select(democratic, republican, other) %>%
-              rowid_to_column() %>%
-              pivot_longer(c(democratic, republican, other),
-                           names_to = "party",
-                           values_to = "result")) %>%
-  ggplot(aes(x = result,
-             y = .pred,
-             ymin = .pred_lower,
-             ymax = .pred_upper,
-             color = party)) +
-  geom_pointrange(alpha = 0.25) +
-  geom_abline(linetype = "dashed",
-              linewidth = 0.25) +
-  scale_xy_percent() +
-  NatParksPalettes::scale_color_natparks_d("Triglav") +
-  theme_rieke() +
-  theme(legend.position = "none")
 
 ####################### WORK TO DO BRUH START HERE #############################
 
