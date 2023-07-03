@@ -336,11 +336,19 @@ ggquicksave("dev/05-state-priors/state_prior_pred_03.png")
 # prior model ------------------------------------------------------------------
 
 sims <- 1000
-sigma <- 0.15
+sigma <- 0.1
 
 even <- 0.475
 inc_bonus <- 0.025
 wt <- 2
+
+inc_app_base <- 0.1
+inc_app_run <- 0.125
+inc_app_party <- 0.05
+
+gdp_base <- 0.05
+gdp_run <- 0.075
+gdp_party <- 0.025
 
 # sim raw parameters
 bind_cols(# incumbency status
@@ -354,10 +362,30 @@ bind_cols(# incumbency status
           irp_2 = rnorm(sims, wt*0.5, sigma),
 
           # 3pvi
-          beta_3d1 = rnorm(sims, 0.15, sigma),
-          beta_3d2 = rnorm(sims, -0.15, sigma),
-          beta_3r1 = rnorm(sims, -0.15, sigma),
-          beta_3r2 = rnorm(sims, 0.15, sigma),
+          beta_3d1 = rnorm(sims, 0.1, sigma),
+          beta_3d2 = rnorm(sims, -0.1, sigma),
+          beta_3r1 = rnorm(sims, -0.1, sigma),
+          beta_3r2 = rnorm(sims, 0.1, sigma),
+
+          # incumbent approval
+          inc_approval_11 = rnorm(sims, inc_app_base + inc_app_run, sigma),
+          inc_approval_12 = rnorm(sims, inc_app_base - inc_app_run, sigma),
+          inc_approval_21 = rnorm(sims, inc_app_base + inc_app_party, sigma),
+          inc_approval_22 = rnorm(sims, inc_app_base - inc_app_party, sigma),
+          inc_approval_31 = rnorm(sims, inc_app_base - inc_app_run, sigma),
+          inc_approval_32 = rnorm(sims, inc_app_base + inc_app_run, sigma),
+          inc_approval_41 = rnorm(sims, inc_app_base - inc_app_party, sigma),
+          inc_approval_42 = rnorm(sims, inc_app_base + inc_app_party, sigma),
+
+          # gdp
+          gdp_11 = rnorm(sims, gdp_base + gdp_run, sigma),
+          gdp_12 = rnorm(sims, gdp_base - gdp_run, sigma),
+          gdp_21 = rnorm(sims, gdp_base + gdp_party, sigma),
+          gdp_22 = rnorm(sims, gdp_base - gdp_party, sigma),
+          gdp_31 = rnorm(sims, gdp_base - gdp_run, sigma),
+          gdp_32 = rnorm(sims, gdp_base + gdp_run, sigma),
+          gdp_41 = rnorm(sims, gdp_base - gdp_party, sigma),
+          gdp_42 = rnorm(sims, gdp_base + gdp_party, sigma),
 
           # third party presence!
           third_party_1 = rnorm(sims, -0.35, sigma),
@@ -370,18 +398,32 @@ bind_cols(# incumbency status
          irp_3 = -(irp_1 + irp_2),
          beta_3d3 = -(beta_3d1 + beta_3d2),
          beta_3r3 = -(beta_3r1 + beta_3r2),
+         inc_approval_13 = -(inc_approval_11 + inc_approval_12),
+         inc_approval_23 = -(inc_approval_21 + inc_approval_22),
+         inc_approval_33 = -(inc_approval_31 + inc_approval_32),
+         inc_approval_43 = -(inc_approval_41 + inc_approval_42),
+         gdp_13 = -(gdp_11 + gdp_12),
+         gdp_23 = -(gdp_21 + gdp_22),
+         gdp_33 = -(gdp_31 + gdp_32),
+         gdp_43 = -(gdp_41 + gdp_42),
          third_party_3 = -(third_party_1 + third_party_2)) %>%
 
   # join to data & select relevant cols for data
   nest(data = everything()) %>%
   bind_cols(state_results %>%
-              mutate(across(starts_with("pvi"),
-                            ~rethinking::standardize(.x))),
+              mutate(across(c(starts_with("pvi")),
+                            ~rethinking::standardize(.x))) %>%
+              nest(data = -c(inc_approval, real_gdp_growth)) %>%
+              mutate(across(c(inc_approval, real_gdp_growth),
+                            ~rethinking::standardize(.x))) %>%
+              unnest(data),
             parameters = .) %>%
   rowid_to_column() %>%
   select(rowid,
          iid,
          starts_with("pvi"),
+         inc_approval,
+         real_gdp_growth,
          third_party_flag,
          data) %>%
   unnest(data) %>%
@@ -401,16 +443,48 @@ bind_cols(# incumbency status
                             1 ~ idr_3,
                             2 ~ idp_3,
                             3 ~ irr_3,
-                            4 ~ irp_3)) %>%
+                            4 ~ irp_3),
+         beta_app_1 = case_match(iid,
+                                 1 ~ inc_approval_11,
+                                 2 ~ inc_approval_21,
+                                 3 ~ inc_approval_31,
+                                 4 ~ inc_approval_41),
+         beta_app_2 = case_match(iid,
+                                 1 ~ inc_approval_12,
+                                 2 ~ inc_approval_22,
+                                 3 ~ inc_approval_32,
+                                 4 ~ inc_approval_42),
+         beta_app_3 = case_match(iid,
+                                 1 ~ inc_approval_13,
+                                 2 ~ inc_approval_23,
+                                 3 ~ inc_approval_33,
+                                 4 ~ inc_approval_43),
+         beta_gdp_1 = case_match(iid,
+                                 1 ~ gdp_11,
+                                 2 ~ gdp_21,
+                                 3 ~ gdp_31,
+                                 4 ~ gdp_41),
+         beta_gdp_2 = case_match(iid,
+                                 1 ~ gdp_12,
+                                 2 ~ gdp_22,
+                                 3 ~ gdp_32,
+                                 4 ~ gdp_42),
+         beta_gdp_3 = case_match(iid,
+                                 1 ~ gdp_13,
+                                 2 ~ gdp_23,
+                                 3 ~ gdp_33,
+                                 4 ~ gdp_43)) %>%
   select(-starts_with("idr"),
          -starts_with("idp"),
          -starts_with("irr"),
-         -starts_with("irp")) %>%
+         -starts_with("irp"),
+         -starts_with("inc_approval_"),
+         -starts_with("gdp")) %>%
 
   # apply linear model
-  mutate(phi_1 = inc_1 + pvi_3d*beta_3d1 + pvi_3r*beta_3r1 + third_party_flag*third_party_1,
-         phi_2 = inc_2 + pvi_3d*beta_3d2 + pvi_3r*beta_3r2 + third_party_flag*third_party_2,
-         phi_3 = inc_3 + pvi_3d*beta_3d3 + pvi_3r*beta_3r3 + third_party_flag*third_party_3) %>%
+  mutate(phi_1 = inc_1 + pvi_3d*beta_3d1 + pvi_3r*beta_3r1 + beta_app_1*inc_approval + beta_gdp_1*real_gdp_growth + third_party_flag*third_party_1,
+         phi_2 = inc_2 + pvi_3d*beta_3d2 + pvi_3r*beta_3r2 + beta_app_2*inc_approval + beta_gdp_2*real_gdp_growth + third_party_flag*third_party_2,
+         phi_3 = inc_3 + pvi_3d*beta_3d3 + pvi_3r*beta_3r3 + beta_app_3*inc_approval + beta_gdp_3*real_gdp_growth + third_party_flag*third_party_3) %>%
   select(rowid, starts_with("phi")) %>%
 
   # extract individual party probabilities
@@ -418,7 +492,7 @@ bind_cols(# incumbency status
          .pred_dem = map_dbl(prob, ~.x[1]),
          .pred_rep = map_dbl(prob, ~.x[2]),
          .pred_oth = map_dbl(prob, ~.x[3])) %>%
-  select(rowid, starts_with(".pred")) %>%
+  select(rowid, starts_with(".pred")) %>% left_join(state_results %>% select(year, state) %>% rowid_to_column()) %>% filter(year == 2020) %>% group_by(state) %>% mutate(delta = .pred_dem - .pred_rep, win = if_else(delta > 0, 1, 0), win = sum(win)/1000, win = scales::label_percent(accuracy = 1)(win), state = paste(state, win)) %>% ungroup() %>% mutate(state = fct_reorder(state, delta)) %>% group_by(state) %>% tidybayes::median_qi(delta, .width = c(0.5, 0.8, 0.95)) %>% ggplot(aes(x = state, y = delta, ymin = .lower, ymax = .upper)) + ggdist::geom_pointinterval() + coord_flip() + theme_rieke()
 
   # summarise with upper/lower bounds
   pivot_longer(starts_with(".pred"),
@@ -436,13 +510,55 @@ bind_cols(# incumbency status
                             ".pred_rep" ~ "republican",
                             ".pred_oth" ~ "other")) %>%
   left_join(state_results %>%
-              select(democratic, republican, other) %>%
+              select(state, year, democratic, republican, other) %>%
               rowid_to_column() %>%
               pivot_longer(c(democratic, republican, other),
                            names_to = "party",
                            values_to = "result")) %>%
 
+  # nest(data = -state) %>%
+  # slice_sample(n = 12) %>%
+  # unnest(data) %>%
+
+  # filter(state %in% c("Arizona",
+  #                     "Florida",
+  #                     "Georgia",
+  #                     "Iowa",
+  #                     "Michigan",
+  #                     "Nevada",
+  #                     "New Hampshire",
+  #                     "North Carolina",
+  #                     "Ohio",
+  #                     "Pennsylvania",
+  #                     "Texas",
+  #                     "Wisconsin")) %>%
+  # ggplot(aes(x = year,
+  #            color = party)) +
+  # geom_ribbon(aes(ymin = .pred_lower,
+  #                 ymax = .pred_upper,
+  #                 fill = party,
+  #                 color = NULL),
+  #             alpha = 0.15) +
+  # geom_line(aes(y = .pred)) +
+  # geom_point(aes(y = result)) +
+  # scale_y_percent() +
+  # NatParksPalettes::scale_fill_natparks_d("Triglav") +
+  # NatParksPalettes::scale_color_natparks_d("Triglav") +
+  # facet_wrap(~state) +
+  # theme_rieke()
+
   # plot!
+  filter(year > 1972) %>%
+  filter(party != "other") %>%
+  mutate(span = .pred_upper - .pred_lower) %>%
+  ggplot(aes(x = span,
+             fill = party)) +
+  geom_histogram(position = "identity",
+                 alpha = 0.5) +
+  NatParksPalettes::scale_fill_natparks_d("Triglav") +
+  facet_wrap(~year) +
+  theme_rieke()
+
   ggplot(aes(x = result,
              y = .pred,
              ymin = .pred_lower,
@@ -459,7 +575,9 @@ bind_cols(# incumbency status
        subtitle = "Based on incumbency, partisanship, and the presence of a third party on the ticket",
        x = "Result",
        y = "Prior prediction",
-       caption = "Based on 1,000 prior simulations")
+       caption = "Based on 1,000 prior simulations") +
+
+  facet_wrap(~year)
 
 ggquicksave("dev/05-state-priors/prior_model.png")
 
