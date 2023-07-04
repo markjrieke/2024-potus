@@ -97,3 +97,18 @@ param_recovery %>%
   theme_rieke()
 
 ggquicksave("dev/05-state-priors/param_optimization_02.png")
+
+# error function ---------------------------------------------------------------
+
+tibble(weight = seq(from = 0.1, to = 10, length.out = 100)) %>%
+  mutate(error = map_dbl(weight, ~weight_error(c(0.50, 0.45, 0.05), .x))) %>%
+  ggplot(aes(x = weight,
+             y = error)) +
+  geom_line() +
+  theme_rieke() +
+  labs(title = "**Example Error Function**",
+       subtitle = paste("A weight of about **1.6** minimizes the error",
+                        "for a 50/45/5% split D/R/O",
+                        sep = "<br>"))
+
+ggquicksave("dev/05-state-priors/param_optimization_03.png")
