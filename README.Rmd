@@ -83,17 +83,10 @@ $$
   
 ### prior thoughts
 
-Here's what I'm looking at for the prior **heuristic** for a given party in a given state:
-
-$$
-\begin{align*}
-\phi &= \alpha_{\text{national}} + \alpha_{\text{state}} \\
-\alpha_{\text{national}} &= \gamma_{\text{political}} + \gamma_{\text{economic}} \\
-\gamma_{\text{political}} &= \beta_{\text{inc status}} + \beta_{\text{app}\ \times\ \text{inc status}}A + \beta_{\text{third party}} \\
-\gamma_{\text{economic}} &= \beta_{\text{GDP}\ \times\ \text{inc status}}G \\
-\alpha_{\text{state}} &= \beta_{\text{3D}}P_{\text{3D}} + \beta_{\text{3R}}P_{\text{3R}} + \beta_{\text{3O}}P_{\text{3O}}
-\end{align*}
-$$
+* prior set based on incumbecy/approval (see state prior optim folder in dev)
+* state priors based on 3pvi offset from national prior
+* parameters recovered through optimization
+* possibly forecast approval rather than use day-of approval (may be beneficial in terms of avoiding daily swings)
 
 ### report structure
 
@@ -131,6 +124,5 @@ Further work:
 
 * Prior dichotimizes the presence of a third party. There is definitely a better way to handle this.
 * Prior does not take into account the eras of polarization --- i.e., a poor approval rating today is less catastrophic to the incumbent president than would be in the 60s-70s.
-* Sans a change in methodology, the prior will be set by a heuristic model (an informed heuristic, but a heuristic nonetheless).The heuristic generates plausible priors *but* the underlying model is not good at fitting to historical data. This is fine in the sense that the results of the prior model's output should be heavily skeptical of third parties and that strong performance of a third party is inherently an unexpected result, but it leaves room for improvement.
 * Gets closer to the DGP, but doesn't match it. Many candidates are collectively swept into the "other" category.
-
+* Looping everything together in a big ole bayesian model would be better, rather than these staged models.
