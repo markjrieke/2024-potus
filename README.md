@@ -109,6 +109,14 @@ $$
     — dig into once not on the MH network
   - [NYT](https://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html)
     — dig into once not on the MH network
+- Colors for display!
+  - Safe D (\>99): 3579AC
+  - Very Likely D (99 \>= x \> 85): 7CB0D7
+  - Likely D (85 \>= x \> 65): D3E5F2
+  - Uncertain (65 \>= x \<= 65): F2F2F2
+  - Likely R (65 \< x \<= 85): F2D5D5
+  - Very Likely R (85 \< x \<= 99): D78080
+  - Safe R (\>99): B13737
 
 ### prior thoughts
 
