@@ -8,6 +8,7 @@ library(riekelib)
 abramovitz <- read_csv("data/abramovitz.csv")
 states <- read_csv("data/statewide_results.csv")
 approval <- read_csv("https://projects.fivethirtyeight.com/biden-approval-data/approval_topline.csv")
+electors <- read_csv("data/electors.csv")
 
 # prep stan data ---------------------------------------------------------------
 
@@ -59,6 +60,8 @@ biden_approval <-
 
 # model ------------------------------------------------------------------------
 
+n_samples <- 8000
+
 stan_data <-
   list(
     R = R,
@@ -80,8 +83,8 @@ national_prior_fit <-
     seed = 2024,
     chains = 4,
     parallel_chains = 4,
-    iter_warmup = 500,
-    iter_sampling = 500
+    iter_warmup = n_samples/4,
+    iter_sampling = n_samples/4
   )
 
 # set state priors -------------------------------------------------------------
@@ -140,7 +143,7 @@ state_priors <-
                                              .x > 1 ~ 1,
                                              TRUE ~ .x)),
          across(c(dem, rep, oth), ~.x/(dem + rep + oth))) %>%
-  select(state, dem, rep, oth)
+  select(.draw, state, dem, rep, oth)
 
 # functions for optimizing error -----------------------------------------------
 
@@ -198,7 +201,7 @@ state_priors %>%
   mutate(delta = dem - rep) %>%
   group_by(state) %>%
   mutate(dem_win = if_else(delta > 0, 1, 0),
-         dem_win = sum(dem_win)/2000,
+         dem_win = sum(dem_win)/n_samples,
          state = paste(state, scales::label_percent(accuracy = 1)(dem_win))) %>%
   tidybayes::median_qi(delta, .width = c(0.5, 0.8, 0.95)) %>%
   mutate(state = fct_reorder(state, delta)) %>%
@@ -218,16 +221,75 @@ state_priors %>%
   theme_rieke() +
   theme(legend.position = "none") +
   labs(title = "**Prior model of Democratic Margin**",
-       subtitle = "Based on an incumbent approval of **-13.8%**",
+       subtitle = glue::glue("Based on an incumbent net approval of **",
+                             "{scales::label_percent(accuracy = 0.1)(biden_approval)}",
+                             "**"),
        x = NULL,
        y = NULL,
-       caption = paste("Posterior interval based on 2,000 MCMC samples",
-                       "Pointwidths indicate 50/80/95% credible intervals",
-                       sep = "<br>"))
+       caption = glue::glue("Posterior interval based on {scales::label_comma()(n_samples)} MCMC samples",
+                            "Pointwidths indicate 50/80/95% credible intervals",
+                            .sep = "<br>"))
 
 ggquicksave("dev/06-state-priors-optim/state_prior_optim_02.png",
             width = 9,
             height = 15)
+
+ec_axis <-
+  tibble(breaks = seq(0, 538, length.out = 11)) %>%
+  mutate(color = case_when(breaks > 269 ~ "#B13737",
+                           breaks < 269 ~ "#3579AC",
+                           TRUE ~ "gray60"),
+         labels = case_when(breaks >= 269 ~ round(breaks),
+                            breaks < 269 ~ 538 - round(breaks)),
+         labels = color_text(labels, color))
+
+ec_counts <-
+  state_priors %>%
+  left_join(electors) %>%
+  mutate(winner = case_when(dem > rep & dem > oth ~ "dem",
+                            rep > dem & rep > oth ~ "rep",
+                            TRUE ~ "oth")) %>%
+  group_by(.draw, winner) %>%
+  summarise(electors = sum(electors)) %>%
+  ungroup() %>%
+  filter(winner == "rep") %>%
+  mutate(winner = case_when(electors >= 270 ~ "rep",
+                            electors == 269 ~ "tie",
+                            TRUE ~ "dem"))
+biden_prob <-
+  ec_counts %>%
+  percent(winner) %>%
+  filter(winner == "dem") %>%
+  pull(pct)
+
+ec_counts %>%
+  ggplot(aes(x = electors,
+             fill = winner)) +
+  geom_histogram(binwidth = 1) +
+  geom_hline(yintercept = 0,
+             color = "gray60") +
+  scale_fill_manual(values = c("#3579AC", "#B13737")) +
+  scale_x_continuous(breaks = ec_axis$breaks,
+                     labels = ec_axis$labels) +
+  theme_rieke() +
+  theme(legend.position = "none",
+        axis.text.y = element_blank(),
+        axis.text.x = ggtext::element_markdown(color = "gray20"),
+        panel.grid = element_blank()) +
+  expand_limits(x = c(0, 538)) +
+  labs(title = "**Prior model of Electoral College results**",
+       subtitle = glue::glue("Based on a net approval of **",
+                             scales::label_percent(accuracy = 0.1)(biden_approval),
+                             "**, Biden has a **",
+                             scales::label_percent(accuracy = 1)(biden_prob),
+                             "** chance of winning re-election"),
+       x = NULL,
+       y = NULL,
+       caption = glue::glue("Distribution of possible electoral college results",
+                            "based on {scales::label_comma()(n_samples)} MCMC samples",
+                            .sep = "<br>"))
+
+ggquicksave("dev/06-state-priors-optim/state_prior_optim_03.png")
 
 state_priors %>%
   pivot_longer(starts_with("prior"),
