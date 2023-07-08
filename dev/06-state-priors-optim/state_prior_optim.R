@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(riekelib)
+library(patchwork)
 
 # import data ------------------------------------------------------------------
 
@@ -9,6 +10,7 @@ abramovitz <- read_csv("data/abramovitz.csv")
 states <- read_csv("data/statewide_results.csv")
 approval <- read_csv("https://projects.fivethirtyeight.com/biden-approval-data/approval_topline.csv")
 electors <- read_csv("data/electors.csv")
+centers <- read_csv("data/state_centers.csv")
 
 # prep stan data ---------------------------------------------------------------
 
@@ -174,6 +176,8 @@ state_priors <-
          prior_dem = dem*weight,
          prior_rep = rep*weight)
 
+# random sample of parameter space ---------------------------------------------
+
 state_priors %>%
   select(state, starts_with("prior")) %>%
   pivot_longer(starts_with("prior"),
@@ -196,6 +200,8 @@ state_priors %>%
        y = NULL)
 
 ggquicksave("dev/06-state-priors-optim/state_prior_optim_01.png")
+
+# state margin plot ------------------------------------------------------------
 
 state_priors %>%
   mutate(delta = dem - rep) %>%
@@ -233,6 +239,8 @@ state_priors %>%
 ggquicksave("dev/06-state-priors-optim/state_prior_optim_02.png",
             width = 9,
             height = 15)
+
+# electoral college distribution -----------------------------------------------
 
 ec_axis <-
   tibble(breaks = seq(0, 538, length.out = 11)) %>%
@@ -290,6 +298,162 @@ ec_counts %>%
                             .sep = "<br>"))
 
 ggquicksave("dev/06-state-priors-optim/state_prior_optim_03.png")
+
+# electoral college map --------------------------------------------------------
+
+# modify theme void w/new font
+theme_void_mod <- function() {
+
+  theme_void() +
+    theme(plot.title = ggtext::element_markdown(family = "Tiempos Text",
+                                                color = "gray20",
+                                                size = 18))
+
+}
+
+# data feeding into bar underneath map
+ec_bar <-
+  state_priors %>%
+  mutate(winner = if_else(dem > rep, "dem", "rep")) %>%
+  group_by(state) %>%
+  percent(winner) %>%
+  ungroup() %>%
+  mutate(rating = case_when(pct > 0.99 ~ paste("safe", winner),
+                            pct > 0.85 ~ paste("very likely", winner),
+                            pct > 0.65 ~ paste("likely", winner),
+                            pct > 0.50 ~ "uncertain")) %>%
+  drop_na() %>%
+  left_join(electors) %>%
+  group_by(rating) %>%
+  summarise(electors = sum(electors)) %>%
+  mutate(fill = case_match(rating,
+                           "safe dem" ~ "#3579ac",
+                           "very likely dem" ~ "#7cb0d7",
+                           "likely dem" ~ "#d3e5f2",
+                           "uncertain" ~ "#f2f2f2",
+                           "likely rep" ~ "#f2d5d5",
+                           "very likely rep" ~ "#d78080",
+                           "safe rep" ~ "#b13737"),
+         rating = fct_relevel(rating, c("safe rep",
+                                        "very likely rep",
+                                        "likely rep",
+                                        "uncertain",
+                                        "likely dem",
+                                        "very likely dem",
+                                        "safe dem"))) %>%
+  arrange(rating)
+
+# plot of bar
+current_bar <-
+  ec_bar %>%
+  arrange(desc(rating)) %>%
+  mutate(label_position = cumsum(electors) - 0.5*electors) %>%
+  ggplot() +
+  geom_bar(aes(x = 0,
+               y = electors,
+               fill = rating),
+           position = "stack",
+           stat = "identity") +
+  geom_text(aes(label = electors,
+                x = 0,
+                y = label_position),
+            family = "IBM Plex Sans",
+            fontface = "bold",
+            size = 4) +
+  scale_fill_manual(values = ec_bar$fill) +
+  expand_limits(x = c(-1, 1)) +
+  coord_flip() +
+  theme_void_mod() +
+  theme(legend.position = "none")
+
+# create map w/points for state rating/number of electors
+us_geo <-
+  tigris::states(class = "sf", cb = TRUE) %>%
+  tigris::shift_geometry() %>%
+  filter(GEOID < 60)
+
+map_electors <-
+  state_priors %>%
+  mutate(winner = if_else(dem > rep, "dem", "rep")) %>%
+  group_by(state) %>%
+  percent(winner) %>%
+  ungroup() %>%
+  mutate(rating = case_when(pct > 0.99 ~ paste("safe", winner),
+                            pct > 0.85 ~ paste("very likely", winner),
+                            pct > 0.65 ~ paste("likely", winner),
+                            pct > 0.50 ~ "uncertain")) %>%
+  drop_na() %>%
+  left_join(electors) %>%
+  mutate(fill = case_match(rating,
+                           "safe dem" ~ "#3579ac",
+                           "very likely dem" ~ "#7cb0d7",
+                           "likely dem" ~ "#d3e5f2",
+                           "uncertain" ~ "#f2f2f2",
+                           "likely rep" ~ "#f2d5d5",
+                           "very likely rep" ~ "#d78080",
+                           "safe rep" ~ "#b13737")) %>%
+  left_join(centers) %>%
+  sf::st_as_sf(coords = c("long", "lat"),
+               crs = 4326)
+
+
+current_map <-
+  us_geo %>%
+  left_join(electors, by = c("NAME" = "state")) %>%
+  ggplot() +
+  geom_sf(fill = "#fafafa",
+          color = "#ededed",
+          linewidth = 0.5) +
+  geom_sf(data = map_electors,
+          aes(size = electors,
+              fill = fill,
+              color = if_else(rating == "uncertain", "black", "white")),
+          shape = 21) +
+  scale_fill_identity() +
+  scale_color_identity() +
+  scale_size_continuous(range = c(3, 12)) +
+  theme_void_mod() +
+  theme(legend.position = "none")
+
+current_map
+
+ggquicksave("dev/06-state-priors-optim/state_prior_optim_04.png")
+
+# legend at the top
+ec_ratings <-
+  ec_bar %>%
+  rowid_to_column() %>%
+  arrange(desc(rowid)) %>%
+  select(-rowid) %>%
+  rowid_to_column() %>%
+  mutate(rating = str_to_title(rating),
+         color = if_else(rating == "Uncertain", "black", "white")) %>%
+  ggplot(aes(x = rowid,
+             y = 0,
+             fill = fill,
+             color = color,
+             label = rating)) +
+  geom_point(shape = 21,
+             size = 4) +
+  geom_text(color = "gray20",
+            family = "IBM Plex Sans",
+            fontface = "bold",
+            size = 3,
+            vjust = 3) +
+  scale_fill_identity() +
+  scale_color_identity() +
+  theme_void_mod() +
+  labs(title = "**Prior Electoral College Ratings**") +
+  expand_limits(x = c(0.5, 7.5))
+
+(ec_ratings / current_map / current_bar) +
+  plot_layout(heights = c(1, 9, 1))
+
+ggquicksave("dev/06-state-priors-optim/state_prior_optim_05.png",
+            width = 7.2,
+            height = 6.2)
+
+# more dev ---------------------------------------------------------------------
 
 state_priors %>%
   pivot_longer(starts_with("prior"),
