@@ -12,16 +12,7 @@ sims <- 1000
 sigma <- 0.075
 
 even <- 0.475
-inc_bonus <- 0.025
 wt <- 2
-
-inc_app_base <- 0.1
-inc_app_run <- 0.125
-inc_app_party <- 0.05
-
-gdp_base <- 0.05
-gdp_run <- 0.075
-gdp_party <- 0.025
 
 # simulate prior parameters
 tibble(alpha_1 = rnorm(sims, even*wt, sigma),
