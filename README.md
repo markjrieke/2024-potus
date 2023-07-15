@@ -117,6 +117,12 @@ $$
   - Likely R (65 \< x \<= 85): F2D5D5
   - Very Likely R (85 \< x \<= 99): D78080
   - Safe R (\>99): B13737
+- some links for gaussian processes:
+  - [kernel functions](https://www.cs.toronto.edu/~duvenaud/cookbook/)
+  - [more kernel functions +
+    charts](https://peterroelants.github.io/posts/gaussian-process-kernels/)
+  - [the og intuition
+    doc](https://distill.pub/2019/visual-exploration-gaussian-processes/)
 
 ### prior thoughts
 
