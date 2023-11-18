@@ -116,7 +116,7 @@ model_data <-
          real_gdp_growth,
          third_party = third_party_present) %>%
   mutate(across(c(inc_approval, real_gdp_growth),
-                ~rethinking::standardize(.x)),
+                ~standardize(.x)),
          inc_status = if_else(inc_running == 1, 1, 2),
          inc_status = as.integer(inc_status)) %>%
   select(-inc_running)
