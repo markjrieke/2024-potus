@@ -122,11 +122,13 @@ prior_fit$draws(variables = "theta_pred", format = "df") %>%
   scale_y_percent() +
   theme_rieke() +
   theme(legend.position = "none") +
-  labs(title = "**Posterior fit**",
-       subtitle = "A snazzy subtitle",
+  labs(title = "**A Prior for Presidential Pushes for Power**",
+       subtitle = "National two-party vote share and posterior predictive fit",
        x = NULL,
        y = NULL,
-       caption = "Some sort of caption here")
+       caption = paste("Pointrange indicates 66% and 95% posterior",
+                       "credible intervals based on 8,000 MCMC samples",
+                       sep = "<br>"))
 
 ggquicksave("fig/prior_model_post_predictive.png")
 
