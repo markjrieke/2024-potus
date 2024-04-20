@@ -25,14 +25,16 @@ for (f in 1:ncol(features)) {
   features[,f] <- standardize(features[,f])
 }
 
-# compute a distance vector as the euclidean distance from the origin
-distances <- vector("numeric")
-for (s in 1:nrow(features)) {
-  distances[s] <- features[s,]^2 |> sum() |> sqrt()
+# compute a distance matrix from features
+distances <- matrix(0, nrow = nrow(features), ncol = nrow(features))
+for (r in 1:nrow(distances)) {
+  for (c in 1:ncol(distances)) {
+    distances[r,c] <- (features[r,] - features[c,])^2 |> sum() |> sqrt()
+  }
 }
 
 # covariance matrix along distance vector
-Sigma <- cov_exp_quad(distances, 0.125, 0.25)
+Sigma <- 0.125 * exp(-distances/(2 * 0.25)^2)
 L <- cholesky_decompose(Sigma)
 
 # state parameters
