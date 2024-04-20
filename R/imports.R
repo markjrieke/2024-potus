@@ -1,3 +1,7 @@
+# Federal Reserve Economic Data (FRED) -----------------------------------------
+
+# Import CPIAUSCL --- all urban consumers, all items, us city average
+# https://fred.stlouisfed.org/series/CPIAUCSL
 fetch_cpi <- function() {
 
   current_date <- Sys.Date()
@@ -20,6 +24,8 @@ fetch_cpi <- function() {
 
 }
 
+# Import GDP
+# https://fred.stlouisfed.org/series/GDP
 fetch_gdp <- function() {
 
   current_date <- Sys.Date()
@@ -43,5 +49,18 @@ fetch_gdp <- function() {
     )
 
   return(out)
+
+}
+
+# FiveThirtyEight --------------------------------------------------------------
+
+# Import most up-to-date Biden net approval topline
+fetch_approval <- function() {
+
+  read_csv("https://projects.fivethirtyeight.com/biden-approval-data/approval_topline.csv") %>%
+    filter(subgroup == "All polls",
+           end_date == max(end_date)) %>%
+    mutate(net = (approve_estimate - disapprove_estimate)/100) %>%
+    pull(net)
 
 }

@@ -6,9 +6,9 @@ data {
   vector[N] I;                    // Whether or not the incumbent is running
 
   // // 2024 Prior
-  // real A_new;
-  // real G_new;
-  // real I_new;
+  real A_new;                     // Biden Net Approval
+  real G_new;                     // 202r Real 2nd Quarter GDP Growth
+  real I_new;                     // Incumbency Status
 }
 
 parameters {
@@ -37,10 +37,16 @@ model {
 }
 
 generated quantities {
+  // Posterior Predictive
   array[N] real theta_pred = normal_rng(mu, sigma);
-//   real theta_new;
-//   {
-//     real mu_new =
-//   }
+  vector[N] log_lik;
+  for (n in 1:N) {
+    log_lik[n] = normal_lpdf(V[n] | mu[n], sigma);
+  }
+
+  // Prior for 2024
+  real mu_new = inv_logit(alpha + beta_a * A_new + beta_g * G_new + beta_i * I_new);
+  real theta_new_pred = normal_rng(mu_new, sigma);
+
 }
 
