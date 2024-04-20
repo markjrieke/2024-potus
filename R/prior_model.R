@@ -12,6 +12,14 @@ source("R/imports.R")
 # binary color palette
 # pal <- c("#D78080", "#7CB0D7")
 pal <- c("#B13737", "#3579AC")
+pal <-
+  c("#3579ac",
+    "#7cb0d7",
+    "#d3e5f2",
+    "#f2f2f2",
+    "#f2d5d5",
+    "#d78080",
+    "#b13737")
 
 # import data ------------------------------------------------------------------
 
@@ -174,9 +182,53 @@ theta_new_pred %>%
   theme(legend.position = "none",
         axis.text.y = element_blank(),
         panel.grid = element_blank()) +
-  labs(title = "**asd;lkfjasd;lkfj**",
-       subtitle = "a;lksdjfa;lskdjf",
+  labs(title = "**Prior for the National Popular Vote**",
+       subtitle = "Based on incumbency, net approval, and real GDP growth",
        x = NULL,
        y = NULL,
-       caption = "asd;lkfjasd;lkfj")
+       caption = paste("Pointrange indicates 66% and 95% posterior",
+                       "credible interval based on 8,000 MCMC samples",
+                       sep = "<br>"))
+
+ggquicksave("fig/prior_model_theta_new_pred.png")
+
+read_csv("data/statewide_results.csv") %>%
+  filter(year %in% c(2016, 2020)) %>%
+  select(year, state, democratic, republican) %>%
+  pivot_longer(c(democratic, republican),
+               names_to = "party",
+               values_to = "voteshare") %>%
+  mutate(voteshare = voteshare/100,
+         party = paste(str_sub(party, 1, 3), year - 2000, sep = "_")) %>%
+  group_by(year, state) %>%
+  mutate(state_2pv = voteshare/sum(voteshare)) %>%
+  ungroup() %>%
+  filter(str_detect(party, "dem")) %>%
+  select(year, state, state_2pv) %>%
+  left_join(abramovitz %>%
+              mutate(nat_2pv = dem/(dem + rep)) %>%
+              select(year, nat_2pv)) %>%
+  mutate(pvi = state_2pv - nat_2pv,
+         year = paste("pvi", year - 2000, sep = "_")) %>%
+  select(year, state, pvi) %>%
+  pivot_wider(names_from = year,
+              values_from = pvi) %>%
+  mutate(pvi = 0.75 * pvi_20 + 0.25 * pvi_16) %>%
+  select(state, pvi) %>%
+  crossing(nat_prior = theta_new_pred$theta_new_pred) %>%
+  mutate(state_prior = nat_prior + pvi) %>%
+  group_by(state) %>%
+  median_qi(state_prior, .width = c(0.5, 0.8, 0.95)) %>%
+  mutate(state = fct_reorder(state, state_prior)) %>%
+  ggplot(aes(x = state,
+             y = state_prior,
+             ymin = .lower,
+             ymax = .upper,
+             color = state_prior)) +
+  geom_pointinterval() +
+  scale_y_percent() +
+  scale_color_gradientn(colors = c(pal[7:6], pal[2:1]),
+                        limits = c(0, 1)) +
+  coord_flip() +
+  expand_limits(y = c(0, 1))
 
