@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(riekelib)
+library(cmdstanr)
 
 # set parameters ---------------------------------------------------------------
 
@@ -89,7 +90,8 @@ lambda <- c(1300, 2600)
 
 # simulate polls!
 set.seed(2008)
-tibble(poll = 1:n_polls) %>%
+polls <-
+  tibble(poll = 1:n_polls) %>%
 
   # poll characteristics
   bind_cols(state = sample(1:(length(population) + 1),
@@ -127,7 +129,35 @@ tibble(poll = 1:n_polls) %>%
   select(state,
          day,
          K,
-         Y) %>%
+         Y)
+
+# prep for modeling ------------------------------------------------------------
+
+stan_data <-
+  list(
+    N = nrow(polls),
+    S = max(polls$state),
+    sid = polls$state,
+    K = polls$K,
+    Y = polls$Y
+  )
+
+poll_model <-
+  cmdstan_model("stan/poll_model.stan")
+
+poll_fit <-
+  poll_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 2000,
+    iter_sampling = 2000,
+    chains = 4,
+    parallel_chains = 4
+  )
+
+# blegh ------------------------------------------------------------------------
+
+polls %>%
   mutate(p = Y/K) %>%
   beta_interval(Y, K - Y) %>%
   ggplot(aes(x = day,
@@ -140,4 +170,5 @@ tibble(poll = 1:n_polls) %>%
   scale_size_continuous(range = c(1, 4)) +
   facet_wrap(~state) +
   theme_rieke()
+
 
