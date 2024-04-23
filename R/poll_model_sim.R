@@ -35,7 +35,7 @@ for (r in 1:nrow(distances)) {
 }
 
 # covariance matrix along distance vector
-Sigma <- 0.125 * exp(-distances/(2 * 0.25)^2)
+Sigma <- 0.125 * exp(-(distances^2)/(2 * 0.5^2))
 L <- cholesky_decompose(Sigma)
 
 # state parameters
