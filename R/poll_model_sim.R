@@ -137,6 +137,9 @@ stan_data <-
   list(
     N = nrow(polls),
     S = max(polls$state),
+    S_nc = 4,
+    Nat_id = 5,
+    Nat_wt = population/sum(population),
     sid = polls$state,
     K = polls$K,
     Y = polls$Y
@@ -156,6 +159,8 @@ poll_fit <-
   )
 
 # blegh ------------------------------------------------------------------------
+
+expit(sum(poll_fit$summary("beta_s_raw")$mean * (population))/sum(population))
 
 polls %>%
   mutate(p = Y/K) %>%
