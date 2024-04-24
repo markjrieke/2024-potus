@@ -133,14 +133,27 @@ polls <-
 
 # prep for modeling ------------------------------------------------------------
 
+features2 <-
+  rbind(features, population %*% features / sum(population))
+
+distances2 <- matrix(0, nrow = nrow(features2), ncol = nrow(features2))
+for (r in 1:nrow(distances2)) {
+  for (c in 1:ncol(distances2)) {
+    distances2[r,c] <- (features2[r,] - features2[c,])^2 |> sum() |> sqrt()
+  }
+}
+
 stan_data <-
   list(
     N = nrow(polls),
     S = max(polls$state),
     S_nc = 4,
+    D = 180,
+    F_mat = distances,
     Nat_id = 5,
     Nat_wt = population/sum(population),
     sid = polls$state,
+    did = polls$day,
     K = polls$K,
     Y = polls$Y
   )
@@ -152,10 +165,12 @@ poll_fit <-
   poll_model$sample(
     data = stan_data,
     seed = 2024,
-    iter_warmup = 2000,
-    iter_sampling = 2000,
+    iter_warmup = 250,
+    iter_sampling = 250,
     chains = 4,
-    parallel_chains = 4
+    parallel_chains = 4,
+    init = 0.01,
+    step_size = 0.002
   )
 
 # blegh ------------------------------------------------------------------------
