@@ -47,17 +47,17 @@ data {
 
 transformed data {
   int S_c = S - S_nc;                  // Number of composite states
-  array[D] real D_arr = linspaced_array(D, 1, D);
-  real rho_d = 90;
-  real sigma_d = 0.02;
+  array[D] real D_arr = linspaced_array(D, 1.0/D, 1.0);
+  // real rho_d = 90;
+  // real sigma_d = 0.02;
 }
 
 parameters {
   real<lower=0> rho_s;                 // Length-scale parameter for state GP
   real<lower=0> sigma_s;               // Amplitude parameter for state GP
   vector[S_nc] eta_s;                  // Latent function for state GP
-  // real<lower=0> rho_d;                 // Length-scale parameter for day GP
-  // real<lower=0> sigma_d;               // Amplitude parameter for day GP
+  real<lower=0> rho_d;                 // Length-scale parameter for day GP
+  real<lower=0> sigma_d;               // Amplitude parameter for day GP
   matrix[D, S_nc] eta_sd;              // Latent function for day GP
 }
 
@@ -82,7 +82,9 @@ transformed parameters{
 
   // Append day parameters with composite states
   matrix[S, D] beta_sd = rep_matrix(0, S, D);
-  beta_sd[1:S_nc, :] = transpose(beta_sd_nc);
+  for (s in 1:S_nc) {
+    beta_sd[s, :] = to_row_vector(beta_sd_nc[:, s]);
+  }
   beta_sd[Nat_id, :] = transpose(beta_sd_nc * Nat_wt);
 
   // Estimate the linear model
@@ -94,10 +96,10 @@ transformed parameters{
 
 model {
   // priors
-  target += exponential_lpdf(rho_s | 3);
-  // target += gamma_lpdf(rho_d | 3, 1.0/15);
-  target += gamma_lpdf(sigma_s | 5, 10);
-  // target += gamma_lpdf(sigma_d | 5, 10);
+  target += gamma_lpdf(rho_s | 3, 10);
+  target += gamma_lpdf(rho_d | 3, 10);
+  target += normal_lpdf(sigma_s | 0, 0.2) - normal_lccdf(0 | 0, 0.2);
+  target += normal_lpdf(sigma_d | 0, 0.2) - normal_lccdf(0 | 0, 0.2);
   target += normal_lpdf(eta_s | 0, 1);
   target += normal_lpdf(to_vector(eta_sd) | 0, 1);
 

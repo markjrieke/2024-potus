@@ -5,96 +5,54 @@ repo for constructing a 2024 presidential election forecast
 
 ### loose methodology
 
-Vaguely, the following:
-
-- Set priors based on time-for-change model in each state & at the
-  national level
-- ‘Predict’ each poll’s result
-- Utilize a poisson likelihood for each candidate (D/R/O)
-- simplex of probabilities - use other as the pivot
-- each candidate gets their own linear model
-- Linear model has offset terms for pollster, mode, population, state,
-  and date, plus a region invariant polling bias.
-- state offset is set by a gaussian process using a distance vector
-  between the states:
-  - box-cox transform
-  - normalize
-  - euclidean
-- date offset is set by a gaussian process over time.
-- Parameters for estimating the national vote distribution are the
-  population weighted average of the state variables (one less set of
-  parameters).
-
-So, vaguely, for each party:
+See [associated notion
+timeline](https://www.notion.so/rafrieke/2024-Presidential-Election-90855891b84345e69edad0151ec02bdf)
+for more detail, but model is loosely the following:
 
 $$
 \begin{align*}
-\phi_{\text{state, date}} & = \beta_{\text{state, date}} + \beta_{\text{pollster}} + \beta_{\text{mode}} + \beta_{\text{population}} + \beta_{\text{state}} + \beta_{\text{noise}} \\
-\beta_{\text{state, date}} & \sim \text{Gaussian process} \dots \\
-\beta_{\text{state}} & \sim \text{Gaussian process} \dots
+\text{Y}_i &\sim \text{Binomial}(\text{K}_i,\ \theta_i) \\
+\text{logit}(\theta) &= \beta_s + \beta_{s,d} + \beta_p + \beta_m + \beta_g + \beta_c + \beta_n
 \end{align*}
 $$
 
-### loose workflow
+$\beta_s$ and $\beta_{s,d}$ comprise the “true” latent voting intention
+in each state. $\beta_s$ is the time-invariant component, set by a
+Gaussian process over the euclidean distance between states in some
+normalized feature space and $\beta_{s,d}$ is a the daily time-varying
+offset from each state’s time-invariant component, set by a Gaussian
+process over time in each state. The predicted voteshare in state $s$ on
+day $d=E$ (election day) is $\text{expit}(\beta_s + \beta_{s,E})$. The
+state-level prior is either over the time-invariant parameter *or* the
+predicted voteshare (TBD).
 
-- targeted workflow
-- FRED data feed into priors
-- tidycensus data feed into priors
-- FTE pulled in for polling
-- Exclusion of Traflagar, Rasmussen, Center Street
-- GH action for publishing
+The remaining parameters account for bias in the individual polls:
 
-### references
+- $\beta_p$: pollster
+- $\beta_m$: poll mode (online, RDD, etc.)
+- $\beta_g$: poll group (RV, LV, adults, etc.)
+- $\beta_c$: candidate/party sponsor (D, R, or none)
+- $\beta_n$: noise (per poll!)
 
-- Linzer 2013 paper
-- Pierre Kemp 2016 model
-- Economist 2020 model
-- Abramovitz time-for-change
-- FTE
-- FRED
-- Census
-- [Gelman/Microsoft](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/04/forecasting-with-nonrepresentative-polls.pdf)
+Most of these have sufficient groups to be modeled hierarchically. I may
+model $\beta_g$ and $\beta_c$ with fixed effects, given the small number
+of groups in these parameters.
 
-### notes on abramovitz data/nat-3pv
+### resources
 
-- Incumbent net approval pulled from FiveThirtyEight’s averages on the
-  day before the presidential election. If the exact date is not
-  available due to data resolution, (these are manually pulled) the net
-  approval from the closest day *prior* to election day is used instead.
-- Third party flag is set to 1 whenever an individual third party
-  candidate garners more than 5% of the national popular vote.
-- Abramovitz 2012 mod can be found
-  [here](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf)
-- For Biden’s net approval, pulling the *All Polls* variant of
-  [FiveThirtyEight’s presidential approval
-  tracker](https://projects.fivethirtyeight.com/biden-approval-rating/?cid=rrpromo)
-  (this is consistent with what’s displayed for the previous
-  presidents).
-
-### multinomial identification notes
-
-- Ref [this
-  post](https://eleafeit.com/posts/2021-05-23-parameterization-of-multinomial-logit-models-in-stan/)
-  for some notes on identification in categorical models
-- Also, identification for categorical (multinomial) models is covered
-  in the stan user guide
-  [here](https://mc-stan.org/docs/stan-users-guide/multi-logit.html) and
-  [here](https://mc-stan.org/docs/stan-users-guide/parameterizing-centered-vectors.html).
-
-### 3pvi notes
-
-- Cook PVI pulled from [this
-  table](https://www.cookpolitical.com/cook-pvi/2022-partisan-voting-index/state-map-and-list).
-- 75/25 weighted split between two most recent elections based on Cook’s
-  2023 methodology.
-
-### misc notes
-
-- [density database](https://densitydb.github.io/) gives statewide
-  population weighted density estimates.
-- how others forecast
-  - [Economist](https://github.com/TheEconomist/us-potus-model/tree/master)
-    — Bayesian logistic regression model
+- Models & methodology
+  - [Linzer 2013
+    paper](https://votamatic.org/wp-content/uploads/2013/07/Linzer-JASA13.pdf)
+  - [Pierre Kemp 2016
+    model](https://www.slate.com/features/pkremp_forecast/report.html)
+  - [Economist 2020
+    model](https://github.com/TheEconomist/us-potus-model?tab=readme-ov-file)
+  - [Abramovitz
+    time-for-change](https://www.washingtonpost.com/blogs/ezra-klein/files/2012/08/abramowitz.pdf)
+  - [FTE
+    2020](https://projects.fivethirtyeight.com/2020-election-forecast/)
+  - [FTE
+    2016](https://projects.fivethirtyeight.com/2016-election-forecast/)
   - [DDHQ](https://forecast.decisiondeskhq.com/methodology) — ensemble
     of ridge, random forest, elastic net, and gradient boosts
   - [Race2WH](https://twitter.com/loganr2wh/status/1575673680364859392)
@@ -105,10 +63,54 @@ $$
   - [Cory McCartran, Data for
     Progress](https://github.com/CoryMcCartan/midterms-22) — Bayesian
     model with a student-t response
+  - [Gelman/Microsoft](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/04/forecasting-with-nonrepresentative-polls.pdf)
   - [FTE](https://fivethirtyeight.com/features/how-fivethirtyeights-2020-presidential-forecast-works-and-whats-different-because-of-covid-19/)
     — dig into once not on the MH network
   - [NYT](https://www.nytimes.com/interactive/2016/upshot/presidential-polls-forecast.html)
     — dig into once not on the MH network
+- Data
+  - [FRED](https://fred.stlouisfed.org/)
+  - [FTE
+    Polls](https://github.com/fivethirtyeight/data/tree/master/polls)
+  - [Urban Stats](https://urbanstats.org/)
+  - [Cook](https://www.cookpolitical.com/cook-pvi)
+
+### banned pollsters
+
+- [Center Street
+  PAC](https://gelliottmorris.substack.com/p/the-gory-details-about-how-modern)
+- [Traflagar](https://split-ticket.org/2022/09/19/whats-going-on-with-trafalgars-polls/)
+- [Rasmussen](https://web.archive.org/web/20240308212818/https://www.washingtonpost.com/politics/2024/03/08/rasmussen-538-polling/)
+
+### loose workflow
+
+- derived data (constant)
+  - distance matrices
+  - cpvi
+- (approval model?) \[may not actually do, we’ll see…\]
+  - approval data
+  - e-day approval model
+  - write results
+  - write diagnostics
+- prior model
+  - economic data
+  - approval data (or model)
+  - fit
+  - state-level priors
+  - write results
+  - write diagnostics
+- poll model
+  - polling data
+  - prior data
+  - fit
+  - write results
+  - write diagnostics
+- reporting
+  - update site
+  - blastula email diagnostics
+
+### misc notes
+
 - Colors for display!
   - Safe D (\>99): 3579AC
   - Very Likely D (99 \>= x \> 85): 7CB0D7
@@ -117,62 +119,16 @@ $$
   - Likely R (65 \< x \<= 85): F2D5D5
   - Very Likely R (85 \< x \<= 99): D78080
   - Safe R (\>99): B13737
-- some links for gaussian processes:
-  - [kernel functions](https://www.cs.toronto.edu/~duvenaud/cookbook/)
-  - [more kernel functions +
-    charts](https://peterroelants.github.io/posts/gaussian-process-kernels/)
-  - [the og intuition
-    doc](https://distill.pub/2019/visual-exploration-gaussian-processes/)
-
-### prior thoughts
-
-- prior set based on incumbecy/approval (see state prior optim folder in
-  dev)
-- state priors based on 3pvi offset from national prior
-- parameters recovered through optimization
-- possibly forecast approval rather than use day-of approval (may be
-  beneficial in terms of avoiding daily swings)
-
-### report structure
-
-- Introduction
-- Background
-  - Early methodologies
-  - Current methodologies
-  - Polling as a measurement tool
-    - Sources of truth, sources of bias
-    - DGP
-- Specification
-  - Overview
-  - Prior (Fundamentals)
-    - National indicators
-      - Political indicators
-      - Economic indicators
-    - Statewide indicators
-  - Polling Model
-    - Sources of polling bias
-    - Time-series component (election day prior + gaussian process)
-    - Aggregation of state and national polls
-    - Forecast
-- Application: 2020 Election
-  - Overview
-  - Prior Model
-  - Polling Model
-  - Evaluation
-- Discussion
-  - Quantity vs. quality
-  - Further work
-
-Include notes abt. how people had no trust in polling after 2016
-
-Further work:
-
-- Prior dichotimizes the presence of a third party. There is definitely
-  a better way to handle this.
-- Prior does not take into account the eras of polarization — i.e., a
-  poor approval rating today is less catastrophic to the incumbent
-  president than would be in the 60s-70s.
-- Gets closer to the DGP, but doesn’t match it. Many candidates are
-  collectively swept into the “other” category.
-- Looping everything together in a big ole bayesian model would be
-  better, rather than these staged models.
+- abramovitz data notes
+  - Incumbent net approval pulled from FiveThirtyEight’s averages on the
+    day before the presidential election. If the exact date is not
+    available due to data resolution, (these are manually pulled) the
+    net approval from the closest day *prior* to election day is used
+    instead.
+  - Third party flag is set to 1 whenever an individual third party
+    candidate garners more than 5% of the national popular vote.
+  - For Biden’s net approval, pulling the *All Polls* variant of
+    [FiveThirtyEight’s presidential approval
+    tracker](https://projects.fivethirtyeight.com/biden-approval-rating/?cid=rrpromo)
+    (this is consistent with what’s displayed for the previous
+    presidents).

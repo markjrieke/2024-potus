@@ -34,8 +34,10 @@ for (r in 1:nrow(distances)) {
   }
 }
 
-# covariance matrix along distance vector
-Sigma <- 0.125 * exp(-(distances^2)/(2 * 0.5^2))
+# covariance matrix along standardized distance vector
+max_distances <- max(distances)
+distances <- distances/max(distances)
+Sigma <- 0.125 * exp(-(distances^2)/(2 * (0.5/max_distances)^2))
 L <- cholesky_decompose(Sigma)
 
 # state parameters
@@ -48,7 +50,7 @@ beta_s <- c(beta_s, sum(beta_s * population)/sum(population))
 
 # gaussian process offset
 # election day = day == 180
-Sigma <- cov_exp_quad(1:180, 0.02, 90)
+Sigma <- cov_exp_quad(1:180/180, 0.02, 90/180)
 L <- cholesky_decompose(Sigma)
 
 # state by day parameters
@@ -129,7 +131,10 @@ polls <-
   select(state,
          day,
          K,
-         Y)
+         Y,
+         pid = pollster,
+         gid = group,
+         mid = mode)
 
 # prep for modeling ------------------------------------------------------------
 
@@ -142,6 +147,12 @@ for (r in 1:nrow(distances2)) {
     distances2[r,c] <- (features2[r,] - features2[c,])^2 |> sum() |> sqrt()
   }
 }
+
+polls %>%
+  distinct(day) %>%
+  arrange(day) %>%
+  rowid_to_column("did") %>%
+  right_join(polls, .)
 
 stan_data <-
   list(
@@ -175,7 +186,65 @@ poll_fit <-
 
 # blegh ------------------------------------------------------------------------
 
-expit(sum(poll_fit$summary("beta_s_raw")$mean * (population))/sum(population))
+test <-
+  polls %>%
+  filter(state == 4)
+
+stan_data <-
+  list(
+    N = nrow(test),
+    D = 180,
+    did = test$day,
+    K = test$K,
+    Y = test$Y
+  )
+
+test_model <-
+  cmdstan_model("stan/test_model.stan")
+
+test_fit <-
+  test_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 500,
+    iter_sampling = 500,
+    chains = 4,
+    parallel_chains = 4
+  )
+
+tmp <- test_fit$summary("theta_pred")
+
+tmp %>%
+  mutate(day = parse_number(variable)) %>%
+  ggplot(aes(x = day,
+             y = median)) +
+  geom_ribbon(aes(ymin = q5,
+                  ymax = q95),
+              alpha = 0.25) +
+  geom_line() +
+  geom_point(data = test,
+             mapping = aes(x = day,
+                           y = Y/K,
+                           size = K),
+             shape = 21) +
+  scale_y_percent() +
+  scale_size_continuous(range = c(1, 4)) +
+  expand_limits(y = c(0.4, 0.6))
+
+tmp <- poll_fit$summary("theta")
+polls %>%
+  bind_cols(tmp %>% select(median, q5, q95)) %>%
+  ggplot(aes(x = day)) +
+  geom_ribbon(aes(ymin = q5,
+                  ymax = q95),
+              alpha = 0.25) +
+  geom_point(aes(y = Y/K,
+                 size = K),
+             shape = 21) +
+  scale_y_percent() +
+  scale_size_continuous(range = c(1, 4)) +
+  facet_wrap(~state) +
+  theme_rieke()
 
 polls %>%
   mutate(p = Y/K) %>%
@@ -190,5 +259,4 @@ polls %>%
   scale_size_continuous(range = c(1, 4)) +
   facet_wrap(~state) +
   theme_rieke()
-
 
