@@ -15,6 +15,21 @@ data {
   // Poll response data
   array[N] int<lower=1> K;             // Number of respondents per poll
   array[N] int<lower=0> Y;             // Number of democratic respondents per poll
+
+  // Fixed effect priors
+  real<lower=0> beta_s_sigma;
+  real<lower=0> beta_p_sigma;          // Scale for pollster bias
+  real<lower=0> beta_g_sigma;          // Scale for group (population) bias
+  real<lower=0> beta_m_sigma;          // Scale for mode bias
+  real<lower=0> beta_n_sigma;          // Scale for raw poll bias
+
+  // Gaussian Process priors (day)
+  real<lower=0> rho_d_shape;           // Shape param for gamma prior over length-scale
+  real<lower=0> rho_d_rate;            // Rate param for gamma prior over length-scale
+  real<lower=0> sigma_d_sigma;         // Scale for half-normal prior over amplitude
+
+  // Debug
+  int<lower=0, upper=1> prior_check;
 }
 
 transformed data {
@@ -36,8 +51,6 @@ parameters {
 }
 
 transformed parameters{
-  // real rho_d = 1.0 * 90/180;
-  // real sigma_d = 0.02;
   // Construct covariance matrix over days
   vector[D] beta_d;
   {
@@ -57,19 +70,22 @@ transformed parameters{
 }
 
 model {
-  // priors
-  target += normal_lpdf(beta_s | 0, 1);
-  target += normal_lpdf(beta_p | 0, 0.05);
-  target += normal_lpdf(beta_g | 0, 0.05);
-  target += normal_lpdf(beta_m | 0, 0.05);
-  target += normal_lpdf(beta_n | 0, 0.05);
-  // target += inv_gamma_lpdf(rho_d | 5, 5);
-  target += gamma_lpdf(rho_d | 3, 10);
-  target += normal_lpdf(sigma_d | 0, 0.05) - normal_lccdf(0 | 0, 0.05);
-  target += normal_lpdf(eta_d | 0, 1);
+  // Priors over fixed effects
+  target += normal_lpdf(beta_s | 0, beta_s_sigma);
+  target += normal_lpdf(beta_p | 0, beta_p_sigma);
+  target += normal_lpdf(beta_g | 0, beta_g_sigma);
+  target += normal_lpdf(beta_m | 0, beta_m_sigma);
+  target += normal_lpdf(beta_n | 0, beta_n_sigma);
+
+  // Priors over Gaussian Process (day)
+  target += gamma_lpdf(rho_d | rho_d_shape, rho_d_rate);
+  target += normal_lpdf(sigma_d | 0, sigma_d_sigma) - normal_lccdf(0 | 0, sigma_d_sigma);
+  target += std_normal_lpdf(eta_d);
 
   // likelihood
-  target += binomial_logit_lpmf(Y | K, mu);
+  if (!prior_check) {
+    target += binomial_logit_lpmf(Y | K, mu);
+  }
 }
 
 generated quantities {

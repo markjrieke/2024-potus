@@ -6,13 +6,16 @@ library(cmdstanr)
 
 # set parameters ---------------------------------------------------------------
 
-# 4 states in this fake shindig
-population <- c(5, 20, 15, 10)
+# states in this fake shindig
+n_states <- 8
+set.seed(123)
+population <- sample(1:20, n_states, replace = TRUE)
 
 # state features
-wwc_pct <- c(0.6, 0.5, 0.4, 0.5)
-college <- c(0.2, 0.3, 0.4, 0.1)
-income <- c(65000, 75000, 75000, 50000)
+set.seed(456)
+wwc_pct <- sample(20:60/100, n_states, replace = TRUE)
+college <- sample(10:40/100, n_states, replace = TRUE)
+income <- sample(50:100, n_states, replace = TRUE) * 1000
 
 # convert to a state feature matrix
 features <-
@@ -37,12 +40,12 @@ for (r in 1:nrow(distances)) {
 # covariance matrix along standardized distance vector
 max_distances <- max(distances)
 distances <- distances/max(distances)
-Sigma <- 0.125 * exp(-(distances^2)/(2 * (0.5/max_distances)^2))
+Sigma <- 1 * exp(-(distances^2)/(2 * (0.5/max_distances)^2))
 L <- cholesky_decompose(Sigma)
 
 # state parameters
 set.seed(2024)
-eta <- rnorm(4, 0, 1)
+eta <- rnorm(n_states, 0, 1)
 beta_s <- (L %*% eta)[,1]
 
 # national env is a weighted average of state params
@@ -50,12 +53,12 @@ beta_s <- c(beta_s, sum(beta_s * population)/sum(population))
 
 # gaussian process offset
 # election day = day == 180
-Sigma <- cov_exp_quad(1:180/180, 0.02, 90/180)
+Sigma <- cov_exp_quad(1:180/180, 0.05, 90/180)
 L <- cholesky_decompose(Sigma)
 
 # state by day parameters
 set.seed(2020)
-eta <- matrix(rnorm(180*4, 0, 1), nrow = 180, ncol = 4)
+eta <- matrix(rnorm(180*n_states, 0, 1), nrow = 180, ncol = n_states)
 beta_sd <- t(L %*% eta)
 
 # national env is a weighted average of state params
@@ -64,19 +67,22 @@ beta_sd <- rbind(beta_sd, colSums(beta_sd * population)/sum(population))
 # pollster bias
 set.seed(2016)
 n_pollsters <- 8
-beta_p <- rnorm(n_pollsters, 0, 0.01)
+beta_p <- rnorm(n_pollsters, 0, 0.1)
 
 # group (population) bias
 set.seed(2012)
 n_groups <- 2
-beta_g <- rnorm(n_groups, 0, 0.01)
+beta_g <- rnorm(n_groups, 0, 0.1)
 
 # mode bias
-beta_m <- c(0, 0.01)
+beta_m <- c(0, 0.05)
+
+# sponsor/candidate bias
+beta_c <- c(0, 0.05, -0.05)
 
 # simulate data ----------------------------------------------------------------
 
-n_polls <- 200
+n_polls <- 360
 
 # probability of polling a specific state (based on close-ness)
 state_probs <- (abs(expit(t(beta_s + beta_sd)[180,]) - 0.5)^-1)[1:length(population)]
@@ -188,7 +194,7 @@ poll_fit <-
 
 test <-
   polls %>%
-  filter(state == 4)
+  filter(state == 3)
 
 stan_data <-
   list(
@@ -202,7 +208,16 @@ stan_data <-
     gid = test$gid,
     mid = test$mid,
     K = test$K,
-    Y = test$Y
+    Y = test$Y,
+    beta_s_sigma = 1,
+    beta_p_sigma = 0.1,
+    beta_g_sigma = 0.1,
+    beta_m_sigma = 0.1,
+    beta_n_sigma = 0.1,
+    rho_d_shape = 3,
+    rho_d_rate = 6,
+    sigma_d_sigma = 0.1,
+    prior_check = 0
   )
 
 test_model <-
@@ -212,8 +227,8 @@ test_fit <-
   test_model$sample(
     data = stan_data,
     seed = 2024,
-    iter_warmup = 2500,
-    iter_sampling = 2500,
+    iter_warmup = 1000,
+    iter_sampling = 1000,
     chains = 4,
     parallel_chains = 4,
     init = 0.01,
@@ -238,6 +253,21 @@ tmp %>%
              shape = 21) +
   scale_y_percent() +
   scale_size_continuous(range = c(1, 4)) +
+  expand_limits(y = c(0.4, 0.6))
+
+preds <- test_fit$draws("theta_pred", format = "df")
+preds %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("theta")) %>%
+  nest(data = -.draw) %>%
+  slice_sample(n = 250) %>%
+  unnest(data) %>%
+  mutate(name = parse_number(name)) %>%
+  ggplot(aes(x = name,
+             y = value,
+             group = .draw)) +
+  geom_line(alpha = 0.125) +
+  theme_rieke() +
   expand_limits(y = c(0.4, 0.6))
 
 tmp <- poll_fit$summary("theta")
