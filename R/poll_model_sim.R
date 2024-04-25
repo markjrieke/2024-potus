@@ -194,7 +194,13 @@ stan_data <-
   list(
     N = nrow(test),
     D = 180,
+    P = max(test$pid),
+    G = max(test$gid),
+    M = max(test$mid),
     did = test$day,
+    pid = test$pid,
+    gid = test$gid,
+    mid = test$mid,
     K = test$K,
     Y = test$Y
   )
@@ -206,10 +212,13 @@ test_fit <-
   test_model$sample(
     data = stan_data,
     seed = 2024,
-    iter_warmup = 500,
-    iter_sampling = 500,
+    iter_warmup = 2500,
+    iter_sampling = 2500,
     chains = 4,
-    parallel_chains = 4
+    parallel_chains = 4,
+    init = 0.01,
+    step_size = 0.002,
+    refresh = 100
   )
 
 tmp <- test_fit$summary("theta_pred")
