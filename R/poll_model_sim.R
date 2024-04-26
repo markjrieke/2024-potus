@@ -51,6 +51,23 @@ beta_s <- (L %*% eta)[,1]
 # national env is a weighted average of state params
 beta_s <- c(beta_s, sum(beta_s * population)/sum(population))
 
+# random walk covariance matrix
+Sigma <- Sigma * 0.003
+L <- cholesky_decompose(Sigma)
+
+# state by day parameters
+# here [s,d] is the DAYS UNTIL E-DAY (rather than day)
+set.seed(2020)
+eta <- matrix(rnorm(180*n_states), nrow = n_states, ncol = 180)
+beta_sd <- L %*% eta
+for (r in 1:nrow(beta_sd)) {
+  beta_sd[r,] <- cumsum(beta_sd[r,])
+}
+
+# national env is a weighted average of state params
+beta_sd <- rbind(beta_sd, colSums(beta_sd * population)/sum(population))
+
+
 # gaussian process offset
 # election day = day == 180
 Sigma <- cov_exp_quad(1:180/180, 0.05, 90/180)
@@ -85,7 +102,7 @@ beta_c <- c(0, 0.05, -0.05)
 n_polls <- 360
 
 # probability of polling a specific state (based on close-ness)
-state_probs <- (abs(expit(t(beta_s + beta_sd)[180,]) - 0.5)^-1)[1:length(population)]
+state_probs <- (abs(expit(t(beta_s + beta_sd)[1,]) - 0.5)^-1)[1:length(population)]
 
 # national polls correspond to index 5
 state_probs <- c(state_probs, mean(state_probs))
@@ -120,16 +137,21 @@ polls <-
   bind_cols(mode = sample(1:2,
                           size = nrow(.),
                           replace = TRUE)) %>%
+  bind_cols(candidate_sponsor = sample(1:3,
+                                       size = nrow(.),
+                                       replace = TRUE,
+                                       prob = c(9, 1, 1))) %>%
   bind_cols(K = rpois(nrow(.), lambda[.$mode])) %>%
 
   # apply linear model
   mutate(beta_s = beta_s[state],
-         beta_sd = pmap_dbl(list(state, day), ~beta_sd[..1, ..2]),
+         beta_sd = pmap_dbl(list(state, day), ~beta_sd[..1, 180 - ..2]),
          beta_p = beta_p[pollster],
          beta_g = beta_g[group],
-         beta_m = beta_m[mode]) %>%
+         beta_m = beta_m[mode],
+         beta_c = beta_c[candidate_sponsor]) %>%
   bind_cols(beta_n = rnorm(nrow(.), 0, 0)) %>%
-  mutate(mu = beta_s + beta_sd + beta_p + beta_g + beta_m + beta_n,
+  mutate(mu = beta_s + beta_sd + beta_p + beta_g + beta_m + beta_c + beta_n,
          theta = expit(mu)) %>%
 
   # sample responses
@@ -140,39 +162,44 @@ polls <-
          Y,
          pid = pollster,
          gid = group,
-         mid = mode)
+         mid = mode,
+         cid = candidate_sponsor)
 
 # prep for modeling ------------------------------------------------------------
 
-features2 <-
-  rbind(features, population %*% features / sum(population))
-
-distances2 <- matrix(0, nrow = nrow(features2), ncol = nrow(features2))
-for (r in 1:nrow(distances2)) {
-  for (c in 1:ncol(distances2)) {
-    distances2[r,c] <- (features2[r,] - features2[c,])^2 |> sum() |> sqrt()
-  }
-}
-
-polls %>%
-  distinct(day) %>%
-  arrange(day) %>%
-  rowid_to_column("did") %>%
-  right_join(polls, .)
+# don't deal with composites for now
+polls <-
+  polls %>%
+  filter(state != max(state))
 
 stan_data <-
   list(
     N = nrow(polls),
+    P = max(polls$pid),
+    G = max(polls$gid),
+    M = max(polls$mid),
+    C = max(polls$cid),
     S = max(polls$state),
-    S_nc = 4,
     D = 180,
-    F_mat = distances,
-    Nat_id = 5,
-    Nat_wt = population/sum(population),
+    pid = polls$pid,
+    gid = polls$gid,
+    mid = polls$mid,
+    cid = polls$cid,
     sid = polls$state,
     did = polls$day,
+    F_s = distances,
     K = polls$K,
-    Y = polls$Y
+    Y = polls$Y,
+    beta_g_sigma = 0.5,
+    beta_m_sigma = 0.5,
+    beta_c_sigma = 0.5,
+    sigma_n_sigma = 0.5,
+    sigma_p_sigma = 0.5,
+    rho_alpha = 3,
+    rho_beta = 6,
+    alpha_sigma = 0.5,
+    phi_sigma = 0.01,
+    prior_check = 0
   )
 
 poll_model <-
@@ -182,8 +209,8 @@ poll_fit <-
   poll_model$sample(
     data = stan_data,
     seed = 2024,
-    iter_warmup = 250,
-    iter_sampling = 250,
+    iter_warmup = 1000,
+    iter_sampling = 1000,
     chains = 4,
     parallel_chains = 4,
     init = 0.01,
@@ -192,110 +219,52 @@ poll_fit <-
 
 # blegh ------------------------------------------------------------------------
 
-test <-
-  polls %>%
-  filter(state == 4)
+poll_model$code() |> str_c(collapse = "\n") |> message()
 
-stan_data <-
-  list(
-    N = nrow(test),
-    S = 1,
-    D = 180,
-    P = max(test$pid),
-    G = max(test$gid),
-    M = max(test$mid),
-    did = test$day,
-    pid = test$pid,
-    gid = test$gid,
-    mid = test$mid,
-    K = test$K,
-    Y = test$Y,
-    e_day_mu = 0,
-    e_day_sigma = 0.1,
-    beta_s_sigma = 1,
-    beta_g_sigma = 0.05,
-    beta_m_sigma = 0.05,
-    sigma_p_sigma = 0.05,
-    sigma_n_sigma = 0.05,
-    rho_d_shape = 3,
-    rho_d_rate = 6,
-    sigma_d_sigma = 0.05,
-    prior_check = 0
-  )
+poll_fit$draws("p_rep", format = "df") %>%
+  as_tibble() %>%
+  select(-c(.chain, .iteration)) %>%
+  pivot_longer(-.draw) %>%
+  nest(data = -name) %>%
+  slice_sample(n = 9) %>%
+  unnest(data) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 70) +
+  facet_wrap(~name, scales = "free")
 
-test_model <-
-  cmdstan_model("stan/test_model.stan")
-
-test_fit <-
-  test_model$sample(
-    data = stan_data,
-    seed = 2024,
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    chains = 4,
-    parallel_chains = 4,
-    init = 0.01,
-    step_size = 0.002,
-    refresh = 100
-  )
-
-tmp <- test_fit$summary("theta_pred")
+tmp <- poll_fit$summary("theta")
 
 tmp %>%
-  mutate(day = parse_number(variable)) %>%
+  mutate(variable = str_remove_all(variable, "theta\\[|\\]")) %>%
+  separate(variable, c("state", "day"), ",") %>%
+  mutate(day = as.integer(day),
+         across(c(median, q5, q95), expit)) %>%
   ggplot(aes(x = day,
              y = median)) +
   geom_ribbon(aes(ymin = q5,
                   ymax = q95),
               alpha = 0.25) +
+  geom_line(data = (beta_s + beta_sd) %>%
+              expit() %>%
+              t() %>%
+              as_tibble() %>%
+              rowid_to_column("day") %>%
+              mutate(day = 181 - day) %>%
+              pivot_longer(-day,
+                           names_to = "state",
+                           values_to = "median") %>%
+              mutate(state = str_remove(state, "V")),
+            color = "royalblue") +
   geom_line() +
-  geom_point(data = test,
+  geom_point(data = polls %>% mutate(state = as.character(state)),
              mapping = aes(x = day,
                            y = Y/K,
                            size = K),
-             shape = 21) +
-  geom_line(data = (beta_s + beta_sd) %>%
-              t() %>%
-              as_tibble() %>%
-              select(V4) %>%
-              mutate(across(everything(), expit)) %>%
-              rowid_to_column("day"),
-            mapping = aes(x = day,
-                          y = V4),
-            color = "royalblue") +
+             shape = 21,
+             alpha = 0.5) +
   scale_y_percent() +
   scale_size_continuous(range = c(1, 4)) +
-  expand_limits(y = c(0.4, 0.6))
-
-preds <- test_fit$draws("theta_pred", format = "df")
-preds %>%
-  as_tibble() %>%
-  pivot_longer(starts_with("theta")) %>%
-  nest(data = -.draw) %>%
-  slice_sample(n = 250) %>%
-  unnest(data) %>%
-  mutate(name = parse_number(name)) %>%
-  ggplot(aes(x = name,
-             y = value,
-             group = .draw)) +
-  geom_line(alpha = 0.125) +
-  theme_rieke() +
-  expand_limits(y = c(0.4, 0.6))
-
-tmp <- poll_fit$summary("theta")
-polls %>%
-  bind_cols(tmp %>% select(median, q5, q95)) %>%
-  ggplot(aes(x = day)) +
-  geom_ribbon(aes(ymin = q5,
-                  ymax = q95),
-              alpha = 0.25) +
-  geom_point(aes(y = Y/K,
-                 size = K),
-             shape = 21) +
-  scale_y_percent() +
-  scale_size_continuous(range = c(1, 4)) +
-  facet_wrap(~state) +
-  theme_rieke()
+  facet_wrap(~state)
 
 polls %>%
   mutate(p = Y/K) %>%
@@ -310,4 +279,3 @@ polls %>%
   scale_size_continuous(range = c(1, 4)) +
   facet_wrap(~state) +
   theme_rieke()
-

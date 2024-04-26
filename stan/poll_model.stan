@@ -1,10 +1,4 @@
 functions {
-  // @TODO: separate out into own file
-  /*
-    @TODO: write documentation etc.
-    Generate a covariance matrix from a pre-computed distance matrix
-
-  */
   matrix gp_exp_quad_cov(matrix F,
                          real sigma,
                          real rho) {
@@ -21,92 +15,144 @@ functions {
     return K;
   }
 }
-
 data {
   // Dimensions of the dataset
   int<lower=0> N;                      // Number of observations
-  int<lower=1> S;                      // Number of states (including composites)
-  int<lower=1> S_nc;                   // Number of states (excluding composites)
-  int<lower=1> D;                      // Number of observed days (e-day == D)
-
-  // Data for state covariance matrix
-  matrix[S_nc, S_nc] F_mat;            // Euclidean distance between states in feature-space
-
-  // Data for creating composite states
-  int<lower=1, upper=S> Nat_id;        // State ID for the national composite
-  vector<lower=0>[S_nc] Nat_wt;        // Weight of each raw parameter in the national composite
+  int<lower=1> P;                      // Number of pollsters
+  int<lower=1> G;                      // Number of groups (populations)
+  int<lower=1> M;                      // Number of poll modes
+  int<lower=1> C;                      // Number of candidate sponsors
+  int<lower=1> S;                      // Number of states
+  int<lower=1> D;                      // Number of days
 
   // Mapping IDs
+  array[N] int<lower=1, upper=P> pid;  // Map of pollster to poll
+  array[N] int<lower=1, upper=G> gid;  // Map of group (population) to poll
+  array[N] int<lower=1, upper=M> mid;  // Map of poll mode to poll
+  array[N] int<lower=1, upper=C> cid;  // Map of candidate sponsor to poll
   array[N] int<lower=1, upper=S> sid;  // Map of state to poll
   array[N] int<lower=1, upper=D> did;  // Map of day to poll
+
+  // State feature matrix
+  matrix[S, S] F_s;                    // State distance matrix in feature space
 
   // Poll response data
   array[N] int<lower=1> K;             // Number of respondents per poll
   array[N] int<lower=0> Y;             // Number of democratic respondents per poll
+
+  // Fixed effect priors
+  real<lower=0> beta_g_sigma;          // Scale for the group (population) bias
+  real<lower=0> beta_m_sigma;          // Scale for the poll mode bias
+  real<lower=0> beta_c_sigma;          // Scale for the candidate sponsor bias
+
+  // Random effect priors
+  real<lower=0> sigma_n_sigma;         // Scale for half-normal prior for raw poll bias
+  real<lower=0> sigma_p_sigma;         // Scale for half-normal prior for pollster bias
+
+  // State Gaussian Process priors
+  real<lower=0> rho_alpha;             // Shape for gamma prior for state covariance length scale
+  real<lower=0> rho_beta;              // Rate for gamma prior for state covariance length scale
+  real<lower=0> alpha_sigma;           // Shape for half-normal prior for state covariance amplitude
+
+  // Random walk priors
+  real<lower=0> phi_sigma;             // Shape for half-normal prior for state covariance amplitude scaling
+
+  // Debug
+  int<lower=0, upper=1> prior_check;
 }
 
 transformed data {
-  int S_c = S - S_nc;                  // Number of composite states
-  array[D] real D_arr = linspaced_array(D, 1.0/D, 1.0);
-  // real rho_d = 90;
-  // real sigma_d = 0.02;
+  // array[D] real D_arr = to_array_1d(linspaced_vector(D, 1, D)/D);
 }
 
 parameters {
-  real<lower=0> rho_s;                 // Length-scale parameter for state GP
-  real<lower=0> sigma_s;               // Amplitude parameter for state GP
-  vector[S_nc] eta_s;                  // Latent function for state GP
-  real<lower=0> rho_d;                 // Length-scale parameter for day GP
-  real<lower=0> sigma_d;               // Amplitude parameter for day GP
-  matrix[D, S_nc] eta_sd;              // Latent function for day GP
+  // Fixed effects
+  vector[G] beta_g;                    // Group (population) bias
+  vector[M] beta_m;                    // Poll mode bias
+  vector[C] beta_c;                    // Candidate sponsor bias
+
+  // Random effects
+  vector[N] eta_n;                     // Raw poll bias
+  vector[P] eta_p;                     // Pollster bias
+  real<lower=0> sigma_n;               // Scale for raw poll bias
+  real<lower=0> sigma_p;               // Scale for pollster bias
+
+  // State Gaussian Process
+  vector[S] eta_s;                     // State voting intent
+  real<lower=0> rho;                   // Length scale for state covariance
+  real<lower=0> alpha;                 // Amplitude for state covariance
+
+  // Random walk
+  matrix[S, D] eta_sd;                 // State by day voting entent
+  real<lower=0> phi;                   // Scale for state covariance over random walk
 }
 
 transformed parameters{
+  // Extract random parameters
+  vector[N] beta_n = eta_n * sigma_n;
+  vector[P] beta_p = eta_p * sigma_p;
+
   // Construct covariance matrix from feature space
-  // @TODO: coalesce into functions
-  matrix[S_nc, S_nc] K_s = gp_exp_quad_cov(F_mat, sigma_s, rho_s);
-  matrix[S_nc, S_nc] L_s = cholesky_decompose(K_s);
-  vector[S_nc] beta_s_nc = L_s * eta_s;
+  matrix[S, S] K_s = gp_exp_quad_cov(F_s, alpha, rho);
+  matrix[S, S] L_s = cholesky_decompose(K_s);
+  vector[S] beta_s = L_s * eta_s;
 
-  // Construct covariance matrix over days
-  matrix[D, D] K_d = gp_exp_quad_cov(D_arr, sigma_d, rho_d);
-  for (d in 1:D) {
-    K_d[d,d] += 1e-9;
+  // Construct random walk parameters
+  matrix[S, S] K_d = phi * K_s;
+  matrix[S, S] L_d = cholesky_decompose(K_d);
+  matrix[S, D] beta_sd = L_d * eta_sd;
+  for (d in 1:(D-1)) {
+    for (s in 1:S) {
+      beta_sd[s,d] = sum(beta_sd[s, d:(D-1)]);
+    }
   }
-  matrix[D, D] L_d = cholesky_decompose(K_d);
-  matrix[D, S_nc] beta_sd_nc = L_d * eta_sd;
 
-  // Append state parameters with composite states
-  vector[S] beta_s = append_row(beta_s_nc, zeros_vector(S_c));
-  beta_s[Nat_id] = dot_product(beta_s_nc, Nat_wt);
-
-  // Append day parameters with composite states
-  matrix[S, D] beta_sd = rep_matrix(0, S, D);
-  for (s in 1:S_nc) {
-    beta_sd[s, :] = to_row_vector(beta_sd_nc[:, s]);
-  }
-  beta_sd[Nat_id, :] = transpose(beta_sd_nc * Nat_wt);
-
-  // Estimate the linear model
+  // Construct linear model
   vector[N] mu;
   for (n in 1:N) {
-    mu[n] = beta_s[sid[n]] + beta_sd[sid[n], did[n]];
+    mu[n] = beta_s[sid[n]]
+          + beta_sd[sid[n], did[n]]
+          + beta_p[pid[n]]
+          + beta_g[gid[n]]
+          + beta_m[mid[n]]
+          + beta_c[cid[n]]
+          + beta_n[n];
   }
 }
 
 model {
-  // priors
-  target += gamma_lpdf(rho_s | 3, 10);
-  target += gamma_lpdf(rho_d | 3, 10);
-  target += normal_lpdf(sigma_s | 0, 0.2) - normal_lccdf(0 | 0, 0.2);
-  target += normal_lpdf(sigma_d | 0, 0.2) - normal_lccdf(0 | 0, 0.2);
-  target += normal_lpdf(eta_s | 0, 1);
-  target += normal_lpdf(to_vector(eta_sd) | 0, 1);
+  // Priors over fixed effects
+  target += normal_lpdf(beta_g | 0, beta_g_sigma);
+  target += normal_lpdf(beta_m | 0, beta_m_sigma);
+  target += normal_lpdf(beta_c | 0, beta_c_sigma);
+
+  // Priors over random effects
+  target += std_normal_lpdf(eta_n);
+  target += std_normal_lpdf(eta_p);
+  target += normal_lpdf(sigma_n | 0, sigma_n_sigma) - normal_lccdf(0 | 0, sigma_n_sigma);
+  target += normal_lpdf(sigma_p | 0, sigma_p_sigma) - normal_lccdf(0 | 0, sigma_p_sigma);
+
+  // Priors over state Gaussian Process
+  target += std_normal_lpdf(eta_s);
+  target += gamma_lpdf(rho | rho_alpha, rho_beta);
+  target += normal_lpdf(alpha | 0, alpha_sigma) - normal_lccdf(0 | 0, alpha_sigma);
+
+  // Priors over random walk
+  target += std_normal_lpdf(to_vector(eta_sd));
+  target += normal_lpdf(phi | 0, phi_sigma) - normal_lccdf(0 | 0, phi_sigma);
 
   // likelihood
-  target += binomial_logit_lpmf(Y | K, mu);
+  if (!prior_check) {
+    target += binomial_logit_lpmf(Y | K, mu);
+  }
 }
 
 generated quantities {
-  vector[N] theta = inv_logit(mu);
+  array[S] vector[D] theta;
+  for (s in 1:S) {
+    theta[s] = inv_logit(beta_s[s] + to_vector(beta_sd[s,:]));
+  }
+  // Posterior predictions (poll results)
+  // vector[N] p_rep = inv_logit(mu);
+  // vector[N] y_rep = to_vector(binomial_rng(K, p_rep)) ./ to_vector(K);
 }
