@@ -194,11 +194,12 @@ poll_fit <-
 
 test <-
   polls %>%
-  filter(state == 3)
+  filter(state == 4)
 
 stan_data <-
   list(
     N = nrow(test),
+    S = 1,
     D = 180,
     P = max(test$pid),
     G = max(test$gid),
@@ -209,14 +210,16 @@ stan_data <-
     mid = test$mid,
     K = test$K,
     Y = test$Y,
+    e_day_mu = 0,
+    e_day_sigma = 0.1,
     beta_s_sigma = 1,
-    beta_p_sigma = 0.1,
-    beta_g_sigma = 0.1,
-    beta_m_sigma = 0.1,
-    beta_n_sigma = 0.1,
+    beta_g_sigma = 0.05,
+    beta_m_sigma = 0.05,
+    sigma_p_sigma = 0.05,
+    sigma_n_sigma = 0.05,
     rho_d_shape = 3,
     rho_d_rate = 6,
-    sigma_d_sigma = 0.1,
+    sigma_d_sigma = 0.05,
     prior_check = 0
   )
 
@@ -251,6 +254,15 @@ tmp %>%
                            y = Y/K,
                            size = K),
              shape = 21) +
+  geom_line(data = (beta_s + beta_sd) %>%
+              t() %>%
+              as_tibble() %>%
+              select(V4) %>%
+              mutate(across(everything(), expit)) %>%
+              rowid_to_column("day"),
+            mapping = aes(x = day,
+                          y = V4),
+            color = "royalblue") +
   scale_y_percent() +
   scale_size_continuous(range = c(1, 4)) +
   expand_limits(y = c(0.4, 0.6))
