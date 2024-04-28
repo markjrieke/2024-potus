@@ -57,6 +57,10 @@ data {
   // Random walk priors
   real<lower=0> phi_sigma;             // Shape for half-normal prior for state covariance amplitude scaling
 
+  // State election day priors
+  vector[S] e_day_mu;                  // Logit-scale mean prior for election day
+  vector<lower=0>[S] e_day_sigma;      // Shape for election day logit scale prior
+
   // Debug
   int<lower=0, upper=1> prior_check;
 }
@@ -141,6 +145,11 @@ model {
   target += std_normal_lpdf(to_vector(eta_sd));
   target += normal_lpdf(phi | 0, phi_sigma) - normal_lccdf(0 | 0, phi_sigma);
 
+  // Election day priors
+  for (s in 1:S) {
+    target += normal_lpdf(beta_s[s] + beta_sd[s,180] | e_day_mu[s], e_day_sigma[s]);
+  }
+
   // likelihood
   if (!prior_check) {
     target += binomial_logit_lpmf(Y | K, mu);
@@ -155,4 +164,6 @@ generated quantities {
   // Posterior predictions (poll results)
   // vector[N] p_rep = inv_logit(mu);
   // vector[N] y_rep = to_vector(binomial_rng(K, p_rep)) ./ to_vector(K);
+  // Prior check
+  // vector[D] ppc = inv_logit(beta_s[1] + to_vector(beta_sd[1,:]));
 }

@@ -52,7 +52,7 @@ beta_s <- (L %*% eta)[,1]
 beta_s <- c(beta_s, sum(beta_s * population)/sum(population))
 
 # random walk covariance matrix
-Sigma <- Sigma * 0.003
+Sigma <- Sigma * 0.0005
 L <- cholesky_decompose(Sigma)
 
 # state by day parameters
@@ -63,20 +63,6 @@ beta_sd <- L %*% eta
 for (r in 1:nrow(beta_sd)) {
   beta_sd[r,] <- cumsum(beta_sd[r,])
 }
-
-# national env is a weighted average of state params
-beta_sd <- rbind(beta_sd, colSums(beta_sd * population)/sum(population))
-
-
-# gaussian process offset
-# election day = day == 180
-Sigma <- cov_exp_quad(1:180/180, 0.05, 90/180)
-L <- cholesky_decompose(Sigma)
-
-# state by day parameters
-set.seed(2020)
-eta <- matrix(rnorm(180*n_states, 0, 1), nrow = 180, ncol = n_states)
-beta_sd <- t(L %*% eta)
 
 # national env is a weighted average of state params
 beta_sd <- rbind(beta_sd, colSums(beta_sd * population)/sum(population))
@@ -197,8 +183,10 @@ stan_data <-
     sigma_p_sigma = 0.5,
     rho_alpha = 3,
     rho_beta = 6,
-    alpha_sigma = 0.5,
-    phi_sigma = 0.01,
+    alpha_sigma = 1,
+    phi_sigma = 0.05,
+    e_day_mu = logit(c(0.7, 0.55, 0.5, 0.45, 0.75, 0.75, 0.6, 0.5)),
+    e_day_sigma = rep(0.15, 8),
     prior_check = 0
   )
 
@@ -231,6 +219,17 @@ poll_fit$draws("p_rep", format = "df") %>%
   ggplot(aes(x = value)) +
   geom_histogram(bins = 70) +
   facet_wrap(~name, scales = "free")
+
+tmp <- poll_fit$summary("ppc")
+
+tmp %>%
+  ggplot(aes(x = parse_number(variable),
+             y = median,
+             ymin = q5,
+             ymax = q95)) +
+  geom_ribbon(alpha = 0.25) +
+  geom_line()
+
 
 tmp <- poll_fit$summary("theta")
 
@@ -274,7 +273,7 @@ polls %>%
              size = K)) +
   geom_point(alpha = 0.25,
              shape = 21) +
-  geom_smooth(se = FALSE) +
+  # geom_smooth(se = FALSE) +
   scale_y_percent() +
   scale_size_continuous(range = c(1, 4)) +
   facet_wrap(~state) +
