@@ -18,20 +18,21 @@ functions {
 data {
   // Dimensions of the dataset
   int<lower=0> N;                      // Number of observations
-  int<lower=1> P;                      // Number of pollsters
+  int<lower=1> D;                      // Number of days
+  int<lower=1> S;                      // Number of states
   int<lower=1> G;                      // Number of groups (populations)
   int<lower=1> M;                      // Number of poll modes
   int<lower=1> C;                      // Number of candidate sponsors
-  int<lower=1> S;                      // Number of states
-  int<lower=1> D;                      // Number of days
+  int<lower=1> P;                      // Number of pollsters
 
   // Mapping IDs
-  array[N] int<lower=1, upper=P> pid;  // Map of pollster to poll
+  array[N] int<lower=1, upper=D> did;  // Map of day to poll
+  array[N] int<lower=1, upper=S> sid;  // Map of state to poll
   array[N] int<lower=1, upper=G> gid;  // Map of group (population) to poll
   array[N] int<lower=1, upper=M> mid;  // Map of poll mode to poll
   array[N] int<lower=1, upper=C> cid;  // Map of candidate sponsor to poll
-  array[N] int<lower=1, upper=S> sid;  // Map of state to poll
-  array[N] int<lower=1, upper=D> did;  // Map of day to poll
+  array[N] int<lower=1, upper=P> pid;  // Map of pollster to poll
+
 
   // State feature matrix
   matrix[S, S] F_s;                    // State distance matrix in feature space
@@ -63,10 +64,6 @@ data {
 
   // Debug
   int<lower=0, upper=1> prior_check;
-}
-
-transformed data {
-  // array[D] real D_arr = to_array_1d(linspaced_vector(D, 1, D)/D);
 }
 
 parameters {
@@ -104,22 +101,22 @@ transformed parameters{
   // Construct random walk parameters
   matrix[S, S] K_d = phi * K_s;
   matrix[S, S] L_d = cholesky_decompose(K_d);
-  matrix[S, D] beta_sd = L_d * eta_sd;
+  matrix[S, D] beta_sd;
+
+  // Reverse cumulative sum
+  beta_sd[:,D] = L_d * eta_sd[:,D];
   for (d in 1:(D-1)) {
-    for (s in 1:S) {
-      beta_sd[s,d] = sum(beta_sd[s, d:(D-1)]);
-    }
+    beta_sd[:,D-d] = L_d * eta_sd[:,D-d] + beta_sd[:,D-d+1];
   }
 
   // Construct linear model
   vector[N] mu;
   for (n in 1:N) {
-    mu[n] = beta_s[sid[n]]
-          + beta_sd[sid[n], did[n]]
-          + beta_p[pid[n]]
+    mu[n] = e_day_mu[sid[n]] + beta_s[sid[n]] + beta_sd[sid[n], did[n]]
           + beta_g[gid[n]]
           + beta_m[mid[n]]
           + beta_c[cid[n]]
+          + beta_p[pid[n]]
           + beta_n[n];
   }
 }
@@ -157,9 +154,9 @@ model {
 }
 
 generated quantities {
-  array[S] vector[D] theta;
-  for (s in 1:S) {
-    theta[s,1:D] = inv_logit(beta_s[s] + to_vector(beta_sd[s,1:D]));
+  matrix[S,D] theta;
+  for (d in 1:D) {
+    theta[:,d] = inv_logit(e_day_mu + beta_s + beta_sd[:,d]);
   }
   // Posterior predictions (poll results)
   // vector[N] p_rep = inv_logit(mu);
