@@ -8,11 +8,15 @@ library(cmdstanr)
 
 # states in this fake shindig
 n_states <- 8
-set.seed(123)
+set.seed(1)
 population <- sample(1:20, n_states, replace = TRUE)
 
+# state prior mu
+set.seed(2)
+e_day_mu <- rnorm(n_states, 0, 0.5)
+
 # state features
-set.seed(456)
+set.seed(3)
 wwc_pct <- sample(20:60/100, n_states, replace = TRUE)
 college <- sample(10:40/100, n_states, replace = TRUE)
 income <- sample(50:100, n_states, replace = TRUE) * 1000
@@ -40,26 +44,26 @@ for (r in 1:nrow(distances)) {
 # covariance matrix along standardized distance vector
 max_distances <- max(distances)
 distances <- distances/max(distances)
-Sigma <- 1 * exp(-(distances^2)/(2 * (0.5/max_distances)^2))
-L <- cholesky_decompose(Sigma)
+K_s <- 0.05 * exp(-(distances^2)/(2 * (0.5/max_distances)^2))
+L_s <- cholesky_decompose(K_s)
 
 # state parameters
-set.seed(2024)
-eta <- rnorm(n_states, 0, 1)
-beta_s <- (L %*% eta)[,1]
+set.seed(4)
+eta_s <- rnorm(n_states, 0, 1)
+beta_s <- (L_s %*% eta_s)[,1] + e_day_mu
 
 # national env is a weighted average of state params
 beta_s <- c(beta_s, sum(beta_s * population)/sum(population))
 
 # random walk covariance matrix
-Sigma <- Sigma * 0.0005
-L <- cholesky_decompose(Sigma)
+K_d <- K_s * 0.05
+L_d <- cholesky_decompose(K_d)
 
 # state by day parameters
 # here [s,d] is the DAYS UNTIL E-DAY (rather than day)
-set.seed(2020)
-eta <- matrix(rnorm(180*n_states), nrow = n_states, ncol = 180)
-beta_sd <- L %*% eta
+set.seed(5)
+eta_sd <- matrix(rnorm(180*n_states), nrow = n_states, ncol = 180)
+beta_sd <- L_d %*% eta_sd
 for (r in 1:nrow(beta_sd)) {
   beta_sd[r,] <- cumsum(beta_sd[r,])
 }
@@ -68,14 +72,14 @@ for (r in 1:nrow(beta_sd)) {
 beta_sd <- rbind(beta_sd, colSums(beta_sd * population)/sum(population))
 
 # pollster bias
-set.seed(2016)
+set.seed(6)
 n_pollsters <- 8
-beta_p <- rnorm(n_pollsters, 0, 0.1)
+beta_p <- rnorm(n_pollsters, 0, 0.075)
 
 # group (population) bias
-set.seed(2012)
+set.seed(7)
 n_groups <- 2
-beta_g <- rnorm(n_groups, 0, 0.1)
+beta_g <- rnorm(n_groups, 0, 0.05)
 
 # mode bias
 beta_m <- c(0, 0.05)
@@ -100,7 +104,7 @@ day_probs <- dnorm(1:179, 180, 60)
 lambda <- c(1300, 2600)
 
 # simulate polls!
-set.seed(2008)
+set.seed(2024)
 polls <-
   tibble(poll = 1:n_polls) %>%
 
@@ -136,7 +140,7 @@ polls <-
          beta_g = beta_g[group],
          beta_m = beta_m[mode],
          beta_c = beta_c[candidate_sponsor]) %>%
-  bind_cols(beta_n = rnorm(nrow(.), 0, 0)) %>%
+  bind_cols(beta_n = rnorm(nrow(.), 0, 0.05)) %>%
   mutate(mu = beta_s + beta_sd + beta_p + beta_g + beta_m + beta_c + beta_n,
          theta = expit(mu)) %>%
 
@@ -281,29 +285,39 @@ polls %>%
 
 # asdlkfjadslkf
 
-
-
 test <-
   polls %>%
-  filter(day <= 150,
-         state != 9)
+  filter(state != 9)
 
 stan_data <-
   list(
     N = nrow(test),
     D = 180,
     S = max(test$state),
+    G = max(test$gid),
+    M = max(test$mid),
+    C = max(test$cid),
+    P = max(test$pid),
     did = test$day,
     sid = test$state,
+    gid = test$gid,
+    mid = test$mid,
+    cid = test$cid,
+    pid = test$pid,
     F_s = distances,
     K = test$K,
     Y = test$Y,
-    e_day_mu = rep(logit(0.45), 8),
-    e_day_sigma = rep(0.2, 8),
+    beta_g_sigma = 0.05,
+    beta_m_sigma = 0.05,
+    beta_c_sigma = 0.05,
+    sigma_n_sigma = 0.05,
+    sigma_p_sigma = 0.075,
+    e_day_mu = logit(c(0.4, 0.5, 0.9, 0.4, 0.6, 0.6, 0.5, 0.4)),
+    e_day_sigma = rep(0.75, 8),
     rho_alpha = 3,
     rho_beta = 6,
-    alpha_sigma = 0.2,
-    sigma_d_sigma = 0.002,
+    alpha_sigma = 0.05,
+    phi_sigma = 0.05,
     prior_check = 0
   )
 
@@ -327,7 +341,7 @@ tmp <- test_fit$summary("theta")
 tmp %>%
   mutate(variable = str_remove_all(variable, "theta\\[|\\]")) %>%
   separate(variable, c("state", "day"), ",") %>%
-  mutate(across(c(state, day), as.integer)) %>%
+  mutate(across(c(state, day), as.integer)) %>% filter(state %in% c(7, 2)) %>%
   ggplot(aes(x = day,
              y = median)) +
   geom_ribbon(aes(ymin = q5,
@@ -335,7 +349,7 @@ tmp %>%
               alpha = 0.25,
               fill = "royalblue") +
   geom_line(color = "royalblue") +
-  geom_point(data = test,
+  geom_point(data = test %>% filter(state %in% c(7, 2)),
              mapping = aes(x = day,
                            y = Y/K,
                            size = K),
@@ -343,6 +357,6 @@ tmp %>%
              alpha = 0.5) +
   scale_y_percent() +
   scale_size_continuous(range = c(0, 4)) +
-  facet_wrap(~state) +
+  facet_wrap(~state, ncol = 1) +
   theme_rieke()
 
