@@ -159,7 +159,7 @@ model {
 generated quantities {
   array[S] vector[D] theta;
   for (s in 1:S) {
-    theta[s] = inv_logit(beta_s[s] + to_vector(beta_sd[s,:]));
+    theta[s,1:D] = inv_logit(beta_s[s] + to_vector(beta_sd[s,1:D]));
   }
   // Posterior predictions (poll results)
   // vector[N] p_rep = inv_logit(mu);

@@ -278,3 +278,59 @@ polls %>%
   scale_size_continuous(range = c(1, 4)) +
   facet_wrap(~state) +
   theme_rieke()
+
+# asdlkfjadslkf
+
+
+
+test <-
+  polls %>%
+  filter(state == 8)
+
+stan_data <-
+  list(
+    N = nrow(test),
+    D = 180,
+    did = test$day,
+    K = test$K,
+    Y = test$Y,
+    e_day_mu = logit(0.45),
+    e_day_sigma = 0.2,
+    eta_sigma = 0.01,
+    prior_check = 0
+  )
+
+test_model <-
+  cmdstan_model("stan/test_model.stan")
+
+test_fit <-
+  test_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    chains = 4,
+    parallel_chains = 4,
+    init = 0.01,
+    step_size = 0.002
+  )
+
+tmp <- test_fit$summary("theta")
+
+tmp %>%
+  mutate(d = parse_number(variable)) %>%
+  ggplot(aes(x = d,
+             y = median)) +
+  geom_ribbon(aes(ymin = q5,
+                  ymax = q95),
+              alpha = 0.25,
+              fill = "royalblue") +
+  geom_line(color = "royalblue") +
+  geom_point(data = test,
+             mapping = aes(x = day,
+                           y = Y/K,
+                           size = K),
+             shape = 21) +
+  expand_limits(y = c(0.35, 0.65))
+
+
