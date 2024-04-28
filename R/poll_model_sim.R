@@ -285,18 +285,25 @@ polls %>%
 
 test <-
   polls %>%
-  filter(state == 8)
+  filter(day <= 150,
+         state != 9)
 
 stan_data <-
   list(
     N = nrow(test),
     D = 180,
+    S = max(test$state),
     did = test$day,
+    sid = test$state,
+    F_s = distances,
     K = test$K,
     Y = test$Y,
-    e_day_mu = logit(0.45),
-    e_day_sigma = 0.2,
-    eta_sigma = 0.01,
+    e_day_mu = rep(logit(0.45), 8),
+    e_day_sigma = rep(0.2, 8),
+    rho_alpha = 3,
+    rho_beta = 6,
+    alpha_sigma = 0.2,
+    sigma_d_sigma = 0.002,
     prior_check = 0
   )
 
@@ -318,8 +325,10 @@ test_fit <-
 tmp <- test_fit$summary("theta")
 
 tmp %>%
-  mutate(d = parse_number(variable)) %>%
-  ggplot(aes(x = d,
+  mutate(variable = str_remove_all(variable, "theta\\[|\\]")) %>%
+  separate(variable, c("state", "day"), ",") %>%
+  mutate(across(c(state, day), as.integer)) %>%
+  ggplot(aes(x = day,
              y = median)) +
   geom_ribbon(aes(ymin = q5,
                   ymax = q95),
@@ -330,7 +339,10 @@ tmp %>%
              mapping = aes(x = day,
                            y = Y/K,
                            size = K),
-             shape = 21) +
-  expand_limits(y = c(0.35, 0.65))
-
+             shape = 21,
+             alpha = 0.5) +
+  scale_y_percent() +
+  scale_size_continuous(range = c(0, 4)) +
+  facet_wrap(~state) +
+  theme_rieke()
 
