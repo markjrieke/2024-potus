@@ -103,9 +103,9 @@ transformed parameters{
   matrix[S, D] beta_sd;
 
   // Reverse cumulative sum
-  beta_sd[:,D] = L_d * eta_sd[:,D];
+  beta_sd = L_d * eta_sd;
   for (d in 1:(D-1)) {
-    beta_sd[:,D-d] = L_d * eta_sd[:,D-d] + beta_sd[:,D-d+1];
+    beta_sd[:,D-d] += beta_sd[:,D-d+1];
   }
 
   // Construct linear model
