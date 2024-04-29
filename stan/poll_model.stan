@@ -33,7 +33,6 @@ data {
   array[N] int<lower=1, upper=C> cid;  // Map of candidate sponsor to poll
   array[N] int<lower=1, upper=P> pid;  // Map of pollster to poll
 
-
   // State feature matrix
   matrix[S, S] F_s;                    // State distance matrix in feature space
 
@@ -100,10 +99,7 @@ transformed parameters{
 
   // Construct random walk parameters
   matrix[S, S] L_d = sqrt(phi) * L_s;
-  matrix[S, D] beta_sd;
-
-  // Reverse cumulative sum
-  beta_sd = L_d * eta_sd;
+  matrix[S, D] beta_sd = L_d * eta_sd;
   for (d in 1:(D-1)) {
     beta_sd[:,D-d] += beta_sd[:,D-d+1];
   }
