@@ -165,32 +165,32 @@ polls <-
 stan_data <-
   list(
     N = nrow(polls),
-    P = max(polls$pid),
+    D = 180,
+    S = max(polls$state),
     G = max(polls$gid),
     M = max(polls$mid),
     C = max(polls$cid),
-    S = max(polls$state),
-    D = 180,
-    pid = polls$pid,
+    P = max(polls$pid),
+    did = polls$day,
+    sid = polls$state,
     gid = polls$gid,
     mid = polls$mid,
     cid = polls$cid,
-    sid = polls$state,
-    did = polls$day,
+    pid = polls$pid,
     F_s = distances,
     K = polls$K,
     Y = polls$Y,
-    beta_g_sigma = 0.5,
-    beta_m_sigma = 0.5,
-    beta_c_sigma = 0.5,
-    sigma_n_sigma = 0.5,
-    sigma_p_sigma = 0.5,
+    beta_g_sigma = 0.05,
+    beta_m_sigma = 0.05,
+    beta_c_sigma = 0.05,
+    sigma_n_sigma = 0.05,
+    sigma_p_sigma = 0.075,
+    e_day_mu = logit(c(0.4, 0.5, 0.9, 0.4, 0.6, 0.6, 0.5, 0.4)),
+    e_day_sigma = rep(0.75, 8),
     rho_alpha = 3,
     rho_beta = 6,
-    alpha_sigma = 1,
+    alpha_sigma = 0.05,
     phi_sigma = 0.05,
-    e_day_mu = logit(c(0.7, 0.55, 0.5, 0.45, 0.75, 0.75, 0.6, 0.5)),
-    e_day_sigma = rep(0.15, 8),
     prior_check = 0
   )
 
@@ -211,132 +211,7 @@ poll_fit <-
 
 # blegh ------------------------------------------------------------------------
 
-poll_model$code() |> str_c(collapse = "\n") |> message()
-
-poll_fit$draws("p_rep", format = "df") %>%
-  as_tibble() %>%
-  select(-c(.chain, .iteration)) %>%
-  pivot_longer(-.draw) %>%
-  nest(data = -name) %>%
-  slice_sample(n = 9) %>%
-  unnest(data) %>%
-  ggplot(aes(x = value)) +
-  geom_histogram(bins = 70) +
-  facet_wrap(~name, scales = "free")
-
-tmp <- poll_fit$summary("ppc")
-
-tmp %>%
-  ggplot(aes(x = parse_number(variable),
-             y = median,
-             ymin = q5,
-             ymax = q95)) +
-  geom_ribbon(alpha = 0.25) +
-  geom_line()
-
-
 tmp <- poll_fit$summary("theta")
-
-tmp %>%
-  mutate(variable = str_remove_all(variable, "theta\\[|\\]")) %>%
-  separate(variable, c("state", "day"), ",") %>%
-  mutate(day = as.integer(day),
-         across(c(median, q5, q95), expit)) %>%
-  ggplot(aes(x = day,
-             y = median)) +
-  geom_ribbon(aes(ymin = q5,
-                  ymax = q95),
-              alpha = 0.25) +
-  geom_line(data = (beta_s + beta_sd) %>%
-              expit() %>%
-              t() %>%
-              as_tibble() %>%
-              rowid_to_column("day") %>%
-              mutate(day = 181 - day) %>%
-              pivot_longer(-day,
-                           names_to = "state",
-                           values_to = "median") %>%
-              mutate(state = str_remove(state, "V")),
-            color = "royalblue") +
-  geom_line() +
-  geom_point(data = polls %>% mutate(state = as.character(state)),
-             mapping = aes(x = day,
-                           y = Y/K,
-                           size = K),
-             shape = 21,
-             alpha = 0.5) +
-  scale_y_percent() +
-  scale_size_continuous(range = c(1, 4)) +
-  facet_wrap(~state)
-
-polls %>%
-  mutate(p = Y/K) %>%
-  beta_interval(Y, K - Y) %>%
-  ggplot(aes(x = day,
-             y = p,
-             size = K)) +
-  geom_point(alpha = 0.25,
-             shape = 21) +
-  # geom_smooth(se = FALSE) +
-  scale_y_percent() +
-  scale_size_continuous(range = c(1, 4)) +
-  facet_wrap(~state) +
-  theme_rieke()
-
-# asdlkfjadslkf
-
-test <-
-  polls %>%
-  filter(state != 9)
-
-stan_data <-
-  list(
-    N = nrow(test),
-    D = 180,
-    S = max(test$state),
-    G = max(test$gid),
-    M = max(test$mid),
-    C = max(test$cid),
-    P = max(test$pid),
-    did = test$day,
-    sid = test$state,
-    gid = test$gid,
-    mid = test$mid,
-    cid = test$cid,
-    pid = test$pid,
-    F_s = distances,
-    K = test$K,
-    Y = test$Y,
-    beta_g_sigma = 0.05,
-    beta_m_sigma = 0.05,
-    beta_c_sigma = 0.05,
-    sigma_n_sigma = 0.05,
-    sigma_p_sigma = 0.075,
-    e_day_mu = logit(c(0.4, 0.5, 0.9, 0.4, 0.6, 0.6, 0.5, 0.4)),
-    e_day_sigma = rep(0.75, 8),
-    rho_alpha = 3,
-    rho_beta = 6,
-    alpha_sigma = 0.05,
-    phi_sigma = 0.05,
-    prior_check = 0
-  )
-
-test_model <-
-  cmdstan_model("stan/test_model.stan")
-
-test_fit <-
-  test_model$sample(
-    data = stan_data,
-    seed = 2024,
-    iter_warmup = 1000,
-    iter_sampling = 1000,
-    chains = 4,
-    parallel_chains = 4,
-    init = 0.01,
-    step_size = 0.002
-  )
-
-tmp <- test_fit$summary("theta")
 
 tmp %>%
   mutate(variable = str_remove_all(variable, "theta\\[|\\]")) %>%
@@ -349,7 +224,7 @@ tmp %>%
               alpha = 0.25,
               fill = "royalblue") +
   geom_line(color = "royalblue") +
-  geom_point(data = test %>% filter(state %in% c(7, 2)),
+  geom_point(data = polls %>% filter(state %in% c(7, 2)),
              mapping = aes(x = day,
                            y = Y/K,
                            size = K),

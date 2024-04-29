@@ -99,8 +99,7 @@ transformed parameters{
   vector[S] beta_s = L_s * eta_s;
 
   // Construct random walk parameters
-  matrix[S, S] K_d = phi * K_s;
-  matrix[S, S] L_d = cholesky_decompose(K_d);
+  matrix[S, S] L_d = sqrt(phi) * L_s;
   matrix[S, D] beta_sd;
 
   // Reverse cumulative sum
