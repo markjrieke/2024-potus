@@ -142,9 +142,7 @@ model {
   target += normal_lpdf(phi | 0, phi_sigma) - normal_lccdf(0 | 0, phi_sigma);
 
   // Election day priors
-  for (s in 1:S) {
-    target += normal_lpdf(beta_s[s] + beta_sd[s,180] | e_day_mu[s], e_day_sigma[s]);
-  }
+  target += normal_lpdf(e_day_mu + beta_s + beta_sd[:,D] | e_day_mu, e_day_sigma);
 
   // likelihood
   if (!prior_check) {
@@ -154,12 +152,7 @@ model {
 
 generated quantities {
   matrix[S,D] theta;
-  for (d in 1:D) {
-    theta[:,d] = inv_logit(e_day_mu + beta_s + beta_sd[:,d]);
+  for (s in 1:S) {
+    theta[s,:] = inv_logit(e_day_mu[s] + beta_s[s] + beta_sd[s,:]);
   }
-  // Posterior predictions (poll results)
-  // vector[N] p_rep = inv_logit(mu);
-  // vector[N] y_rep = to_vector(binomial_rng(K, p_rep)) ./ to_vector(K);
-  // Prior check
-  // vector[D] ppc = inv_logit(beta_s[1] + to_vector(beta_sd[1,:]));
 }

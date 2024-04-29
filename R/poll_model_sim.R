@@ -213,10 +213,11 @@ poll_fit <-
 
 tmp <- poll_fit$summary("theta")
 
+checks <- c(7, 8)
 tmp %>%
   mutate(variable = str_remove_all(variable, "theta\\[|\\]")) %>%
   separate(variable, c("state", "day"), ",") %>%
-  mutate(across(c(state, day), as.integer)) %>% filter(state %in% c(7, 2)) %>%
+  mutate(across(c(state, day), as.integer)) %>% filter(state %in% checks) %>%
   ggplot(aes(x = day,
              y = median)) +
   geom_ribbon(aes(ymin = q5,
@@ -224,14 +225,14 @@ tmp %>%
               alpha = 0.25,
               fill = "royalblue") +
   geom_line(color = "royalblue") +
-  geom_point(data = polls %>% filter(state %in% c(7, 2)),
+  geom_point(data = polls %>% filter(state %in% checks),
              mapping = aes(x = day,
                            y = Y/K,
                            size = K),
              shape = 21,
              alpha = 0.5) +
   scale_y_percent() +
-  scale_size_continuous(range = c(0, 4)) +
+  scale_size_continuous(range = c(1, 4)) +
   facet_wrap(~state, ncol = 1) +
   theme_rieke()
 
