@@ -7,7 +7,7 @@ library(cmdstanr)
 # set parameters ---------------------------------------------------------------
 
 # states in this fake shindig
-n_states <- 8
+n_states <- 19
 set.seed(1)
 population <- sample(1:20, n_states, replace = TRUE)
 
@@ -44,7 +44,7 @@ for (r in 1:nrow(distances)) {
 # covariance matrix along standardized distance vector
 max_distances <- max(distances)
 distances <- distances/max(distances)
-K_r <- 0.05 * exp(-(distances^2)/(2 * (0.5/max_distances)^2))
+K_r <- 0.05 * exp(-(distances^2)/(2 * 0.125^2))
 L_r <- cholesky_decompose(K_r)
 
 # state parameters
@@ -56,7 +56,7 @@ beta_r <- (L_r %*% eta_r)[,1] + e_day_mu
 beta_s <- c(beta_r, sum(beta_r * population)/sum(population))
 
 # random walk covariance matrix
-K_d <- K_r * 0.05
+K_d <- K_r * 0.025
 L_d <- cholesky_decompose(K_d)
 
 # state by day parameters
@@ -89,7 +89,7 @@ beta_c <- c(0, 0.05, -0.05)
 
 # simulate data ----------------------------------------------------------------
 
-n_polls <- 360
+n_polls <- 800
 
 # probability of polling a specific state (based on close-ness)
 state_probs <- (abs(expit(t(beta_s + beta_sd)[1,]) - 0.5)^-1)[1:length(population)]
@@ -183,8 +183,8 @@ stan_data <-
     beta_c_sigma = 0.05,
     sigma_n_sigma = 0.05,
     sigma_p_sigma = 0.075,
-    e_day_mu_r = logit(c(0.4, 0.5, 0.9, 0.4, 0.6, 0.6, 0.5, 0.4)),
-    e_day_sigma_r = rep(0.75, 8),
+    e_day_mu_r = e_day_mu,
+    e_day_sigma_r = rep(1, n_states),
     rho_alpha = 3,
     rho_beta = 6,
     alpha_sigma = 0.05,
@@ -223,7 +223,8 @@ truth <-
 
 tmp <- poll_fit$summary("theta")
 
-checks <- 1:9
+checks <- c(2, 11, 7, 8, 10, 20)
+checks <- 1:20
 tmp %>%
   mutate(variable = str_remove_all(variable, "theta\\[|\\]")) %>%
   separate(variable, c("state", "day"), ",") %>%
@@ -231,6 +232,12 @@ tmp %>%
   left_join(truth) %>%
   ggplot(aes(x = day,
              y = median)) +
+  # geom_point(data = polls %>% filter(state %in% checks),
+  #            mapping = aes(x = day,
+  #                          y = Y/K,
+  #                          size = K),
+  #            shape = 21,
+  #            alpha = 0.125) +
   geom_ribbon(aes(ymin = q5,
                   ymax = q95),
               alpha = 0.25,
@@ -239,14 +246,8 @@ tmp %>%
   geom_line(aes(y = truth),
             color = "gray40",
             linewidth = 0.25) +
-  # geom_point(data = polls %>% filter(state %in% checks),
-  #            mapping = aes(x = day,
-  #                          y = Y/K,
-  #                          size = K),
-  #            shape = 21,
-  #            alpha = 0.5) +
   scale_y_percent() +
   scale_size_continuous(range = c(1, 4)) +
-  facet_wrap(~state) +
+  facet_wrap(~state, ncol = (if (length(checks) <= 3) 1 else NULL)) +
   theme_rieke()
 
