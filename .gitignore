@@ -50,3 +50,7 @@ rsconnect/
 
 # Mac files
 *.DS_Store
+
+# bash scripts/stan exe
+bash/
+exe/
