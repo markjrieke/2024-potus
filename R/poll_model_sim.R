@@ -7,7 +7,7 @@ library(cmdstanr)
 # set parameters ---------------------------------------------------------------
 
 # states in this fake shindig
-n_states <- 19
+n_states <- 17
 set.seed(1)
 population <- sample(1:20, n_states, replace = TRUE)
 
@@ -52,8 +52,26 @@ set.seed(4)
 eta_r <- rnorm(n_states, 0, 1)
 beta_r <- (L_r %*% eta_r)[,1] + e_day_mu
 
-# national env is a weighted average of state params
-beta_s <- c(beta_r, sum(beta_r * population)/sum(population))
+# identify aggregate states
+aggregates <-
+  matrix(
+    c(rep(1, 3), rep(0, n_states - 3),
+      rep(0, 3), rep(1, 3), rep(0, n_states - 6),
+      rep(1, n_states)),
+    ncol = 3
+  )
+
+# create state weights
+wt <- t(aggregates * population)
+for (r in 1:nrow(wt)) {
+  wt[r,] <- wt[r,] / sum(wt[r,])
+}
+
+# aggregate states are weighted avg of state params
+beta_s <- beta_r
+for (r in 1:nrow(wt)) {
+  beta_s <- c(beta_s, sum(wt[r,] * beta_r))
+}
 
 # random walk covariance matrix
 K_d <- K_r * 0.025
@@ -68,8 +86,11 @@ for (r in 1:nrow(beta_rd)) {
   beta_rd[r,] <- cumsum(beta_rd[r,])
 }
 
-# national env is a weighted average of state params
-beta_sd <- rbind(beta_rd, colSums(beta_rd * population)/sum(population))
+# aggregate states are weighted avg of state params
+beta_sd <- beta_rd
+for (r in 1:nrow(wt)) {
+  beta_sd <- rbind(beta_sd, colSums(beta_rd * wt[r,]))
+}
 
 # pollster bias
 set.seed(6)
@@ -92,10 +113,7 @@ beta_c <- c(0, 0.05, -0.05)
 n_polls <- 800
 
 # probability of polling a specific state (based on close-ness)
-state_probs <- (abs(expit(t(beta_s + beta_sd)[1,]) - 0.5)^-1)[1:length(population)]
-
-# national polls correspond to index 5
-state_probs <- c(state_probs, mean(state_probs))
+state_probs <- (abs(expit(t(beta_s + beta_sd)[1,]) - 0.5)^-1)
 
 # probability of poll occurring on a specific day
 day_probs <- dnorm(1:179, 180, 60)
@@ -109,7 +127,7 @@ polls <-
   tibble(poll = 1:n_polls) %>%
 
   # poll characteristics
-  bind_cols(state = sample(1:(length(population) + 1),
+  bind_cols(state = sample(1:length(beta_s),
                            size = nrow(.),
                            replace = TRUE,
                            prob = state_probs)) %>%
@@ -175,7 +193,7 @@ stan_data <-
     cid = polls$cid,
     pid = polls$pid,
     F_r = distances,
-    wt = matrix(population/sum(population), nrow = 1),
+    wt = wt,
     K = polls$K,
     Y = polls$Y,
     beta_g_sigma = 0.05,
