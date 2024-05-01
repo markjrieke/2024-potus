@@ -16,7 +16,7 @@ $$
 \end{align*}
 $$
 
-$\beta_s$ and $\beta_{s,d}$ comprise the "true" latent voting intention in each state. $\beta_s$ is the time-invariant component, set by a Gaussian process over the euclidean distance between states in some normalized feature space and $\beta_{s,d}$ is a the daily time-varying offset from each state's time-invariant component, set by a Gaussian process over time in each state. The predicted voteshare in state $s$ on day $d=E$ (election day) is $\text{expit}(\beta_s + \beta_{s,E})$. The state-level prior is either over the time-invariant parameter *or* the predicted voteshare (TBD). 
+$\beta_s$ and $\beta_{s,d}$ comprise the "true" latent voting intention in each state. $\beta_s$ is the time-invariant component, set by a Gaussian process over the euclidean distance between states in some normalized feature space and $\beta_{s,d}$ is a the daily time-varying offset from each state's time-invariant component, set by a AR(1) / Gaussian random walk process over time in each state. The predicted voteshare in state $s$ on day $d=E$ (election day) is $\text{expit}(\beta_s + \beta_{s,E})$. The state-level prior is either over the time-invariant parameter *or* the predicted voteshare (TBD). 
 
 The remaining parameters account for bias in the individual polls:
 
