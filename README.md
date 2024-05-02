@@ -74,6 +74,11 @@ of groups in these parameters.
     Polls](https://github.com/fivethirtyeight/data/tree/master/polls)
   - [Urban Stats](https://urbanstats.org/)
   - [Cook](https://www.cookpolitical.com/cook-pvi)
+- Misc
+  - [FTE poll inclusion
+    policy](https://abcnews.go.com/538/538s-polls-policy-faqs/story?id=104489193)
+  - [FTE weighting
+    methodology](https://abcnews.go.com/538/polling-averages-work/story?id=104546697)
 
 ### banned pollsters
 

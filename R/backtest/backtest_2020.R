@@ -16,8 +16,11 @@ polls <- read_csv("data/polls/president_2020.csv")
 # blegh ------------------------------------------------------------------------
 
 population_rank <-
-  tibble(population = c("lv", "rv", "a", "v"),
+  tibble(population = c("lv", "rv", "v", "a"),
          rank = 1:4)
+
+allowed_candidates <-
+  c("Biden", "Trump", "Jorgensen", "Hawkins")
 
 polls %>%
 
@@ -34,17 +37,28 @@ polls %>%
          candidate = answer,
          pct) %>%
 
+  # remove banned pollsters
+  filter(!str_detect(pollster, "Rasmussen")) %>%
+
   # filter to only polls taken since may of the election year
   mutate(end_date = mdy(end_date),
          pct = pct/100) %>%
   filter(end_date >= mdy("5/1/2020"),
          end_date <= mdy("11/4/2020")) %>%
 
+  # remove questions with hypothetical candidates
+  group_by(question_id) %>%
+  mutate(allowed_candidate = candidate %in% allowed_candidates,
+         allowed_candidate = min(allowed_candidate)) %>%
+  ungroup() %>%
+  filter(allowed_candidate != 0) %>%
+  select(-allowed_candidate) %>%
+
   # total number of candidates and total percent responding
   # used to subset later on
   group_by(poll_id, question_id) %>%
   mutate(n_candidates = n(),
-         total_pct = sum(pct)) %>%
+         total_pct = sum(pct))  %>%
 
   # select the question most closely matching model (min candidates)
   # if multiple populations polled, select "best rank"
@@ -97,7 +111,10 @@ polls %>%
   mutate(sample_size = biden + trump) %>%
   select(-trump) %>%
 
+  # fix missing values
   mutate(state = replace_na(state, "National"),
+         mode = replace_na(mode, "Unknown"),
          candidate_sponsored = replace_na(candidate_sponsored, "None")) %>%
-
-  count(state) %>% view()
+  distinct(state) %>%
+  arrange(state) %>%
+  pull(state)
