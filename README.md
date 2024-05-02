@@ -12,7 +12,7 @@ for more detail, but model is loosely the following:
 $$
 \begin{align*}
 \text{Y}_i &\sim \text{Binomial}(\text{K}_i,\ \theta_i) \\
-\text{logit}(\theta) &= \beta_s + \beta_{s,d} + \beta_p + \beta_m + \beta_g + \beta_c + \beta_n
+\text{logit}(\theta) &= \beta_s + \beta_{s,d} + \beta_p + \beta_m + \beta_g + \beta_c + \beta_n \\
 \end{align*}
 $$
 
