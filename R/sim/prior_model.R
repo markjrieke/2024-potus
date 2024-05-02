@@ -103,7 +103,8 @@ stan_data <-
     I = model_data$I,
     A_new = fetch_approval(),
     G_new = G_new,
-    I_new = 1
+    I_new = 1,
+    sigma_hat = 0.05
   )
 
 # compile & fit

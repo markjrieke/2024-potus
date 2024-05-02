@@ -7,8 +7,9 @@ data {
 
   // // 2024 Prior
   real A_new;                     // Biden Net Approval
-  real G_new;                     // 202r Real 2nd Quarter GDP Growth
+  real G_new;                     // 2024 Real 2nd Quarter GDP Growth
   real I_new;                     // Incumbency Status
+  real<lower=0> sigma_hat;        // Out of sample noise to add
 }
 
 parameters {
@@ -45,7 +46,8 @@ generated quantities {
   }
 
   // Prior for 2024
-  real mu_new = inv_logit(alpha + beta_a * A_new + beta_g * G_new + beta_i * I_new);
+  real mu_hat = alpha + beta_a * A_new + beta_g * G_new + beta_i * I_new;
+  real mu_new = inv_logit(normal_rng(mu_hat, sigma_hat));
   real theta_new_pred = normal_rng(mu_new, sigma);
 
 }
