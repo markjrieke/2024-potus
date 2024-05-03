@@ -79,6 +79,9 @@ of groups in these parameters.
     policy](https://abcnews.go.com/538/538s-polls-policy-faqs/story?id=104489193)
   - [FTE weighting
     methodology](https://abcnews.go.com/538/polling-averages-work/story?id=104546697)
+  - [Notes on
+    copulas](https://www.pymc.io/projects/examples/en/latest/howto/copula-estimation.html)
+    (used for generating distances in some feature space)
 
 ### banned pollsters
 
