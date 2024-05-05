@@ -65,6 +65,9 @@ data {
   vector[R] e_day_mu_r;                // Raw logit-scale mean prior for election day
   vector<lower=0>[R] e_day_sigma_r;    // Raw shape for election day logit scale prior
 
+  // Generated quantities
+  real<lower=0> omega;                 // Scale of beta rng
+
   // Debug
   int<lower=0, upper=1> prior_check;
 }
@@ -181,8 +184,10 @@ model {
 }
 
 generated quantities {
+  matrix[S, D] mu_hat;
   matrix[S, D] theta;
   for (s in 1:S) {
-    theta[s,:] = inv_logit(e_day_mu[s] + beta_s[s] + beta_sd[s,:]);
+    mu_hat[s,:] = inv_logit(e_day_mu[s] + beta_s[s] + beta_sd[s,:]);
+    theta[s,:] = to_row_vector(beta_rng(mu_hat[s,:] * omega, (1 - mu_hat[s,:]) * omega));
   }
 }

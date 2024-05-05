@@ -392,6 +392,7 @@ stan_data <-
     rho_beta = 6,
     alpha_sigma = 0.05,
     phi_sigma = 0.05,
+    omega = 1000,
     prior_check = 0
   )
 
