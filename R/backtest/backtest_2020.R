@@ -363,14 +363,14 @@ priors <-
 stan_data <-
   list(
     N = nrow(polls),
-    D = max(polls$did),
+    D = as.integer(mdy("11/3/2020") - mdy("5/1/2020")) + 1,
     R = nrow(F_r),
     A = nrow(wt),
-    S = max(polls$sid),
-    G = max(polls$gid),
-    M = max(polls$mid),
-    C = max(polls$cid),
-    P = max(polls$pid),
+    S = max(sid$sid),
+    G = max(gid$gid),
+    M = max(mid$mid),
+    C = max(cid$cid),
+    P = max(pid$pid),
     did = polls$did,
     sid = polls$sid,
     gid = polls$gid,
@@ -407,8 +407,7 @@ poll_fit <-
     iter_sampling = 1000,
     chains = 4,
     parallel_chains = 4,
-    init = 0.01,
-    step_size = 0.002
+    init = 0.01
   )
 
 results <-
