@@ -2,8 +2,10 @@
 
 library(tidyverse)
 library(riekelib)
+library(cmdstanr)
 
 source("R/model/imports.R")
+source("R/model/utils.R")
 
 # import data ------------------------------------------------------------------
 
@@ -14,16 +16,112 @@ cpi <- fetch_cpi()
 # polls
 polls <- read_csv("data/polls/president_2020.csv")
 
-# blegh ------------------------------------------------------------------------
+# State-level data
+urban_stats <- read_csv("data/static/urban_stats.csv")
 
+# Prior model data
+abramovitz <- read_csv("data/static/abramovitz.csv")
+
+# TODO: convert to csv
 population_rank <-
   tibble(population = c("lv", "rv", "v", "a"),
          rank = 1:4)
 
+# TODO: convert to csv
 allowed_candidates <-
   c("Biden", "Trump", "Jorgensen", "Hawkins")
 
-polls %>%
+# TODO: convert to csv (& add others [Traflagar & Center Street])
+banned_pollsters <-
+  c("Rasmussen")
+
+# construct state-level feature matrix -----------------------------------------
+
+# TODO: this can be done in data
+features <-
+  urban_stats %>%
+
+  # exclude aggregate states
+  filter(!state %in% c("National", "Nebraska", "Maine")) %>%
+
+  # construct indices from features
+  mutate(across(white:inc_geq_100, ~.x/100),
+         ed_less_hs = 1 - ed_high_school,
+         ed_high_school = ed_high_school - ed_undergrad,
+         ed_undergrad = ed_undergrad - ed_grad,
+         ed_index = ed_high_school + 2 * ed_undergrad + 3 * ed_grad,
+         inc_index = inc_less_50 - poverty + inc_50_100 + 2 * inc_geq_100,
+         log_pw_density = log(pw_density)) %>%
+
+  # copula transform beta-distributed features
+  copula_transform(white) %>%
+  copula_transform(hispanic) %>%
+  copula_transform(black) %>%
+  copula_transform(asian) %>%
+  copula_transform(citizen_by_birth) %>%
+
+  # standardize feature columns
+  select(state,
+         population_mm,
+         log_pw_density,
+         white,
+         hispanic,
+         black,
+         asian,
+         citizen_by_birth,
+         ed_index,
+         inc_index) %>%
+  mutate(across(log_pw_density:inc_index, standardize)) %>%
+  arrange(state)
+
+# convert to matrix
+feature_matrix <-
+  features %>%
+  select(log_pw_density:inc_index) %>%
+  as.matrix()
+
+# Construct feature matrix as the euclidean distance in the feature space
+F_r <- matrix(0, nrow = nrow(feature_matrix), ncol = nrow(feature_matrix))
+for (r in 1:nrow(F_r)) {
+  for (c in 1:ncol(F_r)) {
+    F_r[r,c] <- (feature_matrix[r,] - feature_matrix[c,])^2 |> sum() |> sqrt()
+  }
+}
+
+# Scale for consistent prior allocation
+F_r <- F_r/max(F_r)
+
+# Create aggregate weights
+wt <-
+  features %>%
+
+  # aggregate states weighted by population within the aggregate
+  transmute(state = state,
+            population_mm = population_mm,
+            wt_nat = 1,
+            wt_ne = if_else(str_detect(state, "Nebraska"), 1, 0),
+            wt_me = if_else(str_detect(state, "Maine"), 1, 0)) %>%
+  mutate(across(starts_with("wt"), ~.x * population_mm),
+         across(starts_with("wt"), ~.x/sum(.x))) %>%
+
+  # convert to A x R matrix
+  select(starts_with("wt")) %>%
+  as.matrix() %>%
+  t()
+
+# create id mapping table
+sid <-
+  features %>%
+  select(state) %>%
+  bind_rows(tibble(state = c("National", "Nebraska", "Maine"))) %>%
+  rowid_to_column("sid")
+
+# wrangle polls ----------------------------------------------------------------
+
+# wrangle polls
+# TODO: this should be a function in the final flow
+polls <-
+  polls %>%
 
   # select relevant columns for modeling
   select(poll_id,
@@ -39,13 +137,13 @@ polls %>%
          pct) %>%
 
   # remove banned pollsters
-  filter(!str_detect(pollster, "Rasmussen")) %>%
+  filter(!pollster %in% banned_pollsters) %>%
 
   # filter to only polls taken since may of the election year
   mutate(end_date = mdy(end_date),
          pct = pct/100) %>%
   filter(end_date >= mdy("5/1/2020"),
-         end_date <= mdy("11/4/2020")) %>%
+         end_date < mdy("11/3/2020")) %>%
 
   # remove questions with hypothetical candidates
   group_by(question_id) %>%
@@ -115,79 +213,223 @@ polls %>%
   # fix missing values
   mutate(state = replace_na(state, "National"),
          mode = replace_na(mode, "Unknown"),
-         candidate_sponsored = replace_na(candidate_sponsored, "None"))
+         candidate_sponsored = replace_na(candidate_sponsored, "None")) %>%
+  rename(group = population)
 
-urban_stats <-
-  read_csv("data/static/urban_stats.csv")
+# create mapping ids
+pid <- polls %>% map_ids(pollster)
+gid <- polls %>% map_ids(group)
+mid <- polls %>% map_ids(mode)
+cid <- polls %>% map_ids(candidate_sponsored)
 
-copula_transform <- function(data, feature) {
+# prep for stan
+polls <-
+  polls %>%
+  mutate(did = as.integer(mdy("11/3/2020") - end_date),
+         did = as.integer(mdy("11/3/2020") - mdy("5/1/2020")) - did + 1) %>%
+  left_join(sid) %>%
+  left_join(pid) %>%
+  left_join(gid) %>%
+  left_join(mid) %>%
+  left_join(cid) %>%
+  rename(K = sample_size,
+         Y = biden)
 
-  # beta distributed observations
-  observed <- data %>% pull({{ feature }})
+# prior model ------------------------------------------------------------------
 
-  # estimate and extract parameters
-  fit <-
-    gamlss::gamlss(
-      observed ~ 1,
-      family = gamlss.dist::BEo()
-    )
+# TODO: convert this to function
+# TODO: only run if metadata out-of-date
 
-  alpha <- fitted(fit, "mu")[1]
-  beta <- fitted(fit, "sigma")[1]
+max_cpi <-
+  cpi %>%
+  filter(DATE == max(DATE)) %>%
+  pull(CPIAUCSL)
 
-  # convert to normal space
-  uniform_space <- pbeta(observed, alpha, beta)
-  normal_space <- qnorm(uniform_space)
+cpi <-
+  cpi %>%
+  rename_with(str_to_lower) %>%
+  rename(cpi = cpiaucsl) %>%
+  mutate(inflation = max_cpi/cpi)
 
-  # replace in the original data
-  out <-
-    data %>%
-    mutate("{{feature}}" := normal_space)
+# adjust gdp for inflation
+real_gdp <-
+  gdp %>%
+  rename_with(str_to_lower) %>%
+  left_join(cpi) %>%
+  select(-cpi) %>%
+  mutate(real_gdp = gdp*inflation) %>%
+  select(date, real_gdp)
 
-  return(out)
+# append national data with 2nd quarter real annualized gdp growth
+abramovitz <-
+  abramovitz %>%
+  mutate(begin_quarter = mdy(paste0("7/1/", year - 1)),
+         end_quarter = mdy(paste0("7/1/", year))) %>%
+  left_join(real_gdp, by = c("begin_quarter" = "date")) %>%
+  rename(begin_gdp = real_gdp) %>%
+  left_join(real_gdp, by = c("end_quarter" = "date")) %>%
+  rename(end_gdp = real_gdp) %>%
+  mutate(real_gdp_growth = end_gdp/begin_gdp - 1) %>%
+  select(-ends_with("quarter"),
+         -ends_with("gdp"))
 
-}
+# summarize abramovitz data
+model_data <-
+  abramovitz %>%
+  mutate(fte_net_inc_approval = fte_net_inc_approval/100) %>%
+  select(year,
+         inc_party,
+         I = inc_running,
+         dem,
+         rep,
+         A = fte_net_inc_approval,
+         G = real_gdp_growth) %>%
+  transmute(V = if_else(inc_party == "dem", dem/(dem + rep), rep/(dem + rep)),
+            A = A,
+            G,
+            I)
 
-features <-
-  urban_stats %>%
+# pass to stan
+stan_data <-
+  list(
+    N = nrow(model_data),
+    V = model_data$V,
+    A = model_data$A,
+    G = model_data$G,
+    I = model_data$I,
+    A_new = (abramovitz %>% filter(year == 2020) %>% pull(fte_net_inc_approval))/100,
+    G_new = abramovitz %>% filter(year == 2020) %>% pull(real_gdp_growth),
+    I_new = abramovitz %>% filter(year == 2020) %>% pull(inc_running),
+    sigma_hat = 0.05
+  )
+
+prior_model <-
+  cmdstan_model("stan/prior_model.stan")
+
+prior_fit <-
+  prior_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 2000,
+    iter_sampling = 2000,
+    chains = 4,
+    parallel_chains = 4
+  )
+
+national_prior <-
+  prior_fit$draws("theta_new_pred", format = "df") %>%
+  as_tibble() %>%
+  transmute(theta = 1 - theta_new_pred)
+
+priors <-
+  read_csv("data/static/statewide_results.csv") %>%
+  filter(year %in% c(2012, 2016)) %>%
+  select(year, state, democratic, republican) %>%
+  pivot_longer(c(democratic, republican),
+               names_to = "party",
+               values_to = "voteshare") %>%
+  mutate(voteshare = voteshare/100,
+         party = paste(str_sub(party, 1, 3), year - 2000, sep = "_")) %>%
+  group_by(year, state) %>%
+  mutate(state_2pv = voteshare/sum(voteshare)) %>%
+  ungroup() %>%
+  filter(str_detect(party, "dem")) %>%
+  select(year, state, state_2pv) %>%
+  left_join(abramovitz %>%
+              mutate(nat_2pv = dem/(dem + rep)) %>%
+              select(year, nat_2pv)) %>%
+  mutate(pvi = state_2pv - nat_2pv,
+         year = paste("pvi", year - 2000, sep = "_")) %>%
+  select(year, state, pvi) %>%
+  pivot_wider(names_from = year,
+              values_from = pvi) %>%
+  mutate(pvi = 0.75 * pvi_16 + 0.25 * pvi_12) %>%
+  select(state, pvi) %>%
   filter(!state %in% c("National", "Nebraska", "Maine")) %>%
-  mutate(across(white:inc_geq_100, ~.x/100),
-         ed_less_hs = 1 - ed_high_school,
-         ed_high_school = ed_high_school - ed_undergrad,
-         ed_undergrad = ed_undergrad - ed_grad,
-         ed_index = ed_high_school + 2 * ed_undergrad + 3 * ed_grad,
-         inc_index = inc_less_50 - poverty + inc_50_100 + 2 * inc_geq_100,
-         log_pw_density = log(pw_density)) %>%
-  copula_transform(white) %>%
-  copula_transform(hispanic) %>%
-  copula_transform(black) %>%
-  copula_transform(asian) %>%
-  copula_transform(citizen_by_birth) %>%
-  select(state,
-         population_mm,
-         log_pw_density,
-         white,
-         hispanic,
-         black,
-         asian,
-         citizen_by_birth,
-         ed_index,
-         inc_index) %>%
-  mutate(across(log_pw_density:inc_index, standardize)) %>%
-  arrange(state)
+  mutate(state = str_replace(state, "[ ]+(?=[0-9])", " CD-")) %>%
+  crossing(national_prior) %>%
+  mutate(prior = pvi + theta,
+         prior = logit(prior)) %>%
+  drop_na() %>%
+  group_by(state) %>%
+  summarise(e_day_mu = mean(prior),
+            e_day_sigma = sd(prior)) %>%
+  left_join(sid) %>%
+  filter(!is.na(sid)) %>%
+  arrange(sid)
 
-feature_matrix <-
-  features %>%
-  select(log_pw_density:inc_index) %>%
-  as.matrix()
+# model ------------------------------------------------------------------------
 
-# Construct feature matrix as a set of distances
-F_s <- matrix(0, nrow = nrow(feature_matrix), ncol = nrow(feature_matrix))
-for (r in 1:nrow(F_s)) {
-  for (c in 1:ncol(F_s)) {
-    F_s[r,c] <- (feature_matrix[r,] - feature_matrix[c,])^2 |> sum() |> sqrt()
-  }
-}
-F_s <- F_s/max(F_s)
+stan_data <-
+  list(
+    N = nrow(polls),
+    D = max(polls$did),
+    R = nrow(F_r),
+    A = nrow(wt),
+    S = max(polls$sid),
+    G = max(polls$gid),
+    M = max(polls$mid),
+    C = max(polls$cid),
+    P = max(polls$pid),
+    did = polls$did,
+    sid = polls$sid,
+    gid = polls$gid,
+    mid = polls$mid,
+    cid = polls$cid,
+    pid = polls$pid,
+    F_r = F_r,
+    wt = wt,
+    K = polls$K,
+    Y = polls$Y,
+    beta_g_sigma = 0.05,
+    beta_m_sigma = 0.05,
+    beta_c_sigma = 0.05,
+    sigma_n_sigma = 0.05,
+    sigma_p_sigma = 0.075,
+    e_day_mu_r = priors$e_day_mu,
+    e_day_sigma_r = priors$e_day_sigma,
+    rho_alpha = 3,
+    rho_beta = 6,
+    alpha_sigma = 0.05,
+    phi_sigma = 0.05,
+    prior_check = 0
+  )
 
+poll_model <-
+  cmdstan_model("stan/poll_model.stan")
 
+poll_fit <-
+  poll_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    chains = 4,
+    parallel_chains = 4,
+    init = 0.01,
+    step_size = 0.002
+  )
+
+results <-
+  poll_fit$summary("theta")
+
+results %>%
+  mutate(variable = str_remove_all(variable, "theta\\[|]")) %>%
+  separate(variable, c("sid", "day"), ",") %>%
+  mutate(across(c(sid, day), as.integer)) %>%
+  left_join(sid) %>% #filter(state == "Georgia", day == 186)
+  nest(data = -state) %>%
+  slice_sample(n = 9) %>%
+  unnest(data) %>%
+  ggplot(aes(x = day,
+             y = median,
+             ymin = q5,
+             ymax = q95)) +
+  geom_hline(yintercept = 0.5,
+             linetype = "dashed",
+             color = "gray60") +
+  geom_ribbon(alpha = 0.25) +
+  geom_line() +
+  scale_y_percent() +
+  facet_wrap(~state) +
+  theme_rieke()
