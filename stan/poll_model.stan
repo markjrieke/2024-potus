@@ -46,12 +46,12 @@ data {
 
   // Fixed effect priors
   real<lower=0> beta_g_sigma;          // Scale for the group (population) bias
-  real<lower=0> beta_m_sigma;          // Scale for the poll mode bias
   real<lower=0> beta_c_sigma;          // Scale for the candidate sponsor bias
 
   // Random effect priors
   real<lower=0> sigma_n_sigma;         // Scale for half-normal prior for raw poll bias
   real<lower=0> sigma_p_sigma;         // Scale for half-normal prior for pollster bias
+  real<lower=0> sigma_m_sigma;         // Scale for half-normal prior for mode bias
 
   // State Gaussian Process priors
   real<lower=0> rho_alpha;             // Shape for gamma prior for state covariance length scale
@@ -85,14 +85,15 @@ transformed data {
 parameters {
   // Fixed effects
   vector[G] beta_g;                    // Group (population) bias
-  vector[M] beta_m;                    // Poll mode bias
   vector[C] beta_c;                    // Candidate sponsor bias
 
   // Random effects
   vector[N] eta_n;                     // Raw poll bias
   vector[P] eta_p;                     // Pollster bias
+  vector[M] eta_m;                     // Mode bias
   real<lower=0> sigma_n;               // Scale for raw poll bias
   real<lower=0> sigma_p;               // Scale for pollster bias
+  real<lower=0> sigma_m;               // Scale for mode bias
 
   // State Gaussian Process
   vector[R] eta_r;                     // Raw state voting intent
@@ -108,6 +109,7 @@ transformed parameters{
   // Extract random parameters
   vector[N] beta_n = eta_n * sigma_n;
   vector[P] beta_p = eta_p * sigma_p;
+  vector[M] beta_m = eta_m * sigma_m;
 
   // Construct covariance matrix from feature space
   matrix[R, R] K_r = gp_exp_quad_cov(F_r, alpha, rho);
@@ -150,14 +152,15 @@ transformed parameters{
 model {
   // Priors over fixed effects
   target += normal_lpdf(beta_g | 0, beta_g_sigma);
-  target += normal_lpdf(beta_m | 0, beta_m_sigma);
   target += normal_lpdf(beta_c | 0, beta_c_sigma);
 
   // Priors over random effects
   target += std_normal_lpdf(eta_n);
   target += std_normal_lpdf(eta_p);
+  target += std_normal_lpdf(eta_m);
   target += normal_lpdf(sigma_n | 0, sigma_n_sigma) - normal_lccdf(0 | 0, sigma_n_sigma);
   target += normal_lpdf(sigma_p | 0, sigma_p_sigma) - normal_lccdf(0 | 0, sigma_p_sigma);
+  target += normal_lpdf(sigma_m | 0, sigma_m_sigma) - normal_lccdf(0 | 0, sigma_m_sigma);
 
   // Priors over state Gaussian Process
   target += std_normal_lpdf(eta_r);

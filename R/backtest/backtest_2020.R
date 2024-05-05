@@ -382,10 +382,10 @@ stan_data <-
     K = polls$K,
     Y = polls$Y,
     beta_g_sigma = 0.05,
-    beta_m_sigma = 0.05,
     beta_c_sigma = 0.05,
     sigma_n_sigma = 0.05,
     sigma_p_sigma = 0.075,
+    sigma_m_sigma = 0.05,
     e_day_mu_r = priors$e_day_mu,
     e_day_sigma_r = priors$e_day_sigma,
     rho_alpha = 3,
@@ -417,7 +417,7 @@ results %>%
   mutate(variable = str_remove_all(variable, "theta\\[|]")) %>%
   separate(variable, c("sid", "day"), ",") %>%
   mutate(across(c(sid, day), as.integer)) %>%
-  left_join(sid) %>% #filter(state == "Georgia", day == 186)
+  left_join(sid) %>% #filter(state == "Pennsylvania", day == 186)
   nest(data = -state) %>%
   slice_sample(n = 9) %>%
   unnest(data) %>%
@@ -432,4 +432,23 @@ results %>%
   geom_line() +
   scale_y_percent() +
   facet_wrap(~state) +
+  theme_rieke()
+
+pollsters <-
+  poll_fit$summary("eta_p")
+
+pollsters %>%
+  mutate(variable = as.integer(parse_number(variable))) %>%
+  rename(pid = variable) %>%
+  left_join(pid) %>%
+  left_join(polls %>% count(pid)) %>%
+  filter(n >= 10) %>%
+  mutate(pollster = paste0(pollster, "\n(n = ", n, ")"),
+         pollster = fct_reorder(pollster, median)) %>%
+  ggplot(aes(x = pollster,
+             y = -median,
+             ymin = -q95,
+             ymax = -q5)) +
+  geom_pointrange() +
+  coord_flip() +
   theme_rieke()
