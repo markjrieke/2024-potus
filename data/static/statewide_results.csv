@@ -908,7 +908,7 @@ year,state,democratic,republican,other,third_party_flag,notes
 2016,Florida,47.82,49.02,3.16,0,
 2016,Georgia,45.64,50.77,3.59,0,
 2016,Hawaii,62.22,30.03,7.75,0,No individual third party candidate comprised 5% of the vote
-2016,Idaho,59.25,27.48,13.27,1,
+2016,Idaho,27.48,59.25,13.27,1,
 2016,Illinois,55.83,38.76,5.41,0,No individual third party candidate comprised 5% of the vote
 2016,Indiana,37.91,56.82,5.27,0,No individual third party candidate comprised 5% of the vote
 2016,Iowa,41.74,51.15,7.11,0,No individual third party candidate comprised 5% of the vote
@@ -951,7 +951,7 @@ year,state,democratic,republican,other,third_party_flag,notes
 2016,Washington,52.54,36.83,10.63,0,No individual third party candidate comprised 5% of the vote
 2016,West Virginia,26.43,68.5,5.07,0,No individual third party candidate comprised 5% of the vote
 2016,Wisconsin,46.45,47.22,6.33,0,No individual third party candidate comprised 5% of the vote
-2016,Wyoming,68.17,21.88,9.95,1,
+2016,Wyoming,21.88,68.17,9.95,1,
 2020,Alabama,36.57,62.03,1.4,0,
 2020,Alaska,42.77,52.83,4.4,0,
 2020,Arizona,49.36,49.06,1.58,0,

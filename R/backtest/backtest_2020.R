@@ -235,6 +235,59 @@ polls <-
   rename(K = sample_size,
          Y = biden)
 
+# pvi model --------------------------------------------------------------------
+
+# TODO: extend to all years
+pvi <-
+  read_csv("data/static/statewide_results.csv") %>%
+  filter(year %in% c(2008, 2012, 2016, 2020)) %>%
+  select(year, state, democratic, republican) %>%
+  mutate(state_2pv = democratic / (democratic + republican)) %>%
+  select(year, state, state_2pv) %>%
+  left_join(read_csv("data/static/abramovitz.csv") %>%
+              select(year, dem, rep) %>%
+              transmute(year = year,
+                        nat_2pv = dem/(dem + rep))) %>%
+  mutate(pvi = state_2pv - nat_2pv) %>%
+  select(year, state, pvi) %>%
+  pivot_wider(names_from = year,
+              values_from = pvi,
+              names_prefix = "pvi_") %>%
+  transmute(state = state,
+            C = 0.75 * pvi_2012 + 0.25 * pvi_2008,
+            P = pvi_2016,
+            C_hat = pvi_2016)
+
+stan_data <-
+  list(
+    N = nrow(pvi),
+    P = pvi$P,
+    C = pvi$C,
+    alpha_mu = 0,
+    alpha_sigma = 1,
+    beta_mu = 0,
+    beta_sigma = 1,
+    sigma_sigma = 1,
+    S = nrow(pvi),
+    C_hat = pvi$C_hat
+  )
+
+pvi_model <-
+  cmdstan_model("stan/pvi_model.stan")
+
+pvi_fit <-
+  pvi_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 2000,
+    iter_sampling = 2000,
+    chains = 4,
+    parallel_chains = 4
+  )
+
+pvi_fit$summary("P_hat") %>%
+  bind_cols(pvi)
+
 # prior model ------------------------------------------------------------------
 
 # TODO: convert this to function
