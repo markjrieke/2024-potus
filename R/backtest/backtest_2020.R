@@ -33,7 +33,7 @@ allowed_candidates <-
 
 # TODO: convert to csv (& add others [Traflagar & Center Street])
 banned_pollsters <-
-  c("Rasmussen", "Traflagar", "Center Street PAC")
+  c("Rasmussen", "Trafalgar", "Center Street PAC")
 
 # construct state-level feature matrix -----------------------------------------
 
@@ -269,7 +269,15 @@ pvi <-
          state,
          P = pvi,
          C = cpvi,
-         C_hat) %>%
+         C_hat)
+
+C_hat <-
+  pvi %>%
+  filter(year == 2020) %>%
+  arrange(state)
+
+pvi <-
+  pvi %>%
   filter(year < 2020)
 
 stan_data <-
@@ -282,8 +290,8 @@ stan_data <-
     beta_mu = 0,
     beta_sigma = 1,
     sigma_sigma = 1,
-    S = nrow(pvi %>% filter(year == max(year))),
-    C_hat = pvi %>% filter(year == max(year)) %>% pull(C_hat)
+    S = nrow(C_hat),
+    C_hat = C_hat$C_hat
   )
 
 pvi_model <-
@@ -445,18 +453,18 @@ stan_data <-
     wt = wt,
     K = polls$K,
     Y = polls$Y,
-    beta_g_sigma = 0.05,
-    beta_c_sigma = 0.05,
-    sigma_n_sigma = 0.05,
-    sigma_p_sigma = 0.075,
-    sigma_m_sigma = 0.05,
+    beta_g_sigma = 0.02,
+    beta_c_sigma = 0.015,
+    sigma_n_sigma = 0.02,
+    sigma_p_sigma = 0.05,
+    sigma_m_sigma = 0.02,
     e_day_mu_r = priors$e_day_mu,
     e_day_sigma_r = priors$e_day_sigma,
     rho_alpha = 3,
     rho_beta = 6,
     alpha_sigma = 0.05,
     phi_sigma = 0.05,
-    omega = 1000,
+    omega = 600,
     prior_check = 0
   )
 
@@ -477,22 +485,33 @@ poll_fit <-
 results <-
   poll_fit$summary("theta")
 
+competitive <- c("Arizona", "Florida", "Georgia", "Iowa", "Michigan", "Nevada",
+                 "New Hampshire", "North Carolina", "Ohio", "Pennsylvania",
+                 "Texas", "Wisconsin")
 results %>%
   mutate(variable = str_remove_all(variable, "theta\\[|]")) %>%
   separate(variable, c("sid", "day"), ",") %>%
   mutate(across(c(sid, day), as.integer)) %>%
-  left_join(sid) %>% #filter(state == "Pennsylvania", day == 186)
-  nest(data = -state) %>%
-  slice_sample(n = 9) %>%
-  unnest(data) %>%
+  left_join(sid) %>% # filter(state == "Georgia", day == 186)
+  # nest(data = -state) %>%
+  # slice_sample(n = 9) %>%
+  # unnest(data) %>%
+  filter(state %in% competitive) %>%
   ggplot(aes(x = day,
-             y = median,
-             ymin = q5,
-             ymax = q95)) +
+             y = median)) +
   geom_hline(yintercept = 0.5,
              linetype = "dashed",
              color = "gray60") +
-  geom_ribbon(alpha = 0.25) +
+  geom_point(data = polls %>% filter(state %in% competitive),
+             mapping = aes(x = did,
+                           y = Y/K,
+                           size = K),
+             shape = 21,
+             color = "gray60",
+             alpha = 0.75) +
+  geom_ribbon(aes(ymin = q5,
+                  ymax = q95),
+              alpha = 0.25) +
   geom_line() +
   scale_y_percent() +
   facet_wrap(~state) +
