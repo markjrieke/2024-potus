@@ -1,5 +1,5 @@
 year,state,democratic,republican,other,third_party_flag,notes
-1948,Alabama,80.96,19.04,0,0,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
+1948,Alabama,79.75,19.04,1.21,0,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
 1948,Arizona,53.79,43.82,2.39,0,
 1948,Arkansas,61.72,21.02,17.26,1,
 1948,California,47.57,47.13,5.3,0,No individual third party candidate comprised 5% of the vote
@@ -14,13 +14,13 @@ year,state,democratic,republican,other,third_party_flag,notes
 1948,Iowa,50.31,47.58,2.11,0,
 1948,Kansas,44.61,53.63,1.76,0,
 1948,Kentucky,56.74,41.48,1.78,0,
-1948,Louisiana,49.8,17.45,32.75,1,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
+1948,Louisiana,49.07,17.45,33.48,1,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
 1948,Maine,42.27,56.74,0.99,0,
 1948,Maryland,48.01,49.4,2.59,0,
 1948,Massachusetts,54.66,43.16,2.18,0,
 1948,Michigan,47.57,49.23,3.2,0,
 1948,Minnesota,57.16,39.89,2.95,0,
-1948,Mississippi,87.29,2.62,10.09,1,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
+1948,Mississippi,87.17,2.62,10.21,1,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
 1948,Missouri,58.11,41.49,0.4,0,
 1948,Montana,53.09,43.15,3.76,0,
 1948,Nebraska,45.85,54.15,0,0,
@@ -36,7 +36,7 @@ year,state,democratic,republican,other,third_party_flag,notes
 1948,Oregon,46.4,49.78,3.82,0,
 1948,Pennsylvania,46.92,50.93,2.15,0,
 1948,Rhode Island,57.59,41.44,0.97,0,
-1948,South Carolina,72.08,3.78,24.14,1,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
+1948,South Carolina,71.97,3.78,24.25,1,States' Rights Democratic Party considered to be Democratic Party in states that they won for the purposes of a consistent coalition
 1948,South Dakota,47.04,51.84,1.12,0,
 1948,Tennessee,49.14,36.87,13.99,1,
 1948,Texas,65.96,24.29,9.75,1,
@@ -209,7 +209,7 @@ year,state,democratic,republican,other,third_party_flag,notes
 1964,Illinois,59.47,40.53,0,0,
 1964,Indiana,55.98,43.56,0.46,0,
 1964,Iowa,61.88,37.92,0.2,0,
-1964,Kansas,61.88,37.92,0.2,0,
+1964,Kansas,54.09,45.06,0.85,0,
 1964,Kentucky,64.01,35.65,0.34,0,
 1964,Louisiana,43.19,56.81,0,0,
 1964,Maine,68.84,31.16,0,0,
@@ -522,7 +522,7 @@ year,state,democratic,republican,other,third_party_flag,notes
 1988,Idaho,36.01,62.08,1.91,0,
 1988,Illinois,48.6,50.69,0.71,0,
 1988,Indiana,39.69,59.84,0.47,0,
-1988,Iowa,54.27,44.75,0.98,0,
+1988,Iowa,54.71,44.5,0.79,0,
 1988,Kansas,42.56,55.79,1.65,0,
 1988,Kentucky,43.88,55.52,0.6,0,
 1988,Louisiana,44.06,54.27,1.67,0,
@@ -995,7 +995,7 @@ year,state,democratic,republican,other,third_party_flag,notes
 2020,Ohio,45.24,53.27,1.49,0,
 2020,Oklahoma,32.29,65.37,2.34,0,
 2020,Oregon,56.45,40.37,3.18,0,
-2020,Pennsylvania,49.85,48.69,1.46,0,
+2020,Pennsylvania,50.02,48.69,1.29,0,
 2020,Rhode Island,59.39,38.61,2,0,
 2020,South Carolina,43.43,55.11,1.46,0,
 2020,South Dakota,35.61,61.77,2.62,0,

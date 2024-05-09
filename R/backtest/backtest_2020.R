@@ -33,7 +33,7 @@ allowed_candidates <-
 
 # TODO: convert to csv (& add others [Traflagar & Center Street])
 banned_pollsters <-
-  c("Rasmussen")
+  c("Rasmussen", "Traflagar", "Center Street PAC")
 
 # construct state-level feature matrix -----------------------------------------
 
@@ -240,7 +240,7 @@ polls <-
 # TODO: extend to all years
 pvi <-
   read_csv("data/static/statewide_results.csv") %>%
-  filter(year %in% c(2008, 2012, 2016, 2020)) %>%
+  filter(year >= 1972) %>%
   select(year, state, democratic, republican) %>%
   mutate(state_2pv = democratic / (democratic + republican)) %>%
   select(year, state, state_2pv) %>%
@@ -250,13 +250,27 @@ pvi <-
                         nat_2pv = dem/(dem + rep))) %>%
   mutate(pvi = state_2pv - nat_2pv) %>%
   select(year, state, pvi) %>%
-  pivot_wider(names_from = year,
-              values_from = pvi,
-              names_prefix = "pvi_") %>%
-  transmute(state = state,
-            C = 0.75 * pvi_2012 + 0.25 * pvi_2008,
-            P = pvi_2016,
-            C_hat = pvi_2016)
+  mutate(ym4 = year - 4,
+         ym8 = year - 8) %>%
+  left_join(x = .,
+            y = select(.,
+                       ym4 = year,
+                       state,
+                       pvim4 = pvi)) %>%
+  left_join(x = .,
+            y = select(.,
+                       ym8 = year,
+                       state,
+                       pvim8 = pvi)) %>%
+  drop_na() %>%
+  mutate(cpvi = 0.75 * pvim4 + 0.25 * pvim8,
+         C_hat = 0.75 * pvi + 0.25 * pvim4) %>%
+  select(year,
+         state,
+         P = pvi,
+         C = cpvi,
+         C_hat) %>%
+  filter(year < 2020)
 
 stan_data <-
   list(
@@ -268,8 +282,8 @@ stan_data <-
     beta_mu = 0,
     beta_sigma = 1,
     sigma_sigma = 1,
-    S = nrow(pvi),
-    C_hat = pvi$C_hat
+    S = nrow(pvi %>% filter(year == max(year))),
+    C_hat = pvi %>% filter(year == max(year)) %>% pull(C_hat)
   )
 
 pvi_model <-
@@ -286,7 +300,16 @@ pvi_fit <-
   )
 
 pvi_fit$summary("P_hat") %>%
-  bind_cols(pvi)
+  bind_cols(pvi %>% filter(year == max(year))) %>%
+  ggplot(aes(x = C_hat,
+             y = median,
+             ymin = q5,
+             ymax = q95)) +
+  geom_ribbon(alpha = 0.25) +
+  geom_line() +
+  geom_abline(linetype = "dashed") +
+  scale_xy_percent() +
+  theme_rieke()
 
 # prior model ------------------------------------------------------------------
 
