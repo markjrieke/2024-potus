@@ -299,17 +299,12 @@ pvi_fit <-
     parallel_chains = 4
   )
 
-pvi_fit$summary("P_hat") %>%
+pvi_summary <-
+  pvi_fit$summary("P_hat") %>%
   bind_cols(pvi %>% filter(year == max(year))) %>%
-  ggplot(aes(x = C_hat,
-             y = median,
-             ymin = q5,
-             ymax = q95)) +
-  geom_ribbon(alpha = 0.25) +
-  geom_line() +
-  geom_abline(linetype = "dashed") +
-  scale_xy_percent() +
-  theme_rieke()
+  select(state,
+         pvi_mu = mean,
+         pvi_sd = sd)
 
 # prior model ------------------------------------------------------------------
 
@@ -376,7 +371,11 @@ stan_data <-
     A_new = (abramovitz %>% filter(year == 2020) %>% pull(fte_net_inc_approval))/100,
     G_new = abramovitz %>% filter(year == 2020) %>% pull(real_gdp_growth),
     I_new = abramovitz %>% filter(year == 2020) %>% pull(inc_running),
-    sigma_hat = 0.05
+    S = nrow(pvi_summary),
+
+    # needs to be negated for backtesting since the incumbent is not a democrat
+    e_day_mu = -1 * pvi_summary$pvi_mu,
+    e_day_sigma = pvi_summary$pvi_sd
   )
 
 prior_model <-
@@ -392,47 +391,36 @@ prior_fit <-
     parallel_chains = 4
   )
 
-national_prior <-
-  prior_fit$draws("theta_new_pred", format = "df") %>%
-  as_tibble() %>%
-  transmute(theta = 1 - theta_new_pred)
-
 priors <-
-  read_csv("data/static/statewide_results.csv") %>%
-  filter(year %in% c(2012, 2016)) %>%
-  select(year, state, democratic, republican) %>%
-  pivot_longer(c(democratic, republican),
-               names_to = "party",
-               values_to = "voteshare") %>%
-  mutate(voteshare = voteshare/100,
-         party = paste(str_sub(party, 1, 3), year - 2000, sep = "_")) %>%
-  group_by(year, state) %>%
-  mutate(state_2pv = voteshare/sum(voteshare)) %>%
-  ungroup() %>%
-  filter(str_detect(party, "dem")) %>%
-  select(year, state, state_2pv) %>%
-  left_join(abramovitz %>%
-              mutate(nat_2pv = dem/(dem + rep)) %>%
-              select(year, nat_2pv)) %>%
-  mutate(pvi = state_2pv - nat_2pv,
-         year = paste("pvi", year - 2000, sep = "_")) %>%
-  select(year, state, pvi) %>%
-  pivot_wider(names_from = year,
-              values_from = pvi) %>%
-  mutate(pvi = 0.75 * pvi_16 + 0.25 * pvi_12) %>%
-  select(state, pvi) %>%
-  filter(!state %in% c("National", "Nebraska", "Maine")) %>%
-  mutate(state = str_replace(state, "[ ]+(?=[0-9])", " CD-")) %>%
-  crossing(national_prior) %>%
-  mutate(prior = pvi + theta,
-         prior = logit(prior)) %>%
+  prior_fit$draws("theta_state", format = "df") %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("theta_state"),
+               names_to = "parameter",
+               values_to = "estimate") %>%
+
+  # negate since incumbent is not a democrat
+  mutate(estimate = 1 - estimate) %>%
+
+  # summarise on the logit scale
+  mutate(estimate = logit(estimate)) %>%
   drop_na() %>%
-  group_by(state) %>%
-  summarise(e_day_mu = mean(prior),
-            e_day_sigma = sd(prior)) %>%
-  left_join(sid) %>%
-  filter(!is.na(sid)) %>%
-  arrange(sid)
+  group_by(parameter) %>%
+  summarise(e_day_mu = mean(estimate),
+            e_day_sigma = sd(estimate)) %>%
+  ungroup() %>%
+  mutate(parameter = parse_number(parameter)) %>%
+  arrange(parameter) %>%
+  bind_cols(pvi_summary) %>%
+  select(state,
+         e_day_mu,
+         e_day_sigma) %>%
+
+  # prep for passing to poll model
+  mutate(state = str_replace(state, "[ ]+(?=[0-9])", " CD-")) %>%
+  filter(!state %in% c("National", "Nebraska", "Maine")) %>%
+  left_join(sid %>% select(sid, state)) %>%
+  arrange(sid) %>%
+  select(-sid)
 
 # model ------------------------------------------------------------------------
 

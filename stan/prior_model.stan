@@ -5,11 +5,15 @@ data {
   vector[N] G;                    // 2nd quarter real gdp growth
   vector[N] I;                    // Whether or not the incumbent is running
 
-  // // 2024 Prior
+  // 2024 National Prior
   real A_new;                     // Biden Net Approval
   real G_new;                     // 2024 Real 2nd Quarter GDP Growth
   real I_new;                     // Incumbency Status
-  real<lower=0> sigma_hat;        // Out of sample noise to add
+
+  // 2024 State Priors
+  int<lower=0> S;                 // Number of States
+  vector[S] e_day_mu;             // Mean state-level predicted partisan lean
+  vector<lower=0>[S] e_day_sigma; // Standard deviation of state-level predicted partisan lean
 }
 
 parameters {
@@ -39,16 +43,18 @@ model {
 
 generated quantities {
   // Posterior Predictive
-  array[N] real theta_pred = normal_rng(mu, sigma);
+  array[N] real y_rep = normal_rng(mu, sigma);
   vector[N] log_lik;
   for (n in 1:N) {
     log_lik[n] = normal_lpdf(V[n] | mu[n], sigma);
   }
 
-  // Prior for 2024
-  real mu_hat = alpha + beta_a * A_new + beta_g * G_new + beta_i * I_new;
-  real mu_new = inv_logit(normal_rng(mu_hat, sigma_hat));
-  real theta_new_pred = normal_rng(mu_new, sigma);
+  // National Prior for 2024
+  real mu_nat = inv_logit(alpha + beta_a * A_new + beta_g * G_new + beta_i * I_new);
+  real theta_nat = normal_rng(mu_nat, sigma);
 
+  // State Priors for 2024
+  vector[S] mu_state = mu_nat + e_day_mu;
+  array[S] real theta_state = normal_rng(mu_state, e_day_sigma);
 }
 
