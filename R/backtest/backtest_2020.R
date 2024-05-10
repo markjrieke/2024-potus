@@ -432,6 +432,12 @@ priors <-
 
 # model ------------------------------------------------------------------------
 
+polls2 <- polls
+
+polls <-
+  polls2 %>%
+  filter(did <= 90)
+
 stan_data <-
   list(
     N = nrow(polls),
@@ -459,11 +465,11 @@ stan_data <-
     sigma_p_sigma = 0.05,
     sigma_m_sigma = 0.02,
     e_day_mu_r = priors$e_day_mu,
-    e_day_sigma_r = priors$e_day_sigma,
+    e_day_sigma_r = 2 * priors$e_day_sigma,
     rho_alpha = 3,
     rho_beta = 6,
     alpha_sigma = 0.05,
-    phi_sigma = 0.05,
+    phi_sigma = 0.005,
     omega = 600,
     prior_check = 0
   )
@@ -482,14 +488,14 @@ poll_fit <-
     init = 0.01
   )
 
-results <-
-  poll_fit$summary("theta")
+results2 <-
+  poll_fit$summary("mu_hat")
 
 competitive <- c("Arizona", "Florida", "Georgia", "Iowa", "Michigan", "Nevada",
                  "New Hampshire", "North Carolina", "Ohio", "Pennsylvania",
                  "Texas", "Wisconsin")
-results %>%
-  mutate(variable = str_remove_all(variable, "theta\\[|]")) %>%
+results2 %>%
+  mutate(variable = str_remove_all(variable, "mu_hat\\[|]")) %>%
   separate(variable, c("sid", "day"), ",") %>%
   mutate(across(c(sid, day), as.integer)) %>%
   left_join(sid) %>% # filter(state == "Georgia", day == 186)
