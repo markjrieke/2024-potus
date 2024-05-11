@@ -436,7 +436,7 @@ polls2 <- polls
 
 polls <-
   polls2 %>%
-  filter(did <= 90)
+  filter(did <= 187)
 
 stan_data <-
   list(
@@ -469,8 +469,8 @@ stan_data <-
     rho_alpha = 3,
     rho_beta = 6,
     alpha_sigma = 0.05,
-    phi_sigma = 0.005,
-    omega = 600,
+    phi_sigma = 0.05,
+    omega = 300,
     prior_check = 0
   )
 
@@ -489,32 +489,32 @@ poll_fit <-
   )
 
 results2 <-
-  poll_fit$summary("mu_hat")
+  poll_fit$summary("theta")
 
 competitive <- c("Arizona", "Florida", "Georgia", "Iowa", "Michigan", "Nevada",
                  "New Hampshire", "North Carolina", "Ohio", "Pennsylvania",
                  "Texas", "Wisconsin")
 results2 %>%
-  mutate(variable = str_remove_all(variable, "mu_hat\\[|]")) %>%
+  mutate(variable = str_remove_all(variable, "theta\\[|]")) %>%
   separate(variable, c("sid", "day"), ",") %>%
   mutate(across(c(sid, day), as.integer)) %>%
   left_join(sid) %>% # filter(state == "Georgia", day == 186)
-  # nest(data = -state) %>%
-  # slice_sample(n = 9) %>%
-  # unnest(data) %>%
-  filter(state %in% competitive) %>%
+  nest(data = -state) %>%
+  slice_sample(n = 9) %>%
+  unnest(data) %>%
+  # filter(state %in% competitive) %>%
   ggplot(aes(x = day,
              y = median)) +
   geom_hline(yintercept = 0.5,
              linetype = "dashed",
              color = "gray60") +
-  geom_point(data = polls %>% filter(state %in% competitive),
-             mapping = aes(x = did,
-                           y = Y/K,
-                           size = K),
-             shape = 21,
-             color = "gray60",
-             alpha = 0.75) +
+  # geom_point(data = polls %>% filter(state %in% competitive),
+  #            mapping = aes(x = did,
+  #                          y = Y/K,
+  #                          size = K),
+  #            shape = 21,
+  #            color = "gray60",
+  #            alpha = 0.75) +
   geom_ribbon(aes(ymin = q5,
                   ymax = q95),
               alpha = 0.25) +

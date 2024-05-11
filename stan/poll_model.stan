@@ -175,7 +175,7 @@ model {
   target += normal_lpdf(phi | 0, phi_sigma) - normal_lccdf(0 | 0, phi_sigma);
 
   // Election day priors
-  target += normal_lpdf(e_day_mu_r + beta_r + beta_rd[:,D] | e_day_mu_r, e_day_sigma_r);
+  // target += normal_lpdf(e_day_mu_r + beta_r + beta_rd[:,D] | e_day_mu_r, e_day_sigma_r);
 
   // likelihood
   if (!prior_check) {
