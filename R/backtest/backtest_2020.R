@@ -470,7 +470,7 @@ stan_data <-
     rho_beta = 6,
     alpha_sigma = 0.05,
     phi_sigma = 0.05,
-    omega = 300,
+    omega = 600,
     prior_check = 0
   )
 
@@ -500,7 +500,7 @@ results2 %>%
   mutate(across(c(sid, day), as.integer)) %>%
   left_join(sid) %>% # filter(state == "Georgia", day == 186)
   nest(data = -state) %>%
-  slice_sample(n = 9) %>%
+  slice_sample(n = 12) %>%
   unnest(data) %>%
   # filter(state %in% competitive) %>%
   ggplot(aes(x = day,

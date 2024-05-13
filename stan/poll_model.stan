@@ -63,7 +63,6 @@ data {
 
   // State election day priors
   vector[R] e_day_mu_r;                // Raw logit-scale mean prior for election day
-  vector<lower=0>[R] e_day_sigma_r;    // Raw shape for election day logit scale prior
 
   // Generated quantities
   real<lower=0> omega;                 // Scale of beta rng
@@ -73,15 +72,11 @@ data {
 }
 
 transformed data {
-  vector[S] e_day_mu;                  // Logit-scale mean prior for election day
-  vector<lower=0>[S] e_day_sigma;      // Shape for election day logit scale prior
-
   // Construct aggregate priors
+  vector[S] e_day_mu;
   e_day_mu[1:R] = e_day_mu_r;
-  e_day_sigma[1:R] = e_day_sigma_r;
   for (a in 1:A) {
     e_day_mu[R + a] = dot_product(e_day_mu_r, wt[a]);
-    e_day_sigma[R + a] = dot_product(e_day_sigma_r, wt[a]);
   }
 }
 
@@ -173,9 +168,6 @@ model {
   // Priors over random walk
   target += std_normal_lpdf(to_vector(eta_rd));
   target += normal_lpdf(phi | 0, phi_sigma) - normal_lccdf(0 | 0, phi_sigma);
-
-  // Election day priors
-  // target += normal_lpdf(e_day_mu_r + beta_r + beta_rd[:,D] | e_day_mu_r, e_day_sigma_r);
 
   // likelihood
   if (!prior_check) {
