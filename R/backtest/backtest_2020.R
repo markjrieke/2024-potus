@@ -33,7 +33,7 @@ allowed_candidates <-
 
 # TODO: convert to csv (& add others [Traflagar & Center Street])
 banned_pollsters <-
-  c("Rasmussen", "Trafalgar", "Center Street PAC")
+  c("Rasmussen", "Trafalgar Group", "Center Street PAC")
 
 # construct state-level feature matrix -----------------------------------------
 
@@ -524,7 +524,7 @@ results2 %>%
   theme_rieke()
 
 pollsters <-
-  poll_fit$summary("eta_p")
+  poll_fit$summary("beta_p")
 
 pollsters %>%
   mutate(variable = as.integer(parse_number(variable))) %>%
@@ -533,11 +533,72 @@ pollsters %>%
   left_join(polls %>% count(pid)) %>%
   filter(n >= 10) %>%
   mutate(pollster = paste0(pollster, "\n(n = ", n, ")"),
-         pollster = fct_reorder(pollster, median)) %>%
+         pollster = fct_reorder(pollster, median),
+         across(c(median, q5, q95), ~expit(.x) - 0.5)) %>%
   ggplot(aes(x = pollster,
              y = -median,
              ymin = -q95,
              ymax = -q5)) +
   geom_pointrange() +
+  scale_y_percent(accuracy = 0.1) +
+  coord_flip() +
+  theme_rieke()
+
+groups <-
+  poll_fit$summary("beta_g")
+
+groups %>%
+  mutate(variable = as.integer(parse_number(variable))) %>%
+  rename(gid = variable) %>%
+  left_join(gid) %>%
+  left_join(polls %>% count(gid)) %>%
+  mutate(across(c(median, q5, q95), ~expit(.x) - 0.5),
+         state = fct_reorder(group, median)) %>%
+  ggplot(aes(x = state,
+             y = -median,
+             ymin = -q95,
+             ymax = -q5)) +
+  geom_pointrange() +
+  scale_y_percent(accuracy = 0.1) +
+  coord_flip() +
+  theme_rieke()
+
+modes <-
+  poll_fit$summary("beta_m")
+
+modes %>%
+  mutate(variable = as.integer(parse_number(variable))) %>%
+  rename(mid = variable) %>%
+  left_join(mid) %>%
+  left_join(polls %>% count(mid)) %>%
+  filter(n >= 10) %>%
+  mutate(mode = paste0(mode, "\n(n = ", n, ")"),
+         across(c(median, q5, q95), ~expit(.x) - 0.5),
+         mode = fct_reorder(mode, median)) %>%
+  ggplot(aes(x = mode,
+             y = -median,
+             ymin = -q95,
+             ymax = -q5)) +
+  geom_pointrange() +
+  scale_y_percent(accuracy = 0.1) +
+  coord_flip() +
+  theme_rieke()
+
+sponsors <-
+  poll_fit$summary("beta_c")
+
+sponsors %>%
+  mutate(variable = as.integer(parse_number(variable))) %>%
+  rename(cid = variable) %>%
+  left_join(cid) %>%
+  left_join(polls %>% count(cid)) %>%
+  mutate(across(c(median, q5, q95), ~expit(.x) - 0.5),
+         candidate_sponsored = fct_reorder(candidate_sponsored, median)) %>%
+  ggplot(aes(x = candidate_sponsored,
+             y = -median,
+             ymin = -q95,
+             ymax = -q5)) +
+  geom_pointrange() +
+  scale_y_percent(accuracy = 0.1) +
   coord_flip() +
   theme_rieke()
