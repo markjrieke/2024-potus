@@ -63,5 +63,7 @@ model {
 }
 
 generated quantities {
-  real delta = mean(theta[:,D] - theta[:,1]);
+  real delta_mu = mean(theta[:,D] - theta[:,1]);
+  real delta_sd = sd(theta[:, D] - theta[:,1]);
+  real delta = normal_rng(delta_mu, delta_sd);
 }
