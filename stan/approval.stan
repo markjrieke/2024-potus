@@ -67,6 +67,6 @@ model {
   }
 }
 
-// generated quantities {
-//
-// }
+generated quantities {
+  real thetaD = theta[D];
+}
