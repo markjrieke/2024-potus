@@ -610,8 +610,8 @@ priors <-
 polls2 <- polls
 
 polls <-
-  polls %>%
-  filter(did <= 187)
+  polls2 %>%
+  filter(did <= 30)
 
 stan_data <-
   list(
@@ -630,6 +630,8 @@ stan_data <-
     mid = polls$mid,
     cid = polls$cid,
     pid = polls$pid,
+    g_ref = gid %>% filter(group == "lv") %>% pull(gid),
+    c_ref = cid %>% filter(candidate_sponsored == "None") %>% pull(cid),
     F_r = F_r,
     wt = wt,
     K = polls$K,
@@ -670,7 +672,7 @@ competitive <- c("Arizona", "Florida", "Georgia", "Iowa", "Michigan", "Nevada",
                  "New Hampshire", "North Carolina", "Ohio", "Pennsylvania",
                  "Texas", "Wisconsin")
 
-misc <- c("Missouri", "Kansas")
+misc <- sample(sid$state, 12)
 results2 %>%
   mutate(variable = str_remove_all(variable, "theta\\[|]")) %>%
   separate(variable, c("sid", "day"), ",") %>%

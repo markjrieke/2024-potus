@@ -1,4 +1,11 @@
 functions {
+  /*
+  * Generate a Covariance Matrix with an Exponentiated Quadratic Kernel
+  *
+  * @param F: square matrix of pre-computed distances between observations
+  * @param sigma: amplitude of covariance matrix
+  * @param rho: length_scale of covariance matrix
+  */
   matrix gp_exp_quad_cov(matrix F,
                          real sigma,
                          real rho) {
@@ -13,6 +20,28 @@ functions {
     }
     K[N,N] = sigma + 1e-9;
     return K;
+  }
+
+  /*
+  * Add a reference value of 0 to a parameter vector
+  *
+  * @param eta: N-1 length vector of "raw" parameters
+  * @param ref: integer containing the reference position in the new N length vector
+  */
+  vector add_reference(vector eta,
+                       int ref) {
+    int N = num_elements(eta) + 1;
+    vector[N] beta;
+    int off = 0;
+    for (n in 1:N) {
+      if (n == ref) {
+        beta[n] = 0;
+        off += 1;
+      } else {
+        beta[n] = eta[n - off];
+      }
+    }
+    return beta;
   }
 }
 
@@ -35,6 +64,10 @@ data {
   array[N] int<lower=1, upper=M> mid;  // Map of poll mode to poll
   array[N] int<lower=1, upper=C> cid;  // Map of candidate sponsor to poll
   array[N] int<lower=1, upper=P> pid;  // Map of pollster to poll
+
+  // Reference Categories
+  int<lower=1, upper=G> g_ref;         // ID for group (population) reference, lv
+  int<lower=1, upper=C> c_ref;         // ID for candidate sponsor reference, None
 
   // Raw state data
   matrix[R, R] F_r;                    // Raw state distance matrix in feature space
@@ -81,9 +114,9 @@ transformed data {
 }
 
 parameters {
-  // Fixed effects
-  vector[G] beta_g;                    // Group (population) bias
-  vector[C] beta_c;                    // Candidate sponsor bias
+  // Fixed effects (excluding reference)
+  vector[G-1] eta_g;                   // Group (population) bias
+  vector[C-1] eta_c;                   // Candidate sponsor bias
 
   // Random effects
   vector[N] eta_n;                     // Raw poll bias
@@ -104,6 +137,10 @@ parameters {
 }
 
 transformed parameters{
+  // Fixed effects with reference at 0
+  vector[G] beta_g = add_reference(eta_g, g_ref);
+  vector[C] beta_c = add_reference(eta_c, c_ref);
+
   // Extract random parameters
   vector[N] beta_n = eta_n * sigma_n;
   vector[P] beta_p = eta_p * sigma_p;
@@ -149,8 +186,8 @@ transformed parameters{
 
 model {
   // Priors over fixed effects
-  target += normal_lpdf(beta_g | 0, beta_g_sigma);
-  target += normal_lpdf(beta_c | 0, beta_c_sigma);
+  target += normal_lpdf(eta_g | 0, beta_g_sigma);
+  target += normal_lpdf(eta_c | 0, beta_c_sigma);
 
   // Priors over random effects
   target += std_normal_lpdf(eta_n);
