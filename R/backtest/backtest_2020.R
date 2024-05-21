@@ -1,3 +1,11 @@
+# TODO
+# - run models conditionally based on metadata of last update for trigger files
+# - add run-date filters
+# - each model is its own function
+# - misc. todos listed below
+# - variable renaming
+# - ensure all priors are passed to model
+
 # setup ------------------------------------------------------------------------
 
 library(tidyverse)
@@ -34,6 +42,361 @@ allowed_candidates <-
 # TODO: convert to csv (& add others [Traflagar & Center Street])
 banned_pollsters <-
   c("Rasmussen", "Trafalgar Group", "Center Street PAC")
+
+# approval prior model ---------------------------------------------------------
+
+# TODO: function and whatnot
+
+delta <- as.integer(mdy("11/3/2020") - mdy("5/1/2020")) + 1
+
+# wrangle approval data
+approval_historical <-
+  read_csv("data/approval/historical_approval.csv") %>%
+  mutate(year = case_when(president == "truman" & day <= 1299 ~ 1948,
+                          president == "truman" & day <= 2762 ~ 1952,
+                          president == "eisenhower" & day <= 1385 ~ 1956,
+                          president == "eisenhower" & day <= 2848 ~ 1960,
+                          president == "johnson" & day <= 346 ~ 1964,
+                          president == "johnson" & day <= 1809 ~ 1968,
+                          president == "nixon" & day <= 1386 ~ 1972,
+                          president == "ford" & day <= 815 ~ 1976,
+                          president == "carter" & day <= 1383 ~ 1980,
+                          president == "reagan" & day <= 1385 ~ 1984,
+                          president == "reagan" & day <= 2848 ~ 1988,
+                          president == "hw_bush" & day <= 1382 ~ 1992,
+                          president == "clinton" & day <= 1384 ~ 1996,
+                          president == "clinton" & day <= 2847 ~ 2000,
+                          president == "w_bush" & day <= 1381 ~ 2004,
+                          president == "w_bush" & day <= 2844 ~ 2008,
+                          president == "obama" & day <= 1385 ~ 2012,
+                          president == "obama" & day <= 2848 ~ 2016,
+                          president == "trump" & day <= 1382 ~ 2020)) %>%
+  drop_na() %>%
+  left_join(read_csv("data/static/abramovitz.csv") %>%
+              select(year,
+                     max_day = approval_day)) %>%
+  mutate(min_day = max_day - delta + 1) %>%
+  filter(day <= max_day,
+         day >= min_day) %>%
+  mutate(day = day - min_day + 1) %>%
+  arrange(year, day) %>%
+  select(-ends_with("_day"))
+
+# prep data for passing to stan
+# TODO: filtering out 2020 here for backtesting
+approval_prior <-
+  approval_historical %>%
+  distinct(year) %>%
+  rowid_to_column("cid") %>%
+  right_join(approval_historical) %>%
+  mutate(net = net/100) %>%
+  relocate(cid, .after = net) %>%
+  rename(did = day,
+         Y = net) %>%
+  filter(year < 2020)
+
+# compile model
+approval_prior_model <-
+  cmdstan_model("stan/approval-prior.stan")
+
+# format data for stan
+stan_data <-
+  list(
+    N = nrow(approval_prior),
+    C = max(approval_prior$cid),
+    D = delta,
+    cid = approval_prior$cid,
+    did = approval_prior$did,
+    Y = approval_prior$Y,
+    m0 = 0,
+    C0 = 0.5,
+    W_alpha = 2,
+    W_beta = 32,
+    V_alpha = 2,
+    V_beta = 32,
+    V_L = 0.005,
+    prior_check = 0
+  )
+
+# fit!
+approval_prior_fit <-
+  approval_prior_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    chains = 4,
+    parallel_chains = 4,
+    init = 0.01
+  )
+
+# extract prior for current presidential approval forecast
+delta_prior <-
+  approval_prior_fit$summary("delta")
+
+# extract prior for e_day historical approval
+e_day_approval_historical <-
+  approval_prior_fit$summary("thetaD")
+
+# post-process
+e_day_approval_historical <-
+  e_day_approval_historical %>%
+  mutate(cid = parse_number(variable)) %>%
+  left_join(approval_prior %>% distinct(cid, year)) %>%
+  select(year,
+         A_mu = mean,
+         A_sigma = sd)
+
+# approval model ---------------------------------------------------------------
+
+# TODO: change this to pull in from live fte site:
+# read_csv("https://projects.fivethirtyeight.com/biden-approval-data/approval_topline.csv")
+
+# wrangle for passing to stan
+approval_current <-
+  approval_historical %>%
+  filter(year == 2020) %>%
+  transmute(did = day,
+            Y = net/100) %>%
+  arrange(did)
+
+# compile
+approval_model <-
+  cmdstan_model("stan/approval.stan")
+
+# pass to stan
+stan_data <-
+  list(
+    N = nrow(approval_current),
+    D = delta,
+    did = approval_current$did,
+    Y = approval_current$Y,
+    m0 = 0,
+    C0 = 0.5,
+    W_alpha = 2,
+    W_beta = 32,
+    V_alpha = 2,
+    V_beta = 32,
+    mD = approval_current$Y[1] + delta_prior$mean,
+    CD = delta_prior$sd,
+    V_L = 0.005,
+    prior_check = 0
+  )
+
+# fit!
+approval_fit <-
+  approval_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 1000,
+    iter_sampling = 1000,
+    chains = 4,
+    parallel_chains = 4,
+    init = 0.01
+  )
+
+# extract prior for current approval
+e_day_approval_current <-
+  approval_fit$summary("thetaD")
+
+# pvi model --------------------------------------------------------------------
+
+# TODO: extend to all years
+pvi <-
+  read_csv("data/static/statewide_results.csv") %>%
+  filter(year >= 1972) %>%
+  select(year, state, democratic, republican) %>%
+  mutate(state_2pv = democratic / (democratic + republican)) %>%
+  select(year, state, state_2pv) %>%
+  left_join(read_csv("data/static/abramovitz.csv") %>%
+              select(year, dem, rep) %>%
+              transmute(year = year,
+                        nat_2pv = dem/(dem + rep))) %>%
+  mutate(pvi = state_2pv - nat_2pv) %>%
+  select(year, state, pvi) %>%
+  mutate(ym4 = year - 4,
+         ym8 = year - 8) %>%
+  left_join(x = .,
+            y = select(.,
+                       ym4 = year,
+                       state,
+                       pvim4 = pvi)) %>%
+  left_join(x = .,
+            y = select(.,
+                       ym8 = year,
+                       state,
+                       pvim8 = pvi)) %>%
+  drop_na() %>%
+  mutate(cpvi = 0.75 * pvim4 + 0.25 * pvim8,
+         C_hat = 0.75 * pvi + 0.25 * pvim4) %>%
+  select(year,
+         state,
+         P = pvi,
+         C = cpvi,
+         C_hat)
+
+# TODO: backtesting
+C_hat <-
+  pvi %>%
+  filter(year == 2020) %>%
+  arrange(state)
+
+# TODO: backtesting
+pvi <-
+  pvi %>%
+  filter(year < 2020)
+
+# pass to stan
+stan_data <-
+  list(
+    N = nrow(pvi),
+    P = pvi$P,
+    C = pvi$C,
+    alpha_mu = 0,
+    alpha_sigma = 1,
+    beta_mu = 0,
+    beta_sigma = 1,
+    sigma_sigma = 1,
+    S = nrow(C_hat),
+    C_hat = C_hat$C_hat
+  )
+
+# compile
+pvi_model <-
+  cmdstan_model("stan/pvi_model.stan")
+
+# fit!
+pvi_fit <-
+  pvi_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 2000,
+    iter_sampling = 2000,
+    chains = 4,
+    parallel_chains = 4
+  )
+
+# extract prior for state pvi
+pvi_summary <-
+  pvi_fit$summary("P_hat") %>%
+  bind_cols(pvi %>% filter(year == max(year))) %>%
+  select(state,
+         pvi_mu = mean,
+         pvi_sd = sd)
+
+# prior model ------------------------------------------------------------------
+
+# TODO: convert this to function
+# TODO: only run if metadata out-of-date
+
+max_cpi <-
+  cpi %>%
+  filter(DATE == max(DATE)) %>%
+  pull(CPIAUCSL)
+
+cpi <-
+  cpi %>%
+  rename_with(str_to_lower) %>%
+  rename(cpi = cpiaucsl) %>%
+  mutate(inflation = max_cpi/cpi)
+
+# adjust gdp for inflation
+real_gdp <-
+  gdp %>%
+  rename_with(str_to_lower) %>%
+  left_join(cpi) %>%
+  select(-cpi) %>%
+  mutate(real_gdp = gdp*inflation) %>%
+  select(date, real_gdp)
+
+# append national data with 2nd quarter real annualized gdp growth
+abramovitz <-
+  abramovitz %>%
+  mutate(begin_quarter = mdy(paste0("7/1/", year - 1)),
+         end_quarter = mdy(paste0("7/1/", year))) %>%
+  left_join(real_gdp, by = c("begin_quarter" = "date")) %>%
+  rename(begin_gdp = real_gdp) %>%
+  left_join(real_gdp, by = c("end_quarter" = "date")) %>%
+  rename(end_gdp = real_gdp) %>%
+  mutate(real_gdp_growth = end_gdp/begin_gdp - 1) %>%
+  select(-ends_with("quarter"),
+         -ends_with("gdp"))
+
+# prep for passing to stan
+prior_model_data <-
+  abramovitz %>%
+  left_join(e_day_approval_historical) %>%
+  filter(year < 2020) %>%
+  transmute(V = if_else(inc_party == "dem", dem, rep),
+            V = V/(dem + rep),
+            G = real_gdp_growth,
+            I = inc_running,
+            A_mu,
+            A_sigma)
+
+# compile
+prior_model <-
+  cmdstan_model("stan/prior_model.stan")
+
+# pass to stan
+stan_data <-
+  list(
+    N = nrow(prior_model_data),
+    V = prior_model_data$V,
+    G = prior_model_data$G,
+    I = prior_model_data$I,
+    A_mu = prior_model_data$A_mu,
+    A_sigma = prior_model_data$A_sigma,
+    A_new_mu = e_day_approval_current$mean,
+    A_new_sigma = e_day_approval_current$sd,
+    G_new = abramovitz %>% filter(year == 2020) %>% pull(real_gdp_growth),
+    I_new = abramovitz %>% filter(year == 2020) %>% pull(inc_running),
+    S = nrow(pvi_summary),
+
+    # needs to be negated for backtesting since the incumbent is not a democrat
+    e_day_mu = -1 * pvi_summary$pvi_mu,
+    e_day_sigma = pvi_summary$pvi_sd
+  )
+
+# fit!
+prior_fit <-
+  prior_model$sample(
+    data = stan_data,
+    seed = 2024,
+    iter_warmup = 2000,
+    iter_sampling = 2000,
+    chains = 4,
+    parallel_chains = 4
+  )
+
+# extract state priors
+priors <-
+  prior_fit$draws("theta_state", format = "df") %>%
+  as_tibble() %>%
+  pivot_longer(starts_with("theta_state"),
+               names_to = "parameter",
+               values_to = "estimate") %>%
+
+  # negate since incumbent is not a democrat
+  mutate(estimate = 1 - estimate) %>%
+
+  # summarise on the logit scale
+  mutate(estimate = logit(estimate)) %>%
+  drop_na() %>%
+  group_by(parameter) %>%
+  summarise(e_day_mu = mean(estimate),
+            e_day_sigma = sd(estimate)) %>%
+  ungroup() %>%
+  mutate(parameter = parse_number(parameter)) %>%
+  arrange(parameter) %>%
+  bind_cols(pvi_summary) %>%
+  select(state,
+         e_day_mu,
+         e_day_sigma) %>%
+
+  # prep for passing to poll model
+  mutate(state = str_replace(state, "[ ]+(?=[0-9])", " CD-")) %>%
+  filter(!state %in% c("National", "Nebraska", "Maine"))
 
 # construct state-level feature matrix -----------------------------------------
 
@@ -235,197 +598,9 @@ polls <-
   rename(K = sample_size,
          Y = biden)
 
-# pvi model --------------------------------------------------------------------
-
-# TODO: extend to all years
-pvi <-
-  read_csv("data/static/statewide_results.csv") %>%
-  filter(year >= 1972) %>%
-  select(year, state, democratic, republican) %>%
-  mutate(state_2pv = democratic / (democratic + republican)) %>%
-  select(year, state, state_2pv) %>%
-  left_join(read_csv("data/static/abramovitz.csv") %>%
-              select(year, dem, rep) %>%
-              transmute(year = year,
-                        nat_2pv = dem/(dem + rep))) %>%
-  mutate(pvi = state_2pv - nat_2pv) %>%
-  select(year, state, pvi) %>%
-  mutate(ym4 = year - 4,
-         ym8 = year - 8) %>%
-  left_join(x = .,
-            y = select(.,
-                       ym4 = year,
-                       state,
-                       pvim4 = pvi)) %>%
-  left_join(x = .,
-            y = select(.,
-                       ym8 = year,
-                       state,
-                       pvim8 = pvi)) %>%
-  drop_na() %>%
-  mutate(cpvi = 0.75 * pvim4 + 0.25 * pvim8,
-         C_hat = 0.75 * pvi + 0.25 * pvim4) %>%
-  select(year,
-         state,
-         P = pvi,
-         C = cpvi,
-         C_hat)
-
-C_hat <-
-  pvi %>%
-  filter(year == 2020) %>%
-  arrange(state)
-
-pvi <-
-  pvi %>%
-  filter(year < 2020)
-
-stan_data <-
-  list(
-    N = nrow(pvi),
-    P = pvi$P,
-    C = pvi$C,
-    alpha_mu = 0,
-    alpha_sigma = 1,
-    beta_mu = 0,
-    beta_sigma = 1,
-    sigma_sigma = 1,
-    S = nrow(C_hat),
-    C_hat = C_hat$C_hat
-  )
-
-pvi_model <-
-  cmdstan_model("stan/pvi_model.stan")
-
-pvi_fit <-
-  pvi_model$sample(
-    data = stan_data,
-    seed = 2024,
-    iter_warmup = 2000,
-    iter_sampling = 2000,
-    chains = 4,
-    parallel_chains = 4
-  )
-
-pvi_summary <-
-  pvi_fit$summary("P_hat") %>%
-  bind_cols(pvi %>% filter(year == max(year))) %>%
-  select(state,
-         pvi_mu = mean,
-         pvi_sd = sd)
-
-# prior model ------------------------------------------------------------------
-
-# TODO: convert this to function
-# TODO: only run if metadata out-of-date
-
-max_cpi <-
-  cpi %>%
-  filter(DATE == max(DATE)) %>%
-  pull(CPIAUCSL)
-
-cpi <-
-  cpi %>%
-  rename_with(str_to_lower) %>%
-  rename(cpi = cpiaucsl) %>%
-  mutate(inflation = max_cpi/cpi)
-
-# adjust gdp for inflation
-real_gdp <-
-  gdp %>%
-  rename_with(str_to_lower) %>%
-  left_join(cpi) %>%
-  select(-cpi) %>%
-  mutate(real_gdp = gdp*inflation) %>%
-  select(date, real_gdp)
-
-# append national data with 2nd quarter real annualized gdp growth
-abramovitz <-
-  abramovitz %>%
-  mutate(begin_quarter = mdy(paste0("7/1/", year - 1)),
-         end_quarter = mdy(paste0("7/1/", year))) %>%
-  left_join(real_gdp, by = c("begin_quarter" = "date")) %>%
-  rename(begin_gdp = real_gdp) %>%
-  left_join(real_gdp, by = c("end_quarter" = "date")) %>%
-  rename(end_gdp = real_gdp) %>%
-  mutate(real_gdp_growth = end_gdp/begin_gdp - 1) %>%
-  select(-ends_with("quarter"),
-         -ends_with("gdp"))
-
-# summarize abramovitz data
-model_data <-
-  abramovitz %>%
-  mutate(fte_net_inc_approval = fte_net_inc_approval/100) %>%
-  select(year,
-         inc_party,
-         I = inc_running,
-         dem,
-         rep,
-         A = fte_net_inc_approval,
-         G = real_gdp_growth) %>%
-  transmute(V = if_else(inc_party == "dem", dem/(dem + rep), rep/(dem + rep)),
-            A = A,
-            G,
-            I)
-
-# pass to stan
-stan_data <-
-  list(
-    N = nrow(model_data),
-    V = model_data$V,
-    A = model_data$A,
-    G = model_data$G,
-    I = model_data$I,
-    A_new = (abramovitz %>% filter(year == 2020) %>% pull(fte_net_inc_approval))/100,
-    G_new = abramovitz %>% filter(year == 2020) %>% pull(real_gdp_growth),
-    I_new = abramovitz %>% filter(year == 2020) %>% pull(inc_running),
-    S = nrow(pvi_summary),
-
-    # needs to be negated for backtesting since the incumbent is not a democrat
-    e_day_mu = -1 * pvi_summary$pvi_mu,
-    e_day_sigma = pvi_summary$pvi_sd
-  )
-
-prior_model <-
-  cmdstan_model("stan/prior_model.stan")
-
-prior_fit <-
-  prior_model$sample(
-    data = stan_data,
-    seed = 2024,
-    iter_warmup = 2000,
-    iter_sampling = 2000,
-    chains = 4,
-    parallel_chains = 4
-  )
-
+# append priors with sid info
 priors <-
-  prior_fit$draws("theta_state", format = "df") %>%
-  as_tibble() %>%
-  pivot_longer(starts_with("theta_state"),
-               names_to = "parameter",
-               values_to = "estimate") %>%
-
-  # negate since incumbent is not a democrat
-  mutate(estimate = 1 - estimate) %>%
-
-  # summarise on the logit scale
-  mutate(estimate = logit(estimate)) %>%
-  drop_na() %>%
-  group_by(parameter) %>%
-  summarise(e_day_mu = mean(estimate),
-            e_day_sigma = sd(estimate)) %>%
-  ungroup() %>%
-  mutate(parameter = parse_number(parameter)) %>%
-  arrange(parameter) %>%
-  bind_cols(pvi_summary) %>%
-  select(state,
-         e_day_mu,
-         e_day_sigma) %>%
-
-  # prep for passing to poll model
-  mutate(state = str_replace(state, "[ ]+(?=[0-9])", " CD-")) %>%
-  filter(!state %in% c("National", "Nebraska", "Maine")) %>%
+  priors %>%
   left_join(sid %>% select(sid, state)) %>%
   arrange(sid) %>%
   select(-sid)
@@ -435,7 +610,7 @@ priors <-
 polls2 <- polls
 
 polls <-
-  polls2 %>%
+  polls %>%
   filter(did <= 187)
 
 stan_data <-
@@ -465,7 +640,7 @@ stan_data <-
     sigma_p_sigma = 0.05,
     sigma_m_sigma = 0.02,
     e_day_mu_r = priors$e_day_mu,
-    e_day_sigma_r = 2 * priors$e_day_sigma,
+    e_day_sigma_r = priors$e_day_sigma,
     rho_alpha = 3,
     rho_beta = 6,
     alpha_sigma = 0.05,
@@ -494,27 +669,29 @@ results2 <-
 competitive <- c("Arizona", "Florida", "Georgia", "Iowa", "Michigan", "Nevada",
                  "New Hampshire", "North Carolina", "Ohio", "Pennsylvania",
                  "Texas", "Wisconsin")
+
+misc <- c("Missouri", "Kansas")
 results2 %>%
   mutate(variable = str_remove_all(variable, "theta\\[|]")) %>%
   separate(variable, c("sid", "day"), ",") %>%
   mutate(across(c(sid, day), as.integer)) %>%
   left_join(sid) %>% # filter(state == "Georgia", day == 186)
-  nest(data = -state) %>%
-  slice_sample(n = 12) %>%
-  unnest(data) %>%
-  # filter(state %in% competitive) %>%
+  # nest(data = -state) %>%
+  # slice_sample(n = 12) %>%
+  # unnest(data) %>%
+  filter(state %in% misc) %>%
   ggplot(aes(x = day,
              y = median)) +
   geom_hline(yintercept = 0.5,
              linetype = "dashed",
              color = "gray60") +
-  # geom_point(data = polls %>% filter(state %in% competitive),
-  #            mapping = aes(x = did,
-  #                          y = Y/K,
-  #                          size = K),
-  #            shape = 21,
-  #            color = "gray60",
-  #            alpha = 0.75) +
+  geom_point(data = polls %>% filter(state %in% misc),
+             mapping = aes(x = did,
+                           y = Y/K,
+                           size = K),
+             shape = 21,
+             color = "gray60",
+             alpha = 0.75) +
   geom_ribbon(aes(ymin = q5,
                   ymax = q95),
               alpha = 0.25) +
