@@ -15,6 +15,9 @@ library(cmdstanr)
 source("R/model/imports.R")
 source("R/model/utils.R")
 
+# did limiter
+run_date <- 187
+
 # import data ------------------------------------------------------------------
 
 # economic data
@@ -29,6 +32,9 @@ urban_stats <- read_csv("data/static/urban_stats.csv")
 
 # Prior model data
 abramovitz <- read_csv("data/static/abramovitz.csv")
+
+# electors
+electors <- read_csv("data/static/electors.csv")
 
 # TODO: convert to csv
 population_rank <-
@@ -158,7 +164,8 @@ approval_current <-
   filter(year == 2020) %>%
   transmute(did = day,
             Y = net/100) %>%
-  arrange(did)
+  arrange(did) %>%
+  filter(did <= run_date)
 
 # compile
 approval_model <-
@@ -477,6 +484,8 @@ sid <-
   features %>%
   select(state) %>%
   bind_rows(tibble(state = c("National", "Nebraska", "Maine"))) %>%
+  left_join(electors) %>%
+  mutate(electors = replace_na(electors, 0)) %>%
   rowid_to_column("sid")
 
 # wrangle polls ----------------------------------------------------------------
@@ -579,17 +588,22 @@ polls <-
          candidate_sponsored = replace_na(candidate_sponsored, "None")) %>%
   rename(group = population)
 
+# prep for stan
+polls <-
+  polls %>%
+  mutate(did = as.integer(mdy("11/3/2020") - end_date),
+         did = as.integer(mdy("11/3/2020") - mdy("5/1/2020")) - did + 1) %>%
+  filter(did <= run_date)
+
 # create mapping ids
 pid <- polls %>% map_ids(pollster)
 gid <- polls %>% map_ids(group)
 mid <- polls %>% map_ids(mode)
 cid <- polls %>% map_ids(candidate_sponsored)
 
-# prep for stan
+# append with mapping ids
 polls <-
   polls %>%
-  mutate(did = as.integer(mdy("11/3/2020") - end_date),
-         did = as.integer(mdy("11/3/2020") - mdy("5/1/2020")) - did + 1) %>%
   left_join(sid) %>%
   left_join(pid) %>%
   left_join(gid) %>%
@@ -607,11 +621,11 @@ priors <-
 
 # model ------------------------------------------------------------------------
 
-polls2 <- polls
-
-polls <-
-  polls2 %>%
-  filter(did <= 30)
+# polls2 <- polls
+#
+# polls <-
+#   polls2 %>%
+#   filter(did <= 30)
 
 stan_data <-
   list(
@@ -647,7 +661,9 @@ stan_data <-
     rho_beta = 6,
     alpha_sigma = 0.05,
     phi_sigma = 0.05,
+    psi_sigma = 0.05,
     omega = 600,
+    electors = sid$electors,
     prior_check = 0
   )
 
@@ -681,13 +697,13 @@ results2 %>%
   # nest(data = -state) %>%
   # slice_sample(n = 12) %>%
   # unnest(data) %>%
-  filter(state %in% misc) %>%
+  filter(state %in% competitive) %>%
   ggplot(aes(x = day,
              y = median)) +
   geom_hline(yintercept = 0.5,
              linetype = "dashed",
              color = "gray60") +
-  geom_point(data = polls %>% filter(state %in% misc),
+  geom_point(data = polls %>% filter(state %in% competitive),
              mapping = aes(x = did,
                            y = Y/K,
                            size = K),
@@ -700,7 +716,8 @@ results2 %>%
   geom_line() +
   scale_y_percent() +
   facet_wrap(~state) +
-  theme_rieke()
+  theme_rieke() +
+  expand_limits(y = c(0.4, 0.6))
 
 pollsters <-
   poll_fit$summary("beta_p")
@@ -781,3 +798,5 @@ sponsors %>%
   scale_y_percent(accuracy = 0.1) +
   coord_flip() +
   theme_rieke()
+
+

@@ -6,7 +6,7 @@ Maryland,10
 Hawaii,4
 California,54
 New York,28
-Maine 1,1
+Maine CD-1,1
 Rhode Island,4
 Connecticut,7
 Washington,12
@@ -20,7 +20,7 @@ Virginia,13
 Maine,2
 Minnesota,10
 New Hampshire,4
-Nebraska 2,1
+Nebraska CD-2,1
 Nevada,6
 Michigan,15
 Pennsylvania,19
@@ -31,13 +31,13 @@ North Carolina,16
 Florida,30
 Texas,40
 Ohio,17
-Maine 2,1
+Maine CD-2,1
 Iowa,6
 Alaska,3
 South Carolina,9
 Kansas,6
 Missouri,10
-Nebraska 1,1
+Nebraska CD-1,1
 Indiana,11
 Mississippi,6
 Montana,4
@@ -54,4 +54,4 @@ Oklahoma,7
 North Dakota,3
 West Virginia,4
 Wyoming,3
-Nebraska 3,1
+Nebraska CD-3,1

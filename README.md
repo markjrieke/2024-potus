@@ -117,6 +117,20 @@ of groups in these parameters.
   - update site
   - blastula email diagnostics
 
+### implementation notes
+
+- See
+  [here](https://gist.github.com/dgkeyes/0ea5f587b8cfb2b8f12f7be06c77c52b)
+  for an example of y-axis text inlay using the
+  [ggh4x](https://teunbrand.github.io/ggh4x/index.html) package
+- See [here](https://rfortherestofus.com/2023/05/github-actions) for a
+  basic overview of automating scripts on a schedule with github
+  actions.
+- See
+  [here](https://stackoverflow.com/questions/76642914/use-a-github-package-for-a-r-github-action)
+  for an example of installing a package from github as a part of a
+  github action
+
 ### misc notes
 
 - Colors for display!

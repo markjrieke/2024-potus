@@ -87,6 +87,12 @@ Most of these have sufficient groups to be modeled hierarchically. I may model $
   * update site
   * blastula email diagnostics
 
+### implementation notes
+
+* See [here](https://gist.github.com/dgkeyes/0ea5f587b8cfb2b8f12f7be06c77c52b) for an example of y-axis text inlay using the [ggh4x](https://teunbrand.github.io/ggh4x/index.html) package
+* See [here](https://rfortherestofus.com/2023/05/github-actions) for a basic overview of automating scripts on a schedule with github actions.
+* See [here](https://stackoverflow.com/questions/76642914/use-a-github-package-for-a-r-github-action) for an example of installing a package from github as a part of a github action
+
 ### misc notes
 
 * Colors for display!
@@ -101,5 +107,6 @@ Most of these have sufficient groups to be modeled hierarchically. I may model $
   * Incumbent net approval pulled from FiveThirtyEight's averages on the day before the presidential election. If the exact date is not available due to data resolution, (these are manually pulled) the net approval from the closest day *prior* to election day is used instead.
   * Third party flag is set to 1 whenever an individual third party candidate garners more than 5% of the national popular vote.
   * For Biden's net approval, pulling the *All Polls* variant of [FiveThirtyEight's presidential approval tracker](https://projects.fivethirtyeight.com/biden-approval-rating/?cid=rrpromo) (this is consistent with what's displayed for the previous presidents).
+
 
 
