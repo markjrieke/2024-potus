@@ -52,5 +52,6 @@ rsconnect/
 *.DS_Store
 
 # bash scripts/stan exe
-bash/
+bash/rewrite-git-history.bash
+bash/history.log
 exe/
