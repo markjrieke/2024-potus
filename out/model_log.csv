@@ -1,2 +1,2 @@
-model_name,model_version,start_ts,end_ts,run_time,observations,run_date
-approval-prior,2024-05-21T17:00:57Z,2024-05-23T21:47:36Z,2024-05-23T21:51:21Z,3.76172780195872,1617,2024-05-23
+model_name,model_version,start_ts,end_ts,observations,run_date
+approval-prior,2024-05-21T17:00:57Z,2024-05-23T23:01:30Z,2024-05-23T23:05:17Z,1617,2024-05-23
