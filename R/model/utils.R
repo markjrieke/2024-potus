@@ -1,48 +1,51 @@
-# Transforms -------------------------------------------------------------------
+#' Append model logs with metadata
+#'
+#' @description
+#' First checks if the log file already exists. If it does, `append_logs()` will
+#' append the current log with `data`. If it doesn't, `append_logs()` creates
+#' the log.
+append_logs <- function(data) {
 
-copula_transform <- function(data, feature) {
+  if (!file.exists("out/model_log.csv")) {
 
-  # beta distributed observations
-  observed <- data %>% pull({{ feature }})
-
-  # estimate and extract parameters
-  fit <-
-    gamlss::gamlss(
-      observed ~ 1,
-      family = gamlss.dist::BEo()
-    )
-
-  alpha <- fitted(fit, "mu")[1]
-  beta <- fitted(fit, "sigma")[1]
-
-  # convert to normal space
-  uniform_space <- pbeta(observed, alpha, beta)
-  normal_space <- qnorm(uniform_space)
-
-  # replace in the original data
-  out <-
     data %>%
-    mutate("{{feature}}" := normal_space)
+      write_csv("out/model_log.csv")
 
-  return(out)
+  } else {
+
+    read_csv("out/model_log.csv") %>%
+      bind_rows(data) %>%
+      write_csv("out/model_log.csv")
+
+  }
+
+}
+
+#' Check whether an output file is out-of-date
+#'
+#' @description
+#' Compare the last-modified timestamps of an output file and any trigger files.
+#' When any trigger file has a more recent timestamp than the output file or the
+#' output file doesn't exist, `out_of_date()` returns `TRUE`. Otherwise, returns
+#' `FALSE`.
+#'
+#' @param output file path of the output file
+#' @param triggers file path(s) of the trigger file(s)
+out_of_date <- function(output, triggers) {
+
+  if (file.exists(output)) {
+
+    output_time <- file.info(output)$mtime
+    trigger_times <- file.info(triggers)$mtime
+    out_of_date <- any(trigger_times > output_time)
+
+  } else {
+
+    out_of_date <- TRUE
+
+  }
+
+  return(out_of_date)
 
 }
 
-# Mapping ----------------------------------------------------------------------
-
-map_ids <- function(.data, col) {
-
-  # get id column name
-  colname <- deparse(substitute(col))
-  idname <- paste0(str_sub(colname, 1, 1), "id")
-
-  # generate mapping table
-  out <-
-    .data %>%
-    distinct({{ col }}) %>%
-    arrange({{ col }}) %>%
-    rowid_to_column(idname)
-
-  return(out)
-
-}
