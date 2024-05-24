@@ -5,7 +5,7 @@ library(tidyverse)
 library(cmdstanr)
 
 # functions
-walk(list.files("R/model/"), ~source(paste0("R/model/", .x)))
+walk(list.files("R/model/functions/"), ~source(paste0("R/model/functions/", .x)))
 
 # create stan model exe directory
 if (!dir.exists("exe")) {
