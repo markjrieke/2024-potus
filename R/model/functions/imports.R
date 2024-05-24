@@ -52,15 +52,4 @@ fetch_gdp <- function() {
 
 }
 
-# FiveThirtyEight --------------------------------------------------------------
 
-# Import most up-to-date Biden net approval topline
-fetch_approval <- function() {
-
-  read_csv("https://projects.fivethirtyeight.com/biden-approval-data/approval_topline.csv") %>%
-    filter(subgroup == "All polls",
-           end_date == max(end_date)) %>%
-    mutate(net = (approve_estimate - disapprove_estimate)/100) %>%
-    pull(net)
-
-}
