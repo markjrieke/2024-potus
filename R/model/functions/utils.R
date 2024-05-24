@@ -136,3 +136,19 @@ out_of_date <- function(output, triggers) {
 
 }
 
+#' Generate basic sampler dianostics as a tibble
+#'
+#' @description
+#' Generate model diagnostics for `num_divergent` and `num_max_treedepth` as a
+#' tibble
+#'
+#' @param model model fit by the `$sample()` method
+diagnostic_summary <- function(model) {
+
+  model$diagnostic_summary() %>%
+    as_tibble() %>%
+    summarise(num_divergent = sum(num_divergent),
+              num_max_treedepth = sum(num_max_treedepth))
+
+}
+

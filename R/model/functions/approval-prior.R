@@ -152,6 +152,11 @@ run_approval_prior_model <- function(run_date = Sys.Date()) {
   e_day_approval_historical %>%
     write_csv("out/approval-prior/e_day_approval_historical.csv")
 
+  # diagnostics
+  diagnostics <-
+    approval_prior_fit %>%
+    diagnostic_summary()
+
   # evaluate processing time
   end_ts <- Sys.time()
 
@@ -163,6 +168,8 @@ run_approval_prior_model <- function(run_date = Sys.Date()) {
       start_ts = start_ts,
       end_ts = end_ts,
       observations = stan_data$N,
+      num_divergent = diagnostics$num_divergent,
+      num_max_treedepth = diagnostics$num_max_treedepth,
       run_date = run_date
     )
 

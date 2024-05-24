@@ -116,8 +116,8 @@ run_pvi_model <- function(run_date = Sys.Date()) {
     pvi_model$sample(
       data = stan_data,
       seed = 2024,
-      iter_warmup = 2000,
-      iter_sampling = 2000,
+      iter_warmup = 1000,
+      iter_sampling = 1000,
       chains = 4,
       parallel_chains = 4
     )
@@ -134,6 +134,11 @@ run_pvi_model <- function(run_date = Sys.Date()) {
   pvi_summary %>%
     write_csv("out/pvi/pvi_summary.csv")
 
+  # diagnostics
+  diagnostics <-
+    pvi_fit %>%
+    diagnostic_summary()
+
   # evaluate processing time
   end_ts <- Sys.time()
 
@@ -145,6 +150,8 @@ run_pvi_model <- function(run_date = Sys.Date()) {
       start_ts = start_ts,
       end_ts = end_ts,
       observations = stan_data$N,
+      num_divergent = diagnostics$num_divergent,
+      num_max_treedepth = diagnostics$num_max_treedepth,
       run_date = run_date
     )
 

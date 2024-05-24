@@ -89,6 +89,11 @@ run_approval_model <- function(run_date) {
       run_date
     )
 
+  # diagnostics
+  diagnostics <-
+    approval_fit %>%
+    diagnostic_summary()
+
   # evaluate processing time
   end_ts <- Sys.time()
 
@@ -100,6 +105,8 @@ run_approval_model <- function(run_date) {
       start_ts = start_ts,
       end_ts = end_ts,
       observations = stan_data$N,
+      num_divergent = diagnostics$num_divergent,
+      num_max_treedepth = diagnostics$num_max_treedepth,
       run_date = run_date
     )
 

@@ -21,6 +21,9 @@ run_pvi_model()
 
 # approval model ---------------------------------------------------------------
 
+missing_days("out/approval/e_day_approval_current.csv") %>%
+  walk(run_approval_model)
+
 # prior model ------------------------------------------------------------------
 
 # poll model -------------------------------------------------------------------
