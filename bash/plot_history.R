@@ -41,18 +41,22 @@ tibble(history = history) %>%
          extension,
          additions,
          deletions) %>%
-  mutate(extension = if_else(extension == "R => imports.R}", "R", extension)) %>%
-  filter(!extension %in% c("csv", "exe", "png", "html")) %>%
-  # filter(extension %in% c("R", "stan")) %>%
-  group_by(commit, message, datetime) %>%
+  mutate(extension = if_else(str_detect(extension, "=>"),
+                             str_sub(extension, 1, str_locate(extension, "=")[,1] - 2),
+                             extension)) %>%
+  # mutate(extension = if_else(extension == "R => imports.R}", "R", extension)) %>%
+  # filter(!extension %in% c("csv", "exe", "png", "html")) %>%
+  filter(extension %in% c("R", "stan")) %>%
+  group_by(commit, extension, message, datetime) %>%
   summarise(additions = sum(additions),
             deletions = sum(deletions)) %>%
   ungroup() %>%
   arrange(datetime) %>%
-  # group_by(extension) %>%
+  group_by(extension) %>%
   mutate(loc = cumsum(additions) - cumsum(deletions)) %>%
   ggplot(aes(x = datetime,
-             y = loc)) +
+             y = loc,
+             color = extension)) +
   geom_step() +
   scale_y_comma() +
   theme_rieke()

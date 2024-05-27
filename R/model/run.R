@@ -28,6 +28,6 @@ missing_days("out/approval/e_day_approval_current.csv") %>%
 missing_days("out/priors/priors.csv") %>%
   walk(run_prior_model)
 
-# prior model ------------------------------------------------------------------
+missing_days("out/polls/theta.csv") %>%
+  walk(run_poll_model)
 
-# poll model -------------------------------------------------------------------
