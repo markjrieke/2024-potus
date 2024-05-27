@@ -152,3 +152,23 @@ diagnostic_summary <- function(model) {
 
 }
 
+#' Remove all model output files
+#'
+#' @description
+#' Removes all output files under the `out/` directory. Requires user input of
+#' "y" to confirm deletion.
+reset_outputs <- function() {
+
+  if (readline("Are you sure you want to reset outputs for all models? (y/n)") == "y") {
+
+    list.files("out", recursive = TRUE) %>%
+      walk(~file.remove(paste0("out/", .x)))
+
+  } else {
+
+    message("Aborted")
+
+  }
+
+}
+
