@@ -13,8 +13,6 @@ if (!dir.exists("exe")) {
   dir.create("exe")
 }
 
-# pull in any new days to run
-
 # time invariant models --------------------------------------------------------
 
 run_approval_prior_model()

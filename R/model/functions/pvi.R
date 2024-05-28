@@ -76,15 +76,15 @@ run_pvi_model <- function(run_date = Sys.Date()) {
                          pvim8 = pvi)) %>%
     drop_na() %>%
     mutate(cpvi = 0.75 * pvim4 + 0.25 * pvim8,
-           C_hat = 0.75 * pvi + 0.25 * pvim4) %>%
+           x_pred = 0.75 * pvi + 0.25 * pvim4) %>%
     select(year,
            state,
-           P = pvi,
-           C = cpvi,
-           C_hat)
+           Y = pvi,
+           x = cpvi,
+           x_pred)
 
   # current pvi estimate for passing to 2024
-  C_hat <-
+  x_pred <-
     pvi %>%
     filter(year == 2020) %>%
     arrange(state)
@@ -100,15 +100,15 @@ run_pvi_model <- function(run_date = Sys.Date()) {
   stan_data <-
     list(
       N = nrow(pvi),
-      P = pvi$P,
-      C = pvi$C,
+      Y = pvi$Y,
+      x = pvi$x,
       alpha_mu = 0,
       alpha_sigma = 1,
       beta_mu = 0,
       beta_sigma = 1,
       sigma_sigma = 1,
-      S = nrow(C_hat),
-      C_hat = C_hat$C_hat
+      S = nrow(x_pred),
+      x_pred = x_pred$x_pred
     )
 
   # fit!
@@ -124,7 +124,7 @@ run_pvi_model <- function(run_date = Sys.Date()) {
 
   # extract prior for state pvi
   pvi_summary <-
-    pvi_fit$summary("P_hat") %>%
+    pvi_fit$summary("y_pred") %>%
     bind_cols(pvi %>% filter(year == max(year)) %>% arrange(state)) %>%
     select(state,
            pvi_mu = mean,

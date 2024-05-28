@@ -1,48 +1,5 @@
 functions {
-  /*
-  * Generate a Covariance Matrix with an Exponentiated Quadratic Kernel
-  *
-  * @param F: square matrix of pre-computed distances between observations
-  * @param sigma: amplitude of covariance matrix
-  * @param rho: length_scale of covariance matrix
-  */
-  matrix gp_exp_quad_cov(matrix F,
-                         real sigma,
-                         real rho) {
-    int N = dims(F)[1];
-    matrix [N,N] K;
-    for (i in 1:(N - 1)) {
-      K[i,i] = sigma + 1e-9;
-      for (j in (i + 1):N) {
-        K[i,j] = sigma * exp(-rho * square(F[i,j]));
-        K[j,i] = K[i,j];
-      }
-    }
-    K[N,N] = sigma + 1e-9;
-    return K;
-  }
-
-  /*
-  * Add a reference value of 0 to a parameter vector
-  *
-  * @param eta: N-1 length vector of "raw" parameters
-  * @param ref: integer containing the reference position in the new N length vector
-  */
-  vector add_reference(vector eta,
-                       int ref) {
-    int N = num_elements(eta) + 1;
-    vector[N] beta;
-    int off = 0;
-    for (n in 1:N) {
-      if (n == ref) {
-        beta[n] = 0;
-        off += 1;
-      } else {
-        beta[n] = eta[n - off];
-      }
-    }
-    return beta;
-  }
+  #include /functions.stan
 }
 
 data {
@@ -89,7 +46,6 @@ data {
   // State Gaussian Process priors
   real<lower=0> rho_alpha;             // Shape for gamma prior for state covariance length scale
   real<lower=0> rho_beta;              // Rate for gamma prior for state covariance length scale
-  real<lower=0> alpha_sigma;           // Shape for half-normal prior for state covariance amplitude
 
   // State polling bias priors
   real<lower=0> psi_sigma;             // Shape for half-normal prior for state covariance amplitude scaling
@@ -98,7 +54,8 @@ data {
   real<lower=0> phi_sigma;             // Shape for half-normal prior for state covariance amplitude scaling
 
   // State election day priors
-  vector[R] e_day_mu_r;                // Raw logit-scale mean prior for election day
+  vector[R] alpha_mu_r;                // Raw logit-scale mean prior for election day
+  vector[R] alpha_sigma_r;             // Raw logit-scale scale prior for election day
 
   // Generated quantities
   real<lower=0> omega;                 // Scale of beta rng
@@ -110,11 +67,7 @@ data {
 
 transformed data {
   // Construct aggregate priors
-  vector[S] e_day_mu;
-  e_day_mu[1:R] = e_day_mu_r;
-  for (a in 1:A) {
-    e_day_mu[R + a] = dot_product(e_day_mu_r, wt[a]);
-  }
+  vector[S] alpha_mu = construct_aggregate(alpha_mu_r, wt);
 }
 
 parameters {
@@ -133,7 +86,7 @@ parameters {
   // State Gaussian Process
   vector[R] eta_r;                     // Raw state voting intent
   real<lower=0> rho;                   // Length scale for state covariance
-  real<lower=0> alpha;                 // Amplitude for state covariance
+  vector<lower=0>[R] alpha;            // Amplitude for state covariance
 
   // State Polling Bias
   vector[R] eta_rb;                    // Raw state polling bias
@@ -154,47 +107,39 @@ transformed parameters{
   vector[P] beta_p = eta_p * sigma_p;
   vector[M] beta_m = eta_m * sigma_m;
 
-  // Construct covariance matrix from feature space
-  matrix[R, R] K_r = gp_exp_quad_cov(F_r, alpha, rho);
-  matrix[R, R] L_r = cholesky_decompose(K_r);
-  vector[R] beta_r = L_r * eta_r;
-
-  // Construct state-level polling bias
-  matrix[R, R] L_rb = sqrt(psi) * L_r;
-  vector[R] beta_rb = L_rb * eta_rb;
-
-  // Construct random walk parameters
-  matrix[R, R] L_d = sqrt(phi) * L_r;
-  matrix[R, D] beta_rd = L_d * eta_rd;
-  for (d in 1:(D-1)) {
-    beta_rd[:,D-d] += beta_rd[:,D-d+1];
-  }
-
-  // Construct aggregate state parameters
+  // Aggregate parameters derived from state covariance matrix
   vector[S] beta_s;
-  beta_s[1:R] = beta_r;
-  for (a in 1:A) {
-    beta_s[R + a] = dot_product(beta_r, wt[a]);
-  }
-
-  // Construct aggregate state bias parameters
   vector[S] beta_b;
-  beta_b[1:R] = beta_rb;
-  for (a in 1:A) {
-    beta_b[R + a] = dot_product(beta_rb, wt[a]);
-  }
-
-  // Construct aggregate random walk parameters
   matrix[S, D] beta_sd;
-  beta_sd[1:R, :] = beta_rd;
-  for (a in 1:A) {
-    beta_sd[R + a, :] = to_row_vector(transpose(beta_rd) * wt[a]);
+
+  // Construct parameters derived from state covariance matrix
+  {
+    // State parameters
+    matrix[R, R] K_r = gp_exp_quad_cov(F_r, alpha, rho);
+    matrix[R, R] L_r = cholesky_decompose(K_r);
+    vector[R] beta_r = L_r * eta_r;
+
+    // State-level polling bias
+    matrix[R, R] L_rb = sqrt(psi) * L_r;
+    vector[R] beta_rb = L_rb * eta_rb;
+
+    // Random walk parameters
+    matrix[R, R] L_d = sqrt(phi) * L_r;
+    matrix[R, D] beta_rd = L_d * eta_rd;
+    for (d in 1:(D-1)) {
+      beta_rd[:,D-d] += beta_rd[:,D-d+1];
+    }
+
+    // Construct aggregate parameters
+    beta_s = construct_aggregate(beta_r, wt);
+    beta_b = construct_aggregate(beta_rb, wt);
+    beta_sd = construct_aggregate(beta_rd, wt);
   }
 
   // Construct linear model
   vector[N] mu;
   for (n in 1:N) {
-    mu[n] = e_day_mu[sid[n]] + beta_s[sid[n]] + beta_sd[sid[n], did[n]]
+    mu[n] = alpha_mu[sid[n]] + beta_s[sid[n]] + beta_sd[sid[n], did[n]]
           + beta_b[sid[n]]
           + beta_g[gid[n]]
           + beta_m[mid[n]]
@@ -220,7 +165,7 @@ model {
   // Priors over state Gaussian Process
   target += std_normal_lpdf(eta_r);
   target += gamma_lpdf(rho | rho_alpha, rho_beta);
-  target += normal_lpdf(alpha | 0, alpha_sigma) - normal_lccdf(0 | 0, alpha_sigma);
+  target += normal_lpdf(alpha | 0, alpha_sigma_r) - normal_lccdf(0 | 0, alpha_sigma_r);
 
   // Priors over state polling bias
   target += std_normal_lpdf(eta_rb);
@@ -237,21 +182,13 @@ model {
 }
 
 generated quantities {
-  // Voteshare in each state
-  matrix[S, D] mu_hat;
-  matrix[S, D] theta;
-  for (s in 1:S) {
-    mu_hat[s,:] = inv_logit(e_day_mu[s] + beta_s[s] + beta_sd[s,:]);
-    theta[s,:] = to_row_vector(beta_rng(mu_hat[s,:] * omega, (1 - mu_hat[s,:]) * omega));
-  }
+  // Predicted voteshare in each state
+  vector[S] mu_hat = inv_logit(alpha_mu + beta_s + beta_sd[:,D]);
+  array[S] real theta = beta_rng(mu_hat * omega, (1 - mu_hat) * omega);
 
-  // Win conditions (state and presidential)
-  matrix[S, D] win_state = round(theta);
-  vector<lower=0, upper=538>[D] evs = transpose(win_state) * electors;
-  vector<lower=0, upper=1>[D] win_pres;
-  vector<lower=0, upper=1>[D] tie_pres;
-  for (d in 1:D) {
-    win_pres[d] = evs[d] >= 270 ? 1.0 : 0.0;
-    tie_pres[d] = evs[d] == 269 ? 1.0 : 0.0;
-  }
+  // Predicted win conditions (state and presidential)
+  vector[S] win_state = to_vector(round(theta));
+  real<lower=0, upper=538> evs = dot_product(win_state, electors);
+  real<lower=0, upper=1> win_pres = evs >= 270 ? 1.0 : 0.0;
+  real<lower=0, upper=1> tie_pres = evs == 269 ? 1.0 : 0.0;
 }

@@ -8,6 +8,17 @@ data {
   vector[N] A_mu;                 // Approval mean
   vector<lower=0>[N] A_sigma;     // Approval Scale
 
+  // Model Priors
+  real alpha_mu;                  // Prior intercept mean
+  real<lower=0> alpha_sigma;      // Prior intercept scale
+  real beta_a_mu;                 // Prior approval parameter mean
+  real<lower=0> beta_a_sigma;     // Prior approval parameter scale
+  real beta_g_mu;                 // Prior GDP parameter mean
+  real<lower=0> beta_g_sigma;     // Prior GDP parameter scale
+  real beta_i_mu;                 // Prior incumbency parameter mean
+  real<lower=0> beta_i_sigma;     // Prior incumbency parameter scale
+  real<lower=0> sigma_sigma;      // Scale for half-normal prior over observation scale
+
   // 2024 National Prior
   real A_new_mu;                  // Biden Net Approval Mean
   real A_new_sigma;               // Biden Net Approval Scale
@@ -39,11 +50,11 @@ transformed parameters {
 
 model {
   // Priors over linear model parameters
-  target += normal_lpdf(alpha | 0, 1);
-  target += normal_lpdf(beta_a | 0, 1);
-  target += normal_lpdf(beta_g | 0, 1);
-  target += normal_lpdf(beta_i | 0, 1);
-  target += normal_lpdf(sigma | 0, 1) - normal_lccdf(0 | 0, 1);
+  target += normal_lpdf(alpha | alpha_mu, alpha_sigma);
+  target += normal_lpdf(beta_a | beta_a_mu, beta_a_sigma);
+  target += normal_lpdf(beta_g | beta_g_mu, beta_g_sigma);
+  target += normal_lpdf(beta_i | beta_i_mu, beta_i_sigma);
+  target += normal_lpdf(sigma | 0, sigma_sigma) - normal_lccdf(0 | 0, sigma_sigma);
 
   // Priors over measurement error data
   target += normal_lpdf(A | A_mu, A_sigma);

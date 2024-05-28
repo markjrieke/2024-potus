@@ -1,8 +1,8 @@
 data {
   // Observations
   int<lower=0> N;               // Number of observations
-  vector[N] P;                  // Observed partisan lean of state
-  vector[N] C;                  // CPVI estimated partisan lean
+  vector[N] Y;                  // Observed partisan lean of state
+  vector[N] x;                  // CPVI estimated partisan lean
 
   // Priors
   real alpha_mu;                // Location for prior over intercept
@@ -13,7 +13,7 @@ data {
 
   // Generated Quantities
   int<lower=0> S;               // Number of new state observations to generate
-  vector[S] C_hat;              // CPVI estimated partisan lean for the new observations
+  vector[S] x_pred;             // CPVI estimated partisan lean for the new observations
 }
 
 parameters {
@@ -23,7 +23,7 @@ parameters {
 }
 
 transformed parameters {
-  vector[N] mu = alpha + beta * C;
+  vector[N] mu = alpha + beta * x;
 }
 
 model {
@@ -33,9 +33,9 @@ model {
   target += normal_lpdf(sigma | 0, sigma_sigma) - normal_lccdf(0 | 0, sigma_sigma);
 
   // likelihood
-  target += normal_lpdf(P | mu, sigma);
+  target += normal_lpdf(Y | mu, sigma);
 }
 
 generated quantities {
-  array[S] real P_hat = normal_rng(alpha + beta * C_hat, sigma);
+  array[S] real y_pred = normal_rng(alpha + beta * x_pred, sigma);
 }

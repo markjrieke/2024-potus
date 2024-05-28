@@ -61,6 +61,7 @@
 #' * data/features/wt.rds
 #' * out/priors/priors.csv
 #' * stan/polls.stan
+#' * stan/functions.stan
 #'
 #' @param run_date the model run_date
 run_poll_model <- function(run_date) {
@@ -229,11 +230,22 @@ run_poll_model <- function(run_date) {
     arrange(sid) %>%
     select(-c(sid, run_date))
 
+  # set omega
+  omega <- set_omega(run_date)
+
+  # check whether or not functions.stan has been updated since last run
+  if (out_of_date("exe/polls", "stan/functions.stan")) {
+    force_recompile <- TRUE
+  } else {
+    force_recompile <- FALSE
+  }
+
   # compile model to exe
   poll_model <-
     cmdstan_model(
       "stan/polls.stan",
-      dir = "exe/"
+      dir = "exe/",
+      force_recompile = force_recompile
     )
 
   # pass to stan
@@ -265,14 +277,14 @@ run_poll_model <- function(run_date) {
       sigma_n_sigma = 0.02,
       sigma_p_sigma = 0.05,
       sigma_m_sigma = 0.02,
-      e_day_mu_r = priors$e_day_mu,
-      e_day_mu_sigma_r = priors$e_day_sigma,
+      alpha_mu_r = priors$e_day_mu,
+      alpha_sigma_r = priors$e_day_sigma,
       rho_alpha = 3,
       rho_beta = 6,
       alpha_sigma = 0.05,
       phi_sigma = 0.05,
       psi_sigma = 0.05,
-      omega = 600,
+      omega = omega,
       electors = sid$electors,
       prior_check = 0
     )
@@ -290,14 +302,13 @@ run_poll_model <- function(run_date) {
     )
 
   # post-process voteshare in each state
-  poll_fit$draws(paste0("theta[", 1:max(sid$sid), ",", D, "]"),
+  poll_fit$draws("theta",
                  format = "df") %>%
     as_tibble() %>%
     pivot_longer(starts_with("theta"),
                  names_to = "sid",
                  values_to = "theta") %>%
-    mutate(sid = str_remove_all(sid, "theta\\[|,189\\]"),
-           sid = as.integer(sid)) %>%
+    mutate(sid = parse_number(sid)) %>%
     group_by(sid) %>%
     tidybayes::median_qi(theta, .width = c(0.66, 0.95)) %>%
     left_join(sid) %>%
@@ -310,9 +321,8 @@ run_poll_model <- function(run_date) {
                           run_date)
 
   # probability of winning in each state
-  poll_fit$summary(paste0("win_state[", 1:max(sid$sid), ",", D, "]")) %>%
-    mutate(sid = str_remove_all(variable, "win_state\\[|,189\\]"),
-           sid = as.integer(sid)) %>%
+  poll_fit$summary("win_state") %>%
+    mutate(sid = parse_number(variable)) %>%
     left_join(sid) %>%
     select(state,
            p_win = mean) %>%
@@ -320,10 +330,9 @@ run_poll_model <- function(run_date) {
                           run_date)
 
   # number of electoral college votes
-  poll_fit$draws(paste0("evs[", D, "]"),
+  poll_fit$draws("evs",
                  format = "df") %>%
     as_tibble() %>%
-    rename(evs = 1) %>%
     tidybayes::median_qi(evs, .width = c(0.66, 0.95)) %>%
     select(evs,
            .lower,
@@ -333,13 +342,13 @@ run_poll_model <- function(run_date) {
                           run_date)
 
   # probability of winning the presidency
-  poll_fit$summary(paste0("win_pres[", D, "]")) %>%
+  poll_fit$summary("win_pres") %>%
     select(p_win = mean) %>%
     append_daily_estimate("out/polls/win_pres.csv",
                           run_date)
 
   # probability of an electoral college tie
-  poll_fit$summary(paste0("tie_pres[", D, "]")) %>%
+  poll_fit$summary("tie_pres") %>%
     select(p_tie = mean) %>%
     append_daily_estimate("out/polls/tie_pres.csv",
                           run_date)
@@ -395,5 +404,28 @@ map_ids <- function(.data, col) {
     rowid_to_column(idname)
 
   return(out)
+
+}
+
+#' Generate the out-of-sample noise parameter, omega
+#'
+#' @description
+#' Outputs the out-of-sample noise parameter, omega, based on the run date
+#'
+#' @param run_date model run date
+#' @param e_day_omega the out-of-sample noise parameter on election day
+#' @param s_day_omega the out-of-sample noise parameter on 5/1/24
+set_omega <- function(run_date,
+                      e_day_omega = 600,
+                      s_day_omega = 150) {
+
+  D <- as.integer(mdy("11/5/24") - mdy("5/1/24")) + 1
+  d <- as.integer(run_date - mdy("5/1/24")) + 1
+  m <- (e_day_omega - s_day_omega)/(D - 1)
+  b <- s_day_omega - m
+
+  omega <- m * d + b
+
+  return(omega)
 
 }

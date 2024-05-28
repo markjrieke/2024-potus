@@ -106,13 +106,13 @@ run_approval_prior_model <- function(run_date = Sys.Date()) {
       cid = approval_prior$cid,
       did = approval_prior$did,
       Y = approval_prior$Y,
-      m0 = 0,
-      C0 = 0.5,
-      W_alpha = 2,
-      W_beta = 32,
-      V_alpha = 2,
-      V_beta = 32,
-      V_L = 0.005,
+      theta0_mu = 0,
+      theta0_sigma = 0.5,
+      sigma_s_alpha = 2,
+      sigma_s_beta = 32,
+      sigma_o_alpha = 2,
+      sigma_o_beta = 32,
+      sigma_o_lim = 0.005,
       prior_check = 0
     )
 
