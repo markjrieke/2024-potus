@@ -156,7 +156,21 @@ run_poll_model <- function(run_date) {
     group_by(poll_id) %>%
     filter(n_candidates == min(n_candidates),
            rank == min(rank)) %>%
-    select(-c(rank, n_candidates)) %>%
+    select(-rank) %>%
+    ungroup() %>%
+
+    # apply filter at the poll_id level
+    # (some pollsters poll B/T vs B/T/K in separate polls, rather than in
+    #  separate questions on the same poll)
+    group_by(state,
+             sample_size,
+             pollster,
+             end_date,
+             population,
+             mode,
+             candidate_sponsored) %>%
+    filter(n_candidates == min(n_candidates)) %>%
+    select(-n_candidates) %>%
     ungroup() %>%
 
     # only care about the results for biden & trump
@@ -202,7 +216,21 @@ run_poll_model <- function(run_date) {
     mutate(state = replace_na(state, "National"),
            mode = replace_na(mode, "Unknown"),
            candidate_sponsored = replace_na(candidate_sponsored, "None")) %>%
-    rename(group = population)
+    rename(group = population) %>%
+
+    # only keep the most recent poll from tracking polls
+    group_by(state,
+             pollster,
+             group,
+             mode,
+             candidate_sponsored) %>%
+    arrange(end_date) %>%
+    mutate(diff = as.integer(lead(end_date) - end_date),
+           diff = replace_na(diff, 100),
+           final = if_else(diff > 1, 1, NA)) %>%
+    filter(!is.na(final)) %>%
+    ungroup() %>%
+    select(-c(diff, final))
 
   # add mapping ids by day
   polls <-
