@@ -62,8 +62,8 @@ run_prior_model <- function(run_date) {
   # append national data with 2nd quarter real annualized gdp growth
   prior_model_data <-
     read_csv("data/static/abramovitz.csv") %>%
-    mutate(begin_quarter = mdy(paste0("7/1/", year - 1)),
-           end_quarter = mdy(paste0("7/1/", year))) %>%
+    mutate(begin_quarter = mdy(paste0("4/1/", year - 1)),
+           end_quarter = mdy(paste0("4/1/", year))) %>%
     left_join(real_gdp, by = c("begin_quarter" = "date")) %>%
     rename(begin_gdp = real_gdp) %>%
     left_join(real_gdp, by = c("end_quarter" = "date")) %>%

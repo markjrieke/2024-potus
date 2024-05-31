@@ -79,6 +79,10 @@ run_poll_model <- function(run_date) {
   polls <-
     read_csv("https://projects.fivethirtyeight.com/polls-page/data/president_polls.csv")
 
+  # write polls out
+  polls %>%
+    write_csv("out/polls/polls_raw.csv")
+
   # read in static data
   banned_pollsters <- read_csv("data/static/banned_pollsters.csv")
   allowed_candidates <- read_csv("data/static/allowed_candidates.csv")
@@ -222,6 +226,10 @@ run_poll_model <- function(run_date) {
     left_join(cid) %>%
     rename(K = sample_size,
            Y = biden)
+
+  # write formatted polls out
+  polls %>%
+    write_csv("out/polls/polls_out.csv")
 
   # enforce prior ordering
   priors <-
@@ -417,7 +425,7 @@ map_ids <- function(.data, col) {
 #' @param s_day_omega the out-of-sample noise parameter on 5/1/24
 set_omega <- function(run_date,
                       e_day_omega = 600,
-                      s_day_omega = 150) {
+                      s_day_omega = 100) {
 
   D <- as.integer(mdy("11/5/24") - mdy("5/1/24")) + 1
   d <- as.integer(run_date - mdy("5/1/24")) + 1
