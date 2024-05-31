@@ -1,96 +1,47 @@
 state,K,pollster,end_date,group,mode,candidate_sponsored,Y,did,sid,electors,pid,gid,mid,cid
 National,952,Redfield & Wilton Strategies,2024-05-01,lv,Online Panel,None,465,1,55,0,33,1,9,2
-National,738,Suffolk,2024-05-03,rv,Live Phone,None,367,3,55,0,39,2,5,2
-National,1037,TIPP,2024-05-03,rv,Online Panel,None,531,3,55,0,41,2,9,2
-National,8629,Morning Consult,2024-05-05,rv,Online Panel,None,4265,5,55,0,25,2,9,2
-National,3440,Morning Consult,2024-05-04,rv,Online Panel,None,1680,4,55,0,25,2,9,2
-National,3440,Morning Consult,2024-05-03,rv,Online Panel,None,1680,3,55,0,25,2,9,2
-National,3400,Morning Consult,2024-05-02,rv,Online Panel,None,1680,2,55,0,25,2,9,2
-National,3440,Morning Consult,2024-05-01,rv,Online Panel,None,1720,1,55,0,25,2,9,2
 Virginia,736,McLaughlin,2024-05-01,lv,Live Phone/Text-to-Web,REP,384,1,50,13,23,1,8,3
 Minnesota,570,McLaughlin,2024-05-01,lv,Live Phone/Text-to-Web,REP,276,1,25,10,23,1,8,3
-National,1374,YouGov,2024-05-07,rv,Online Panel,None,687,7,55,0,45,2,9,2
-Wisconsin,1369,Quinnipiac,2024-05-06,rv,Live Phone,None,728,6,53,10,31,2,5,2
-Maryland,661,PPP,2024-05-07,v,IVR/Text,DEM,431,7,22,10,28,3,4,1
-Maryland,1009,Emerson,2024-05-08,rv,IVR/Online Panel/Text-to-Web,None,624,8,22,10,12,2,3,2
-North Carolina,485,Cygnal,2024-05-05,lv,Live Phone,None,229,5,37,16,8,1,5,2
-National,2365,Big Village,2024-05-08,lv,Online Panel,None,1201,8,55,0,4,1,9,2
 National,1439,co/efficient,2024-05-01,lv,Text,None,684,1,55,0,46,1,12,2
-Florida,567,Cherry Communications,2024-05-07,lv,Live Phone,REP,256,7,10,30,7,1,5,3
-New York,985,Slingshot Strategies,2024-05-03,rv,Online Panel,None,593,3,36,28,38,2,9,2
+National,1131,Kaiser Family Foundation,2024-05-01,rv,Probability Panel,None,572,1,55,0,18,2,11,2
 National,1153,Data for Progress,2024-05-02,lv,Online Panel,None,583,2,55,0,9,1,9,2
-Georgia,528,North Star Opinion Research,2024-05-05,lv,Live Phone/Text-to-Web,REP,234,5,11,16,27,1,8,3
-Arizona,576,Siena/NYT,2024-05-09,lv,Live Phone,None,269,9,3,11,37,1,5,2
-Georgia,550,Siena/NYT,2024-05-09,lv,Live Phone,None,248,9,11,16,37,1,5,2
-Michigan,573,Siena/NYT,2024-05-09,lv,Live Phone,None,290,9,24,15,37,1,5,2
-Nevada,546,Siena/NYT,2024-05-09,lv,Live Phone,None,233,9,32,6,37,1,5,2
-Pennsylvania,951,Siena/NYT,2024-05-09,lv,Live Phone,None,460,9,42,19,37,1,5,2
-Wisconsin,571,Siena/NYT,2024-05-09,lv,Live Phone,None,282,9,53,10,37,1,5,2
+National,738,Suffolk,2024-05-03,rv,Live Phone,None,367,3,55,0,39,2,5,2
+National,1037,TIPP,2024-05-03,rv,Online Panel,None,531,3,55,0,41,2,9,2
+New York,985,Slingshot Strategies,2024-05-03,rv,Online Panel,None,593,3,36,28,38,2,9,2
 Arizona,455,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,222,4,3,11,33,1,9,2
 Florida,498,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,223,4,10,30,33,1,9,2
 Georgia,394,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,185,4,11,16,33,1,9,2
 Michigan,417,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,193,4,24,15,33,1,9,2
 North Carolina,448,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,205,4,37,16,33,1,9,2
 Pennsylvania,428,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,209,4,42,19,33,1,9,2
+North Carolina,485,Cygnal,2024-05-05,lv,Live Phone,None,229,5,37,16,8,1,5,2
+Georgia,528,North Star Opinion Research,2024-05-05,lv,Live Phone/Text-to-Web,REP,234,5,11,16,27,1,8,3
+Wisconsin,1369,Quinnipiac,2024-05-06,rv,Live Phone,None,728,6,53,10,31,2,5,2
 National,366,Ipsos,2024-05-06,rv,Probability Panel,None,187,6,55,0,16,2,11,2
-National,8911,Morning Consult,2024-05-12,rv,Online Panel,None,4404,12,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-11,rv,Online Panel,None,1720,11,55,0,25,2,9,2
-National,3440,Morning Consult,2024-05-10,rv,Online Panel,None,1720,10,55,0,25,2,9,2
-National,3440,Morning Consult,2024-05-09,rv,Online Panel,None,1720,9,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-08,rv,Online Panel,None,1760,8,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-07,rv,Online Panel,None,1760,7,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-06,rv,Online Panel,None,1760,6,55,0,25,2,9,2
+National,1374,YouGov,2024-05-07,rv,Online Panel,None,687,7,55,0,45,2,9,2
+Maryland,661,PPP,2024-05-07,v,IVR/Text,DEM,431,7,22,10,28,3,4,1
+Florida,567,Cherry Communications,2024-05-07,lv,Live Phone,REP,256,7,10,30,7,1,5,3
+Maryland,1009,Emerson,2024-05-08,rv,IVR/Online Panel/Text-to-Web,None,624,8,22,10,12,2,3,2
+National,2365,Big Village,2024-05-08,lv,Online Panel,None,1201,8,55,0,4,1,9,2
+Arizona,576,Siena/NYT,2024-05-09,lv,Live Phone,None,269,9,3,11,37,1,5,2
+Georgia,550,Siena/NYT,2024-05-09,lv,Live Phone,None,248,9,11,16,37,1,5,2
+Michigan,573,Siena/NYT,2024-05-09,lv,Live Phone,None,290,9,24,15,37,1,5,2
+Nevada,546,Siena/NYT,2024-05-09,lv,Live Phone,None,233,9,32,6,37,1,5,2
+Pennsylvania,951,Siena/NYT,2024-05-09,lv,Live Phone,None,460,9,42,19,37,1,5,2
+Wisconsin,571,Siena/NYT,2024-05-09,lv,Live Phone,None,282,9,53,10,37,1,5,2
 National,1720,RMG Research,2024-05-09,lv,Unknown,None,880,9,55,0,32,1,15,2
-National,1080,YouGov,2024-05-13,rv,Online Panel,None,540,13,55,0,45,2,9,2
+Tennessee,380,SSRS,2024-05-09,rv,Live Phone,None,145,9,46,11,35,2,5,2
+North Carolina,692,High Point University,2024-05-09,rv,Online Panel,None,338,9,37,16,15,2,9,2
 Minnesota,537,SurveyUSA,2024-05-11,lv,Online Panel,None,275,11,25,10,40,1,9,2
-National,1316,YouGov,2024-05-14,rv,Online Panel,None,650,14,55,0,45,2,9,2
-National,1131,Kaiser Family Foundation,2024-05-01,rv,Probability Panel,None,572,1,55,0,18,2,11,2
-National,2952,Ipsos,2024-05-14,rv,Probability Panel,None,1476,14,55,0,16,2,11,2
-National,1092,Beacon/Shaw,2024-05-13,rv,Live Phone,None,540,13,55,0,2,2,5,2
-National,1660,Ipsos,2024-05-13,rv,Probability Panel,None,830,13,55,0,16,2,11,2
-National,1614,McLaughlin,2024-05-14,lv,Online Panel,REP,809,14,55,0,23,1,9,3
-National,982,Redfield & Wilton Strategies,2024-05-13,lv,Online Panel,None,497,13,55,0,33,1,9,2
-National,972,Echelon Insights,2024-05-16,lv,Online Panel,None,471,16,55,0,10,1,9,2
-Washington,578,PPP,2024-05-16,lv,IVR/Text,DEM,338,16,51,12,28,1,4,1
-Florida,1169,YouGov,2024-05-16,lv,Online Panel,None,531,16,10,30,45,1,9,2
-Arizona,1181,YouGov,2024-05-16,lv,Online Panel,None,561,16,3,11,45,1,9,2
-National,900,McLaughlin,2024-05-15,lv,Online Panel,None,430,15,55,0,23,1,9,2
-National,1660,HarrisX/Harris Poll,2024-05-16,rv,Online Panel,None,780,16,55,0,14,2,9,2
-National,8850,Morning Consult,2024-05-19,rv,Online Panel,None,4374,19,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-18,rv,Online Panel,None,1720,18,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-17,rv,Online Panel,None,1720,17,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-16,rv,Online Panel,None,1720,16,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-15,rv,Online Panel,None,1720,15,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-14,rv,Online Panel,None,1720,14,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-13,rv,Online Panel,None,1720,13,55,0,25,2,9,2
-New Hampshire,630,Praecones Analytica,2024-05-20,rv,Online Panel,None,315,20,33,4,29,2,9,2
-National,810,Bullfinch,2024-05-21,rv,Online Panel,None,390,21,55,0,5,2,9,2
-National,1264,YouGov,2024-05-21,rv,Online Panel,None,624,21,55,0,45,2,9,2
-North Carolina,735,Change Research,2024-05-18,lv,Text-to-Web/Online Ad,DEM,359,18,37,16,6,1,14,1
 Arizona,740,Morning Consult,2024-05-12,rv,Online Panel,None,350,12,3,11,25,2,9,2
-Arizona,852,Noble Predictive Insights,2024-05-14,rv,Online Panel,None,411,14,3,11,26,2,9,2
 Georgia,724,Morning Consult,2024-05-12,rv,Online Panel,None,350,12,11,16,25,2,9,2
 Michigan,641,Morning Consult,2024-05-12,rv,Online Panel,None,324,12,24,15,25,2,9,2
-Nevada,432,Morning Consult,2024-05-13,rv,Online Panel,None,216,13,32,6,25,2,9,2
 North Carolina,641,Morning Consult,2024-05-12,rv,Online Panel,None,296,12,37,16,25,2,9,2
 Pennsylvania,764,Morning Consult,2024-05-12,rv,Online Panel,None,374,12,42,19,25,2,9,2
+National,1092,Beacon/Shaw,2024-05-13,rv,Live Phone,None,540,13,55,0,2,2,5,2
+National,982,Redfield & Wilton Strategies,2024-05-13,lv,Online Panel,None,497,13,55,0,33,1,9,2
+Nevada,432,Morning Consult,2024-05-13,rv,Online Panel,None,216,13,32,6,25,2,9,2
 Wisconsin,645,Morning Consult,2024-05-13,rv,Online Panel,None,319,13,53,10,25,2,9,2
-National,684,Marquette Law School,2024-05-15,lv,Probability Panel,None,335,15,55,0,21,1,11,2
-New York,1013,Siena,2024-05-15,rv,Live Phone/Online Panel/Text-to-Web,None,560,15,36,28,36,2,7,2
-New Hampshire,468,University of Massachusetts Lowell/YouGov,2024-05-14,lv,Online Panel,None,252,14,33,4,44,1,9,2
-Tennessee,380,SSRS,2024-05-09,rv,Live Phone,None,145,9,46,11,35,2,5,2
-National,1306,Quinnipiac,2024-05-20,rv,Live Phone,None,660,20,55,0,31,2,5,2
-National,920,Bullfinch,2024-05-21,rv,Online Panel,None,450,21,55,0,5,2,9,2
-Arizona,490,Prime Group,2024-05-16,rv,Online Panel,DEM,240,16,3,11,30,2,9,1
-Florida,486,Prime Group,2024-05-16,rv,Online Panel,DEM,228,16,10,30,30,2,9,1
-Georgia,470,Prime Group,2024-05-16,rv,Online Panel,DEM,230,16,11,16,30,2,9,1
-Michigan,482,Prime Group,2024-05-16,rv,Online Panel,DEM,251,16,24,15,30,2,9,1
-Nevada,468,Prime Group,2024-05-16,rv,Online Panel,DEM,234,16,32,6,30,2,9,1
-North Carolina,472,Prime Group,2024-05-16,rv,Online Panel,DEM,231,16,37,16,30,2,9,1
-Pennsylvania,487,Prime Group,2024-05-16,rv,Online Panel,DEM,248,16,42,19,30,2,9,1
-Wisconsin,488,Prime Group,2024-05-16,rv,Online Panel,DEM,249,16,53,10,30,2,9,1
-North Carolina,692,High Point University,2024-05-09,rv,Online Panel,None,338,9,37,16,15,2,9,2
-National,1081,ActiVote,2024-05-21,lv,App Panel,None,529,21,55,0,1,1,1,2
 Arizona,469,Benenson Strategy Group/GS Strategy Group,2024-05-13,lv,Online Panel/Text-to-Web,None,232,13,3,11,3,1,10,2
 Georgia,546,Benenson Strategy Group/GS Strategy Group,2024-05-13,lv,Online Panel/Text-to-Web,None,264,13,11,16,3,1,10,2
 Michigan,558,Benenson Strategy Group/GS Strategy Group,2024-05-13,lv,Online Panel/Text-to-Web,None,273,13,24,15,3,1,10,2
@@ -99,30 +50,49 @@ North Carolina,534,Benenson Strategy Group/GS Strategy Group,2024-05-13,lv,Onlin
 Pennsylvania,678,Benenson Strategy Group/GS Strategy Group,2024-05-13,lv,Online Panel/Text-to-Web,None,328,13,42,19,3,1,10,2
 Wisconsin,452,Benenson Strategy Group/GS Strategy Group,2024-05-13,lv,Online Panel/Text-to-Web,None,226,13,53,10,3,1,10,2
 South Dakota,407,Mason-Dixon,2024-05-13,rv,Live Phone,None,157,13,45,3,22,2,5,2
-Arizona,442,Florida Atlantic University/Mainstreet Research,2024-05-21,lv,IVR/Online Panel,None,226,21,3,11,13,1,2,2
-Nevada,465,Florida Atlantic University/Mainstreet Research,2024-05-21,lv,IVR/Online Panel,None,212,21,32,6,13,1,2,2
+National,1316,YouGov,2024-05-14,rv,Online Panel,None,650,14,55,0,45,2,9,2
+National,2952,Ipsos,2024-05-14,rv,Probability Panel,None,1476,14,55,0,16,2,11,2
+National,1614,McLaughlin,2024-05-14,lv,Online Panel,REP,809,14,55,0,23,1,9,3
+Arizona,852,Noble Predictive Insights,2024-05-14,rv,Online Panel,None,411,14,3,11,26,2,9,2
+New Hampshire,468,University of Massachusetts Lowell/YouGov,2024-05-14,lv,Online Panel,None,252,14,33,4,44,1,9,2
+National,900,McLaughlin,2024-05-15,lv,Online Panel,None,430,15,55,0,23,1,9,2
+National,684,Marquette Law School,2024-05-15,lv,Probability Panel,None,335,15,55,0,21,1,11,2
+New York,1013,Siena,2024-05-15,rv,Live Phone/Online Panel/Text-to-Web,None,560,15,36,28,36,2,7,2
+National,972,Echelon Insights,2024-05-16,lv,Online Panel,None,471,16,55,0,10,1,9,2
+Washington,578,PPP,2024-05-16,lv,IVR/Text,DEM,338,16,51,12,28,1,4,1
+Florida,1169,YouGov,2024-05-16,lv,Online Panel,None,531,16,10,30,45,1,9,2
+Arizona,1181,YouGov,2024-05-16,lv,Online Panel,None,561,16,3,11,45,1,9,2
+National,1660,HarrisX/Harris Poll,2024-05-16,rv,Online Panel,None,780,16,55,0,14,2,9,2
+Arizona,490,Prime Group,2024-05-16,rv,Online Panel,DEM,240,16,3,11,30,2,9,1
+Florida,486,Prime Group,2024-05-16,rv,Online Panel,DEM,228,16,10,30,30,2,9,1
+Georgia,470,Prime Group,2024-05-16,rv,Online Panel,DEM,230,16,11,16,30,2,9,1
+Michigan,482,Prime Group,2024-05-16,rv,Online Panel,DEM,251,16,24,15,30,2,9,1
+Nevada,468,Prime Group,2024-05-16,rv,Online Panel,DEM,234,16,32,6,30,2,9,1
+North Carolina,472,Prime Group,2024-05-16,rv,Online Panel,DEM,231,16,37,16,30,2,9,1
+Pennsylvania,487,Prime Group,2024-05-16,rv,Online Panel,DEM,248,16,42,19,30,2,9,1
+Wisconsin,488,Prime Group,2024-05-16,rv,Online Panel,DEM,249,16,53,10,30,2,9,1
+National,1362,Cygnal,2024-05-16,lv,Unknown,None,675,16,55,0,8,1,15,2
+Washington,306,Elway,2024-05-16,rv,Live Phone/Text-to-Web,None,169,16,51,12,11,2,8,2
+North Carolina,735,Change Research,2024-05-18,lv,Text-to-Web/Online Ad,DEM,359,18,37,16,6,1,14,1
+New Hampshire,630,Praecones Analytica,2024-05-20,rv,Online Panel,None,315,20,33,4,29,2,9,2
+National,1306,Quinnipiac,2024-05-20,rv,Live Phone,None,660,20,55,0,31,2,5,2
 Massachusetts,526,U. New Hampshire,2024-05-20,lv,Probability Panel,None,358,20,23,11,43,1,11,2
 Rhode Island,538,U. New Hampshire,2024-05-20,lv,Probability Panel,None,323,20,43,4,43,1,11,2
 New Hampshire,1140,U. New Hampshire,2024-05-20,lv,Probability Panel,None,593,20,33,4,43,1,11,2
-National,1362,Cygnal,2024-05-16,lv,Unknown,None,675,16,55,0,8,1,15,2
-National,1100,Emerson,2024-05-23,rv,IVR/Online Panel/Text-to-Web,None,549,23,55,0,12,2,3,2
-Washington,306,Elway,2024-05-16,rv,Live Phone/Text-to-Web,None,169,16,51,12,11,2,8,2
-Nevada,546,The Tyson Group,2024-05-25,lv,Online Panel,None,264,25,32,6,42,1,9,2
-National,900,McLaughlin,2024-05-23,lv,Online Panel,None,440,23,55,0,23,1,9,2
+National,1264,YouGov,2024-05-21,rv,Online Panel,None,624,21,55,0,45,2,9,2
+National,920,Bullfinch,2024-05-21,rv,Online Panel,None,450,21,55,0,5,2,9,2
+National,1081,ActiVote,2024-05-21,lv,App Panel,None,529,21,55,0,1,1,1,2
+Arizona,442,Florida Atlantic University/Mainstreet Research,2024-05-21,lv,IVR/Online Panel,None,226,21,3,11,13,1,2,2
+Nevada,465,Florida Atlantic University/Mainstreet Research,2024-05-21,lv,IVR/Online Panel,None,212,21,32,6,13,1,2,2
 Michigan,670,Mitchell,2024-05-21,lv,Text-to-Web,None,328,21,24,15,24,1,13,2
 Nevada,426,Iron Light,2024-05-21,lv,Online Panel,REP,204,21,32,6,17,1,9,3
-National,1253,YouGov,2024-05-28,rv,Online Panel,None,619,28,55,0,45,2,9,2
 Virginia,598,Roanoke College,2024-05-21,lv,Live Phone/Online Panel,None,299,21,50,13,34,1,6,2
 Nebraska CD-2,316,Iron Light,2024-05-22,lv,Online Panel,REP,168,22,30,1,17,1,9,3
-National,751,Leger,2024-05-26,lv,Online Panel,None,371,26,55,0,19,1,9,2
+National,1100,Emerson,2024-05-23,rv,IVR/Online Panel/Text-to-Web,None,549,23,55,0,12,2,3,2
+National,900,McLaughlin,2024-05-23,lv,Online Panel,None,440,23,55,0,23,1,9,2
 National,1100,Marist,2024-05-23,rv,Live Phone/Online Panel/Text-to-Web,None,561,23,55,0,20,2,7,2
+Nevada,546,The Tyson Group,2024-05-25,lv,Online Panel,None,264,25,32,6,42,1,9,2
+National,751,Leger,2024-05-26,lv,Online Panel,None,371,26,55,0,19,1,9,2
+National,1253,YouGov,2024-05-28,rv,Online Panel,None,619,28,55,0,45,2,9,2
 National,9220,Morning Consult,2024-05-28,rv,Online Panel,None,4503,28,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-27,rv,Online Panel,None,1720,27,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-26,rv,Online Panel,None,1720,26,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-25,rv,Online Panel,None,1720,25,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-24,rv,Online Panel,None,1720,24,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-23,rv,Online Panel,None,1720,23,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-22,rv,Online Panel,None,1720,22,55,0,25,2,9,2
-National,3520,Morning Consult,2024-05-21,rv,Online Panel,None,1720,21,55,0,25,2,9,2
-National,3480,Morning Consult,2024-05-20,rv,Online Panel,None,1720,20,55,0,25,2,9,2
 New York,1000,Emerson,2024-05-29,rv,IVR/Online Panel/Text-to-Web,None,552,29,36,28,12,2,3,2
