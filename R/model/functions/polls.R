@@ -332,8 +332,8 @@ run_poll_model <- function(run_date) {
       seed = 2024,
       iter_warmup = 1000,
       iter_sampling = 1000,
-      chains = 4,
-      parallel_chains = 4,
+      chains = 8,
+      parallel_chains = 8,
       init = 0.01
     )
 
@@ -455,12 +455,29 @@ set_omega <- function(run_date,
                       e_day_omega = 600,
                       s_day_omega = 100) {
 
+  # find current day as integer
   D <- as.integer(mdy("11/5/24") - mdy("5/1/24")) + 1
   d <- as.integer(run_date - mdy("5/1/24")) + 1
-  m <- (e_day_omega - s_day_omega)/(D - 1)
-  b <- s_day_omega - m
 
-  omega <- m * d + b
+  # estimate linear transform between s_day and e_day omegas on the outcome scale
+  inputs <- 0.5 * c(s_day_omega, e_day_omega)
+  y <- qbeta(0.975, inputs, inputs)
+  x <- c(1, D)
+  m <- (y[2] - y[1])/(x[2] - x[1])
+  b <- y[1] - m * x[1]
+
+  # linear transform output for current day
+  q <- m * d + b
+
+  # internal function for finding omega that generates q
+  find_omega <- function(omega, q, p) {
+    alpha <- 0.5 * omega
+    beta <- alpha
+    qbeta(p, alpha, beta) - q
+  }
+
+  # optimize
+  omega <- uniroot(find_omega, interval = c(0, 1000), q = q, p = 0.975)$root
 
   return(omega)
 

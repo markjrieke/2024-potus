@@ -149,8 +149,8 @@ run_prior_model <- function(run_date) {
       seed = 2024,
       iter_warmup = 1000,
       iter_sampling = 1000,
-      chains = 4,
-      parallel_chains = 4
+      chains = 8,
+      parallel_chains = 8
     )
 
   # extract state priors on the logit scale
@@ -162,6 +162,7 @@ run_prior_model <- function(run_date) {
                  values_to = "estimate") %>%
     mutate(estimate = logit(estimate)) %>%
     drop_na() %>%
+    filter(estimate < 100) %>%
     group_by(parameter) %>%
     summarise(e_day_mu = mean(estimate),
               e_day_sigma = sd(estimate)) %>%

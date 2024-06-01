@@ -118,8 +118,8 @@ run_pvi_model <- function(run_date = Sys.Date()) {
       seed = 2024,
       iter_warmup = 1000,
       iter_sampling = 1000,
-      chains = 4,
-      parallel_chains = 4
+      chains = 8,
+      parallel_chains = 8
     )
 
   # extract prior for state pvi
