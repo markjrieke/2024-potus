@@ -249,7 +249,7 @@ fetch_cpi <- function() {
 fetch_gdp <- function() {
 
   current_date <- Sys.Date()
-  last_quarter <- floor_date(floor_date(current_date, "quarter") - 1, "quarter")
+  last_quarter <- mdy("4/1/24")
 
   out <-
     read_csv(
