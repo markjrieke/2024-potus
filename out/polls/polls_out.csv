@@ -105,7 +105,6 @@ Michigan,592,Florida Atlantic University/Mainstreet Research,2024-05-31,lv,IVR/O
 Pennsylvania,849,Florida Atlantic University/Mainstreet Research,2024-05-31,lv,IVR/Online Panel,None,415,31,42,19,15,2,3,2
 Wisconsin,235,Florida Atlantic University/Mainstreet Research,2024-05-31,lv,IVR/Online Panel,None,116,31,53,10,15,2,3,2
 National,3772,SurveyMonkey,2024-05-31,a,Online Panel,None,1768,31,55,0,45,1,10,2
-National,9052,Morning Consult,2024-06-02,rv,Online Panel,None,4474,33,55,0,29,3,10,2
 North Carolina,540,North Star Opinion Research,2024-06-02,lv,Live Phone,None,246,33,37,16,32,2,6,2
 Georgia,1118,Quinnipiac,2024-06-03,rv,Live Phone,None,529,34,11,16,36,3,6,2
 Michigan,680,Mitchell,2024-06-03,lv,Text-to-Web,None,338,34,24,15,28,2,14,2
@@ -121,3 +120,4 @@ National,1000,Emerson,2024-06-05,rv,IVR/Online Panel,None,502,36,55,0,14,3,3,2
 Minnesota,681,Mason-Dixon,2024-06-05,lv,Live Phone,None,356,36,25,10,26,2,6,2
 National,1115,YouGov,2024-06-06,rv,Online Panel,None,570,37,55,0,51,3,10,2
 National,1346,YouGov,2024-06-07,lv,Online Panel,None,666,38,55,0,51,2,10,2
+National,8926,Morning Consult,2024-06-09,rv,Online Panel,None,4514,40,55,0,29,3,10,2
