@@ -89,6 +89,9 @@ of groups in these parameters.
   PAC](https://gelliottmorris.substack.com/p/the-gory-details-about-how-modern)
 - [Traflagar](https://split-ticket.org/2022/09/19/whats-going-on-with-trafalgars-polls/)
 - [Rasmussen](https://web.archive.org/web/20240308212818/https://www.washingtonpost.com/politics/2024/03/08/rasmussen-538-polling/)
+- Any pollsters who [use LLMs to generate
+  results](https://ash.harvard.edu/articles/using-ai-for-political-polling/)
+  will be banned.
 
 ### loose workflow
 
