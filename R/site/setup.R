@@ -13,6 +13,7 @@ library(patchwork)
 library(ggiraph)
 library(gt)
 library(gtExtras)
+library(shadowtext)
 
 # palettes ---------------------------------------------------------------------
 
