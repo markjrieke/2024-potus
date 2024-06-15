@@ -3,7 +3,7 @@
 #' Run the prior model
 #'
 #' @description
-#' The prior model is a modification of Dr. Alan Abramovitz's *Time for Change*
+#' The prior model is a modification of Dr. Alan Abramowitz's *Time for Change*
 #' model that generates state-level estimates of the two-party incumbent
 #' voteshare at the national level based three variables: real annualized gdp
 #' growth in the 2nd quarter of the election year, presidential net approval on
@@ -19,7 +19,7 @@
 #' warrant an explicit callout in the UI or a full rerun for all days since
 #' 5/1/24.
 #'
-#' * data/static/abramovitz.csv
+#' * data/static/abramowitz.csv
 #' * out/approval-prior/e_day_approval_historical.csv
 #' * out/approval/e_day_approval_current.csv
 #' * out/pvi/pvi_summary.csv
@@ -61,7 +61,7 @@ run_prior_model <- function(run_date) {
 
   # append national data with 2nd quarter real annualized gdp growth
   prior_model_data <-
-    read_csv("data/static/abramovitz.csv") %>%
+    read_csv("data/static/abramowitz.csv") %>%
     mutate(begin_quarter = mdy(paste0("4/1/", year - 1)),
            end_quarter = mdy(paste0("4/1/", year))) %>%
     left_join(real_gdp, by = c("begin_quarter" = "date")) %>%

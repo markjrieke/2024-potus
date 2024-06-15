@@ -21,7 +21,7 @@
 #' have been modified since the last run:
 #'
 #' * data/static/statewide_results.csv
-#' * data/static/abramovitz.csv
+#' * data/static/abramowitz.csv
 #' * stan/pvi.stan
 #'
 #' @param run_date the model run date. This has no bearing on the output of the
@@ -34,7 +34,7 @@ run_pvi_model <- function(run_date = Sys.Date()) {
   # files that will trigger a rerun of the model
   triggers <- c(
     "data/static/statewide_results.csv",
-    "data/static/abramovitz.csv",
+    "data/static/abramowitz.csv",
     "stan/pvi.stan"
   )
 
@@ -47,7 +47,7 @@ run_pvi_model <- function(run_date = Sys.Date()) {
 
   # national results
   nat_2pv <-
-    read_csv("data/static/abramovitz.csv") %>%
+    read_csv("data/static/abramowitz.csv") %>%
     select(year, dem, rep) %>%
     transmute(year = year,
               nat_2pv = dem/(dem + rep))

@@ -15,7 +15,7 @@
 #' files" have been modified since the last run:
 #'
 #' * data/approval/historical_approval.csv
-#' * data/static/abramovitz.csv
+#' * data/static/abramowitz.csv
 #' * stan/approval-prior.stan
 #'
 #' @param run_date the model run date. This has no bearing on the output of the
@@ -27,7 +27,7 @@ run_approval_prior_model <- function(run_date = Sys.Date()) {
 
   # files that will trigger a rerun of the model
   triggers <- c(
-    "data/static/abramovitz.csv",
+    "data/static/abramowitz.csv",
     "data/approval/historical_approval.csv",
     "stan/approval-prior.stan"
   )
@@ -44,7 +44,7 @@ run_approval_prior_model <- function(run_date = Sys.Date()) {
 
   # import election day relative to term start
   max_day <-
-    read_csv("data/static/abramovitz.csv") %>%
+    read_csv("data/static/abramowitz.csv") %>%
     select(year,
            max_day = approval_day)
 
