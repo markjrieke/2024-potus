@@ -5,8 +5,7 @@ plot_vote <- function(state,
                       ...,
                       alpha_ribbon = 0.125,
                       col_hline = "#363a3c",
-                      linewidth_mid = 0.3,
-                      linewidth_low = 0.4,
+                      linewidth = 0.3,
                       size_theta_pt = 2.5) {
 
   # internal renaming for filtering
@@ -35,7 +34,7 @@ plot_vote <- function(state,
     ggplot(aes(x = run_date)) +
     geom_hline(yintercept = 0.5,
                color = col_hline,
-               linewidth = linewidth_mid) +
+               linewidth = linewidth) +
 
     # trump voteshare credible interval
     geom_ribbon(aes(ymin = 1 - .upper_0.95,
@@ -91,7 +90,7 @@ plot_vote <- function(state,
                           ymax = y_limits[2]) +
     geom_hline(yintercept = y_limits[1],
                color = col_hline,
-               linewidth = linewidth_low) +
+               linewidth = linewidth) +
 
     # median estimates
     geom_underline(aes(y = 1 - theta),

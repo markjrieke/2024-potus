@@ -4,8 +4,7 @@ plot_evs <- function(col_b,
                      ...,
                      alpha_ribbon = 0.125,
                      col_hline = "#363a3c",
-                     linewidth_mid = 0.3,
-                     linewidth_low = 0.4,
+                     linewidth = 0.3,
                      size_evs_pt = 2.5) {
 
   # prep dataframe for plotting
@@ -38,7 +37,7 @@ plot_evs <- function(col_b,
     ggplot(aes(x = run_date)) +
     geom_hline(yintercept = c(0, 270),
                color = col_hline,
-               linewidth = linewidth_mid) +
+               linewidth = linewidth) +
 
     # trump ec credible interval
     geom_ribbon(aes(ymin = 538 - .upper_0.95,
