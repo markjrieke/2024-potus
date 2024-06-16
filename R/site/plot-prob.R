@@ -1,3 +1,4 @@
+#' TODO: DOCUMENT
 plot_prob <- function(state = "National",
                       col_b,
                       col_t,

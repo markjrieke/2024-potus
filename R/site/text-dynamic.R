@@ -190,5 +190,32 @@ candidate_summary <- function(candidate, color) {
 
 }
 
+tie_text <- function() {
+
+  # import current probability of a tie in the electoral college
+  p_tie <-
+    read_csv("out/polls/tie_pres.csv") %>%
+    filter(run_date == max(run_date)) %>%
+    pull(p_tie)
+
+  # format text
+  if (p_tie < 0.01) {
+    tie_text <- "less than 1%"
+  } else {
+    tie_text <- scales::label_percent(accuracy = 1)(p_tie)
+  }
+
+  # generate formatted string
+  out <-
+    glue::glue(
+      "<span style='color:gray;font-size:12px'>",
+      "There is a {tie_text} chance of a tie in the electoral college.",
+      "</span>"
+    )
+
+  return(out)
+
+}
+
 
 
