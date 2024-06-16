@@ -10,5 +10,3 @@ label_date_ordinal <- function(x) {
   return(out)
 
 }
-
-

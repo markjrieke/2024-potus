@@ -1,0 +1,112 @@
+#' TODO: DOCUMENT
+plot_evs <- function(col_b,
+                     col_t,
+                     ...,
+                     alpha_ribbon = 0.125,
+                     col_hline = "#363a3c",
+                     linewidth_mid = 0.3,
+                     linewidth_low = 0.4,
+                     size_evs_pt = 2.5) {
+
+  # prep dataframe for plotting
+  ev_data <-
+    read_csv("out/polls/evs.csv") %>%
+    pivot_wider(names_from = .width,
+                values_from = c(.lower, .upper)) %>%
+    mutate(evs_pt = if_else(run_date == max(run_date), evs, NA),
+           evs_pos = case_when(evs_pt > 225 & evs_pt < 269 ~ 225,
+                               evs_pt < 538 - 225 & evs_pt >= 269 ~ 538 - 225,
+                               .default = evs_pt),
+           current_date = if_else(run_date == max(run_date), run_date, NA),
+           date_pt = label_date_ordinal(current_date)) %>%
+    mutate(tooltip = glue::glue("{label_date_ordinal(run_date)}<br>",
+                                "Biden: <span style='float:right;'>",
+                                "{scales::label_comma(accuracy = 1)(evs)}",
+                                "</span><br>",
+                                "Trump: <span style='float:right;'>",
+                                "{scales::label_comma(accuracy = 1)(538 - evs)}",
+                                "</span>"))
+
+  # extract evs_pos for current day
+  evs_pos <-
+    ev_data %>%
+    filter(run_date == max(run_date)) %>%
+    pull(evs_pos)
+
+  ev_plot <-
+    ev_data %>%
+    ggplot(aes(x = run_date)) +
+    geom_hline(yintercept = c(0, 270),
+               color = col_hline,
+               linewidth = linewidth_mid) +
+
+    # trump ec credible interval
+    geom_ribbon(aes(ymin = 538 - .upper_0.95,
+                    ymax = 538 - .lower_0.95),
+                fill = col_t,
+                alpha = alpha_ribbon) +
+    geom_ribbon(aes(ymin = 538 - .upper_0.66,
+                    ymax = 538 - .lower_0.66),
+                fill = col_t,
+                alpha = alpha_ribbon) +
+
+    # biden ec credible interval
+    geom_ribbon(aes(ymin = .lower_0.95,
+                    ymax = .upper_0.95),
+                fill = col_b,
+                alpha = alpha_ribbon) +
+    geom_ribbon(aes(ymin = .lower_0.66,
+                    ymax = .upper_0.66),
+                fill = col_b,
+                alpha = alpha_ribbon) +
+
+    # plot dressing
+    annotate_end_date(ymin = 0,
+                      ymax = 538) +
+    annotate_current_date(ymin = 0,
+                          ymax = 538) +
+
+    # median estimates
+    geom_underline(aes(y = 538 - evs),
+                   color = col_t) +
+    geom_underline(aes(y = evs),
+                   color = col_b) +
+
+    # current median estimates
+    geom_point(aes(y = 538 - evs_pt),
+               color = col_t,
+               size = size_evs_pt) +
+    geom_point(aes(y = evs_pt),
+               color = col_b,
+               size = size_evs_pt) +
+
+    # text for current estimates
+    geom_current_text(aes(x = current_date,
+                          label = paste("Trump", scales::label_comma(accuracy = 1)(538 - evs_pt),
+                                        sep = "\n")),
+                      y = 538 - evs_pos,
+                      color = col_t) +
+    geom_current_text(aes(x = current_date,
+                          label = paste("Biden", scales::label_comma(accuracy = 1)(evs_pt),
+                                        sep = "\n")),
+                      y = evs_pos,
+                      color = col_b) +
+
+    # tooltip for historical data
+    geom_tooltip(aes(y = 270,
+                     tooltip = tooltip),
+                 height = 538) +
+
+    # plot dressing
+    theme_2024(ymin = 0,
+               ymax = 538,
+               breaks = c(0, 70, 170, 270, 370, 470, 538),
+               labels = c("0", "70", "170", "**270 to win**", "370", "470", "538"),
+               ylims = c(0, 538))
+
+  # render interactive plot
+  render_interactive(ev_plot)
+
+}
+
+
