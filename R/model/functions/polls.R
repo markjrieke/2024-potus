@@ -334,7 +334,9 @@ run_poll_model <- function(run_date) {
       iter_sampling = 1000,
       chains = 8,
       parallel_chains = 8,
-      init = 0.01
+      init = 0.01,
+      step_size = 0.002,
+      adapt_delta = 0.95
     )
 
   # post-process voteshare in each state
