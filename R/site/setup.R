@@ -14,6 +14,7 @@ library(ggiraph)
 library(gt)
 library(gtExtras)
 library(shadowtext)
+library(sf)
 
 # palettes ---------------------------------------------------------------------
 

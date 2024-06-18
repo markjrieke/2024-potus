@@ -12,6 +12,17 @@ label_date_ordinal <- function(x) {
 }
 
 #' TODO: DOCUMENT
+interpolate_fill <- function(x, lower, upper) {
+
+  color_rgb <- colorRamp(c(lower, upper))
+  rgb_vals <- color_rgb(x)
+  hex <- rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 255)
+
+  return(hex)
+
+}
+
+#' TODO: DOCUMENT
 generate_links <- function() {
 
   # currently just links to wikipedia page

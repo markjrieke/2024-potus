@@ -127,13 +127,63 @@ sid <-
   mutate(electors = replace_na(electors, 0)) %>%
   rowid_to_column("sid")
 
+# generate aggregate-inc feature matrix ----------------------------------------
+
+aggregate_features <-
+  features %>%
+
+  # update aggregate state features
+  filter(str_detect(state, "Nebraska|Maine")) %>%
+  mutate(state = str_remove(state, " CD-[:digit:]"),
+         pw_density = exp(log_pw_density)) %>%
+  rename(pop = population_mm) %>%
+  group_by(state) %>%
+
+  # aggregate features are a population-weighted sum of subgroups
+  summarise(population_mm = sum(pop),
+            log_pw_density = log(sum(pop * pw_density)/sum(pop)),
+            white = sum(pop * white)/sum(pop),
+            hispanic = sum(pop * hispanic)/sum(pop),
+            black = sum(pop * black)/sum(pop),
+            asian = sum(pop * asian)/sum(pop),
+            citizen_by_birth = sum(pop * citizen_by_birth)/sum(pop),
+            ed_index = sum(pop * ed_index)/sum(pop),
+            inc_index = sum(pop * inc_index)/sum(pop)) %>%
+
+  # append back to main feature set & filter out subgroups
+  bind_rows(features) %>%
+  filter(!str_detect(state, "CD-"))
+
+# convert to matrix
+aggregate_feature_matrix <-
+  aggregate_features %>%
+  select(log_pw_density:inc_index) %>%
+  as.matrix()
+
+# construct feature matrix as the euclidean distance in the feature space
+F_a <- matrix(0, nrow = nrow(aggregate_feature_matrix), ncol = nrow(aggregate_feature_matrix))
+for (r in 1:nrow(F_a)) {
+  for (c in 1:ncol(F_a)) {
+    F_a[r,c] <- (aggregate_feature_matrix[r,] - aggregate_feature_matrix[c,])^2 |> sum() |> sqrt()
+  }
+}
+
+# invert and scale
+F_a <- 1 - (F_a/max(F_a))
+
+# apply state names to rows/cols
+rownames(F_a) <- aggregate_features$state
+colnames(F_a) <- aggregate_features$state
+
 # write out --------------------------------------------------------------------
 
 # write out matrices as .rds files
 F_r %>% write_rds("data/features/F_r.rds")
+F_a %>% write_rds("data/features/F_a.rds")
 wt %>% write_rds("data/features/wt.rds")
 
 # write out mapping table as .csv
 sid %>%
   write_csv("data/features/sid.csv")
+
 

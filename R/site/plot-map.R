@@ -22,9 +22,7 @@ plot_map <- function() {
                            "Safe Rep"))
 
   us_geo <-
-    tigris::states(class = "sf", cb = TRUE) %>%
-    tigris::shift_geometry() %>%
-    filter(GEOID < 60)
+    read_rds("data/tigris/tigris.rds")
 
   state_ratings <-
     read_csv("out/polls/win_state.csv") %>%

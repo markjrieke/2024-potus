@@ -49,6 +49,18 @@ blurb_vote <- function(font = "Playfair Display") {
 }
 
 #' TODO: DOCUMENT
+blurb_similarity <- function(font = "Playfair Display") {
+
+  glue::glue(
+    "### <span style='font-family:{font};'>State similarities</span>",
+    "Our model also simulates what would happen if the race moves, or if the polls are biased, in similar amounts in like states.",
+    "We calculate similarity between states by comparing their demographic and political profiles, such as the share of white voters who live there, how religious they are, and how urban or rural the state is.",
+    .sep = "\n"
+  )
+
+}
+
+#' TODO: DOCUMENT
 footer <- function() {
 
   glue::glue(
