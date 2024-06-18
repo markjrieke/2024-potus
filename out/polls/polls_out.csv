@@ -128,7 +128,6 @@ National,1366,Cygnal,2024-06-06,lv,Unknown,None,668,37,55,0,10,2,17,2
 National,2550,RMG Research,2024-06-06,rv,Unknown,None,1260,37,55,0,42,3,17,2
 National,1346,YouGov,2024-06-07,lv,Online Panel,None,666,38,55,0,57,2,11,2
 Utah,702,HarrisX,2024-06-07,rv,Online Panel,None,214,38,48,6,18,3,11,2
-National,8926,Morning Consult,2024-06-09,rv,Online Panel,None,4514,40,55,0,32,3,11,2
 Florida,861,The Tyson Group,2024-06-09,lv,Live Phone/Text-to-Web,None,378,40,10,30,54,2,10,2
 Florida,710,Florida Atlantic University/Mainstreet Research,2024-06-09,lv,IVR/Online Panel,None,332,40,10,30,17,2,3,2
 National,1206,Big Village,2024-06-09,lv,Online Panel,None,605,40,55,0,4,2,11,2
@@ -136,6 +135,14 @@ Wisconsin,440,J.L. Partners,2024-06-10,lv,Live Phone/Online Panel/Text,None,220,
 National,1148,YouGov,2024-06-11,rv,Online Panel,None,560,42,55,0,57,3,11,2
 National,1026,Civiqs,2024-06-11,rv,Online Panel,DEM,513,42,55,0,8,3,11,1
 Minnesota,552,McLaughlin,2024-06-11,lv,Live Phone/Text-to-Web,REP,270,42,25,10,30,2,10,3
+Arizona,335,Redfield & Wilton Strategies,2024-06-11,lv,Online Panel,None,163,42,3,11,43,2,11,2
+Florida,346,Redfield & Wilton Strategies,2024-06-11,lv,Online Panel,None,160,42,10,30,43,2,11,2
+Georgia,391,Redfield & Wilton Strategies,2024-06-11,lv,Online Panel,None,184,42,11,16,43,2,11,2
+Michigan,434,Redfield & Wilton Strategies,2024-06-11,lv,Online Panel,None,214,42,24,15,43,2,11,2
+North Carolina,444,Redfield & Wilton Strategies,2024-06-11,lv,Online Panel,None,214,42,37,16,43,2,11,2
+Pennsylvania,393,Redfield & Wilton Strategies,2024-06-11,lv,Online Panel,None,192,42,42,19,43,2,11,2
 National,962,Echelon Insights,2024-06-12,lv,Online Panel,None,486,43,55,0,13,2,11,2
 National,744,Ipsos,2024-06-12,rv,Probability Panel,None,363,43,55,0,21,3,13,2
+National,924,Redfield & Wilton Strategies,2024-06-12,lv,Online Panel,None,468,43,55,0,43,2,11,2
 Iowa,518,Selzer,2024-06-14,lv,Live Phone,None,202,45,16,6,46,2,6,2
+National,8815,Morning Consult,2024-06-16,rv,Online Panel,None,4458,47,55,0,32,3,11,2
