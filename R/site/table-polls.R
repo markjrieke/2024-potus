@@ -1,13 +1,15 @@
 table_polls <- function(state = "National",
                         col_b,
-                        col_t) {
+                        col_t,
+                        ...,
+                        branch = "dev") {
 
   # internal renaming for filtering
   state_int <- state
 
   # import polls conducted in that state
   polls <-
-    read_csv("out/polls/polls_out.csv") %>%
+    read_csv(find_document("out/polls/polls_out.csv", branch = branch)) %>%
     filter(state == state_int)
 
   # if no polls, return formatted text

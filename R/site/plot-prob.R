@@ -3,6 +3,7 @@ plot_prob <- function(state = "National",
                       col_b,
                       col_t,
                       ...,
+                      branch = "dev",
                       col_hline = "#363a3c",
                       linewidth = 0.3,
                       size_prob_pt = 2.5) {
@@ -11,8 +12,8 @@ plot_prob <- function(state = "National",
   if (state == "National") {
 
     prob_data <-
-      read_csv("out/polls/win_pres.csv") %>%
-      left_join(read_csv("out/polls/tie_pres.csv")) %>%
+      read_csv(find_document("out/polls/win_pres.csv", branch = branch)) %>%
+      left_join(read_csv(find_document("out/polls/tie_pres.csv", branch = branch))) %>%
       mutate(p_lose = 1 - p_win - p_tie)
 
   } else {
@@ -21,7 +22,7 @@ plot_prob <- function(state = "National",
     state_int <- state
 
     prob_data <-
-      read_csv("out/polls/win_state.csv") %>%
+      read_csv(find_document("out/polls/win_state.csv", branch = branch)) %>%
       filter(state == state_int) %>%
       mutate(p_lose = 1 - p_win)
 

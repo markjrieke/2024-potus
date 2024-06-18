@@ -3,6 +3,7 @@ plot_vote <- function(state,
                       col_b,
                       col_t,
                       ...,
+                      branch = "dev",
                       alpha_ribbon = 0.125,
                       col_hline = "#363a3c",
                       linewidth = 0.3,
@@ -13,7 +14,7 @@ plot_vote <- function(state,
 
   # generate plot data
   voteshare <-
-    read_csv("out/polls/theta.csv") %>%
+    read_csv(find_document("out/polls/theta.csv", branch = branch)) %>%
     filter(state == state_int) %>%
     pivot_wider(names_from = .width,
                 values_from = c(.lower, .upper)) %>%

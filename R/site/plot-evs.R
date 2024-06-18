@@ -2,14 +2,16 @@
 plot_evs <- function(col_b,
                      col_t,
                      ...,
+                     branch = "dev",
                      alpha_ribbon = 0.125,
                      col_hline = "#363a3c",
                      linewidth = 0.3,
                      size_evs_pt = 2.5) {
 
+
   # prep dataframe for plotting
   ev_data <-
-    read_csv("out/polls/evs.csv") %>%
+    read_csv(find_document("out/polls/evs.csv", branch = branch)) %>%
     pivot_wider(names_from = .width,
                 values_from = c(.lower, .upper)) %>%
     mutate(evs_pt = if_else(run_date == max(run_date), evs, NA),

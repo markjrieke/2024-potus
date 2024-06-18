@@ -1,5 +1,7 @@
 #' TODO: DOCUMENT
 headline_text <- function(state = "National",
+                          ...,
+                          branch = "dev",
                           font = "Playfair Display",
                           size = 36) {
 
@@ -7,7 +9,7 @@ headline_text <- function(state = "National",
 
     # import current win probability
     p_win <-
-      read_csv("out/polls/win_pres.csv") %>%
+      read_csv(find_document("out/polls/win_pres.csv", branch = branch)) %>%
       filter(run_date == max(run_date))
 
     # set current date
@@ -23,7 +25,7 @@ headline_text <- function(state = "National",
 
     # import probability of an electoral tie
     p_tie <-
-      read_csv("out/polls/tie_pres.csv") %>%
+      read_csv(find_document("out/polls/tie_pres.csv", branch = branch)) %>%
       filter(run_date == max(run_date)) %>%
       pull(p_tie)
 
@@ -40,7 +42,7 @@ headline_text <- function(state = "National",
 
     # import current win probability
     p_win <-
-      read_csv("out/polls/win_state.csv") %>%
+      read_csv(find_document("out/polls/win_state.csv", branch = branch)) %>%
       filter(state == state_int,
              run_date == max(run_date))
 
@@ -106,6 +108,7 @@ headline_text <- function(state = "National",
 }
 
 #' TODO: DOCUMENT
+#' TODO: UPDATE LINKS
 margin_text <- function() {
 
   national_link <- "**[National Forecast](https://en.wikipedia.org/wiki/United_States)**"
@@ -130,16 +133,19 @@ margin_text <- function() {
 }
 
 #' TODO: DOCUMENT
-candidate_summary <- function(candidate, color) {
+candidate_summary <- function(candidate,
+                              color,
+                              ...,
+                              branch = "dev") {
 
   # determine probability of winning for each candidate
   biden_win <-
-    read_csv("out/polls/win_pres.csv") %>%
+    read_csv(find_document("out/polls/win_pres.csv", branch = branch)) %>%
     filter(run_date == max(run_date)) %>%
     pull(p_win)
 
   p_tie <-
-    read_csv("out/polls/tie_pres.csv") %>%
+    read_csv(find_document("out/polls/tie_pres.csv", branch = branch)) %>%
     filter(run_date == max(run_date)) %>%
     pull(p_tie)
 
@@ -147,7 +153,7 @@ candidate_summary <- function(candidate, color) {
 
   # pull in current electoral college range
   current_evs <-
-    read_csv("out/polls/evs.csv") %>%
+    read_csv(find_document("out/polls/evs.csv", branch = branch)) %>%
     filter(run_date == max(run_date),
            .width == 0.95)
 
@@ -190,11 +196,11 @@ candidate_summary <- function(candidate, color) {
 
 }
 
-tie_text <- function() {
+tie_text <- function(..., branch = "dev") {
 
   # import current probability of a tie in the electoral college
   p_tie <-
-    read_csv("out/polls/tie_pres.csv") %>%
+    read_csv(find_document("out/polls/tie_pres.csv", branch = branch)) %>%
     filter(run_date == max(run_date)) %>%
     pull(p_tie)
 

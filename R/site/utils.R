@@ -23,11 +23,23 @@ interpolate_fill <- function(x, lower, upper) {
 }
 
 #' TODO: DOCUMENT
-generate_links <- function() {
+find_document <- function(document,
+                          branch = "dev") {
+
+  glue::glue(
+    "https://raw.githubusercontent.com/markjrieke/2024-potus/{branch}/{document}"
+  )
+
+}
+
+
+#' TODO: DOCUMENT
+#' TODO: UPDATE LINKS
+generate_links <- function(..., branch = "dev") {
 
   # currently just links to wikipedia page
   links <-
-    read_csv("out/polls/win_state.csv") %>%
+    read_csv(find_document("out/polls/win_state.csv", branch = branch)) %>%
     filter(run_date == max(run_date)) %>%
     mutate(heat = 1 - abs(0.5 - p_win) * 2,
            competitive = if_else(p_win > 0.15 & p_win < 0.85,

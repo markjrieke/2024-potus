@@ -1,4 +1,4 @@
-plot_map <- function() {
+plot_map <- function(..., branch = "dev") {
 
   # generate clickable links
   clickables <-
@@ -22,12 +22,12 @@ plot_map <- function() {
                            "Safe Rep"))
 
   us_geo <-
-    read_rds("data/tigris/tigris.rds")
+    read_rds(find_document("data/tigris/tigris.rds", branch = branch))
 
   state_ratings <-
-    read_csv("out/polls/win_state.csv") %>%
+    read_csv(find_document("out/polls/win_state.csv", branch = branch)) %>%
     filter(run_date == max(run_date)) %>%
-    left_join(read_csv("data/static/electors.csv")) %>%
+    left_join(read_csv(find_document("data/static/electors.csv", branch = branch))) %>%
     drop_na() %>%
     mutate(rating = case_when(p_win > 0.99 ~ pal[1],
                               p_win > 0.85 ~ pal[2],
@@ -63,7 +63,7 @@ plot_map <- function() {
 
   map_points <-
     state_ratings %>%
-    left_join(read_csv("data/static/state_centers.csv")) %>%
+    left_join(read_csv(find_document("data/static/state_centers.csv", branch = branch))) %>%
     left_join(clickables) %>%
     sf::st_as_sf(coords = c("long", "lat"),
                  crs = 4326) %>%
