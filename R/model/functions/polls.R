@@ -111,6 +111,7 @@ run_poll_model <- function(run_date) {
            sample_size,
            pollster,
            end_date,
+           created_at,
            population,
            mode = methodology,
            candidate_sponsored = partisan,
@@ -127,7 +128,8 @@ run_poll_model <- function(run_date) {
            end_date < mdy("11/5/2024")) %>%
 
     # filter based on run date
-    filter(end_date <= run_date) %>%
+    mutate(created_at = as_date(mdy_hm(created_at))) %>%
+    filter(created_at <= run_date) %>%
 
     # only care about polls that include both biden & trump
     group_by(question_id) %>%
