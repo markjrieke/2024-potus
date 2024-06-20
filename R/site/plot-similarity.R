@@ -3,7 +3,7 @@ plot_similarity <- function(state,
                             ...,
                             branch = "dev",
                             col_low = "white",
-                            col_high = "#11c458") {
+                            col_high = "#78c2ad") {
 
   # rename aggregate states
   state_int <- str_remove(state, " CD-[:digit:]")
