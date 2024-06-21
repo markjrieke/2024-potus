@@ -63,26 +63,6 @@ blurb_similarity <- function(font = "Playfair Display") {
 #' TODO: DOCUMENT
 footer <- function(branch = "dev") {
 
-  gh_icon <- "<i class='fa fa-github'></i>"
-  spreadsheet_icon <- "{{< fa solid file-spreadsheet >}}"
-
-  glue::glue(
-    "<span style='color:gray;font-size:12px'>",
-    "Sources: Ballotpedia; Cook Political Report; The Economist; Federal Reserve Bank of St. Louis; FiveThirtyEight; Urban Stats; 270towin.com",
-    "<br>",
-    "<br>",
-    "{gh_icon} [View the source code](https://github.com/markjrieke/2024-potus/tree/{branch})",
-    "<br>",
-    "{spreadsheet_icon} [Explore the output](https://github.com/markjrieke/2024-potus/tree/{branch}/out)",
-    "</span>",
-    .sep = "\n"
-  )
-
-}
-
-
-footer <- function(branch = "dev") {
-
   gh_icon <- "{{< fa brands github >}}"
   data_icon <- "{{< fa solid database >}}"
 
