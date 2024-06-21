@@ -214,6 +214,8 @@ render_interactive <- function(ggobj) {
 
   css <-
     paste(
+      "font-family:IBM Plex Sans",
+      "color:#363a3c",
       "background-color:#fafafa",
       "padding:5px",
       "border-radius:3px",

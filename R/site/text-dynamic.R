@@ -109,11 +109,11 @@ headline_text <- function(state = "National",
 
 #' TODO: DOCUMENT
 #' TODO: UPDATE LINKS
-margin_text <- function() {
+margin_text <- function(branch = "dev") {
 
   national_link <- "**[National Forecast](https://en.wikipedia.org/wiki/United_States)**"
   methods_link <- "[How this works](https://www.thedatadiary.net/posts/2022-09-16-forecast-launch/)"
-  state_links <- generate_links()
+  state_links <- generate_links(branch = branch)
 
   out <-
     glue::glue(
