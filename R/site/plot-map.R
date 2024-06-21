@@ -81,8 +81,8 @@ plot_map <- function(..., branch = "dev") {
            summary_text = if_else(rating_text == "uncertain",
                                   glue::glue("<b>{candidate}</b> has a {p_label} chance of winning"),
                                   glue::glue("<b>{candidate}</b> is {rating_text} to win ({p_label})")),
-           tooltip = glue::glue("<span style='text-align:left;'><b>{state}</b></span><span style='float:right;font-size:12px;'>({electors} {ev_label})</span>",
-                                "<span style='font-size:14px'>{summary_text}</span>",
+           tooltip = glue::glue("<span style='font-family:IBM Plex Sans'><span style='text-align:left;'><b>{state}</b></span><span style='float:right;font-size:12px;'>({electors} {ev_label})</span>",
+                                "<span style='font-size:14px'>{summary_text}</span></span>",
                                 .sep = "<br>"),
            tooltip = glue::glue("{color_text(tooltip, text_color)}"))
 
