@@ -2,14 +2,17 @@ plot_map <- function(..., branch = "dev") {
 
   # generate clickable links
   clickables <-
-    generate_links()$all[[1]] %>%
-    str_split("<br>") %>%
-    tibble(md = .) %>%
-    unnest(md) %>%
-    separate(md, c("state", "link"), "]") %>%
-    mutate(state = str_remove(state, "\\["),
-           link = str_sub(link, 2, -2),
-           link = glue::glue("window.open(\"{link}\")"))
+    # generate_links()$all[[1]] %>%
+    # str_split("<br>") %>%
+    # tibble(md = .) %>%
+    # unnest(md) %>%
+    # separate(md, c("state", "link"), "]") %>%
+    # mutate(state = str_remove(state, "\\["),
+    #        link = str_sub(link, 2, -2),
+    #        link = glue::glue("window.open(\"{link}\")"))
+    read_csv(find_document("data/static/electors.csv")) %>%
+    select(state) %>%
+    mutate(link = glue::glue("window.open(\"{state}.html\")"))
 
   rating_text <-
     tibble(rating = pal,
