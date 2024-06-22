@@ -147,8 +147,8 @@ run_prior_model <- function(run_date) {
     prior_model$sample(
       data = stan_data,
       seed = 2024,
-      iter_warmup = 1000,
-      iter_sampling = 1000,
+      iter_warmup = 1250,
+      iter_sampling = 1250,
       chains = 8,
       parallel_chains = 8
     )
