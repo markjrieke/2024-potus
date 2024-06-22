@@ -58,8 +58,9 @@ data {
   vector[R] alpha_sigma_r;             // Raw logit-scale scale prior for election day
 
   // Generated quantities
-  real<lower=0> omega;                 // Scale of beta rng
+  real<lower=0> omega;                 // Scale of multivariate normal rng
   vector[S] electors;                  // Number of electors per state
+  matrix[S, S] F_s;                    // State distance matrix in feature space
 
   // Debug
   int<lower=0, upper=1> prior_check;
@@ -183,8 +184,14 @@ model {
 
 generated quantities {
   // Predicted voteshare in each state
-  vector[S] mu_hat = inv_logit(alpha_mu + beta_s + beta_sd[:,D]);
-  array[S] real theta = beta_rng(mu_hat * omega, (1 - mu_hat) * omega);
+  vector[S] mu_hat;
+  vector[S] theta;
+  {
+    matrix[S, S] K_s = gp_exp_quad_cov(F_s, rep_vector(omega, S), rho);
+    matrix[S, S] L_s = cholesky_decompose(K_s);
+    mu_hat = alpha_mu + beta_s + beta_sd[:,D];
+    theta = inv_logit(multi_normal_cholesky_rng(mu_hat, L_s));
+  }
 
   // Predicted win conditions (state and presidential)
   vector[S] win_state = to_vector(round(theta));

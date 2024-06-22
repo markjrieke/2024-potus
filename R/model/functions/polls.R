@@ -91,6 +91,7 @@ run_poll_model <- function(run_date) {
   # read in pre-computed feature data
   sid <- read_csv("data/features/sid.csv")
   F_r <- read_rds("data/features/F_r.rds")
+  F_s <- read_rds("data/features/F_s.rds")
   wt <- read_rds("data/features/wt.rds")
 
   # read in priors
@@ -324,6 +325,7 @@ run_poll_model <- function(run_date) {
       psi_sigma = 0.05,
       omega = omega,
       electors = sid$electors,
+      F_s = F_s,
       prior_check = 0
     )
 
@@ -471,18 +473,19 @@ set_omega <- function(run_date,
   b <- y[1] - m * x[1]
 
   # linear transform output for current day
-  q <- m * d + b
+  q <- logit(m * d + b)
 
   # internal function for finding omega that generates q
   find_omega <- function(omega, q, p) {
-    alpha <- 0.5 * omega
-    beta <- alpha
-    qbeta(p, alpha, beta) - q
+    qnorm(p, 0, omega) - q
   }
 
   # optimize
-  omega <- uniroot(find_omega, interval = c(0, 1000), q = q, p = 0.975)$root
+  omega <- uniroot(find_omega, interval = c(0, 1), q = q, p = 0.975)$root
 
   return(omega)
 
 }
+
+
+
