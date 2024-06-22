@@ -118,14 +118,12 @@ margin_text <- function(branch = "dev") {
   out <-
     glue::glue(
       national_link,
-      methods_link,
-      "<br>",
+      paste0(methods_link, "\n\n"),
       "**Competitive states**",
-      state_links$competitive,
-      "<br>",
+      paste0(state_links$competitive, "\n\n"),
       "**All states**",
       state_links$all,
-      .sep = "\n\n"
+      .sep = "<br>"
     )
 
   return(out)
