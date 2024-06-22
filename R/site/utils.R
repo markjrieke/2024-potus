@@ -47,7 +47,7 @@ generate_links <- function(..., branch = "dev") {
                                  "safe")) %>%
     arrange(desc(heat)) %>%
     filter(state != "National") %>%
-    mutate(state = glue::glue("[{state}](https://en.wikipedia.org/wiki/{state})"))
+    mutate(state = glue::glue("[{state}]({state}.qmd)"))
 
   # competitive states (< 0.99 prob)
   competitive <-
