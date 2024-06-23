@@ -101,6 +101,19 @@ run_poll_model <- function(run_date) {
     filter(run_date == int_run_date,
            !state %in% c("National", "Nebraska", "Maine"))
 
+  # rely on prior when there's not enough polls
+  if (run_date < mdy("5/7/24")) {
+
+    run_date_int <- mdy("5/7/24")
+    prior_check <- 1
+
+  } else {
+
+    run_date_int <- run_date
+    prior_check <- 0
+
+  }
+
   # wrangle polls
   polls <-
     polls %>%
@@ -130,7 +143,7 @@ run_poll_model <- function(run_date) {
 
     # filter based on run date
     mutate(created_at = as_date(mdy_hm(created_at))) %>%
-    filter(created_at <= run_date) %>%
+    filter(created_at <= run_date_int) %>%
 
     # only care about polls that include both biden & trump
     group_by(question_id) %>%
@@ -326,7 +339,7 @@ run_poll_model <- function(run_date) {
       omega = omega,
       electors = sid$electors,
       F_s = F_s,
-      prior_check = 0
+      prior_check = prior_check
     )
 
   # fit !
