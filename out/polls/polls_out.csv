@@ -94,6 +94,7 @@ National,900,McLaughlin,2024-05-23,lv,Online Panel,None,440,23,55,0,30,2,13,2
 National,1100,Marist,2024-05-23,rv,Live Phone/Online Panel/Text-to-Web,None,561,23,55,0,27,3,10,2
 Nevada,546,The Tyson Group,2024-05-25,lv,Online Panel,None,264,25,32,6,56,2,13,2
 National,751,Leger,2024-05-26,lv,Online Panel,None,371,26,55,0,26,2,13,2
+National,820,Emerson,2024-05-27,rv,Online Panel/Text-to-Web,None,410,27,55,0,15,3,14,2
 National,1253,YouGov,2024-05-28,rv,Online Panel,None,619,28,55,0,59,3,13,2
 New York,1000,Emerson,2024-05-29,rv,IVR/Online Panel/Text-to-Web,None,552,29,36,28,15,3,5,2
 Ohio,802,National Public Affairs,2024-05-29,lv,IVR/Live Phone/Text-to-Web,None,369,29,39,17,33,2,3,2
@@ -151,10 +152,10 @@ Montana,470,Public Opinion Strategies,2024-06-13,lv,Live Phone,REP,185,44,28,4,4
 Iowa,518,Selzer,2024-06-14,lv,Live Phone,None,202,45,16,6,47,2,7,2
 New Mexico,494,PPP,2024-06-14,v,IVR/Text,None,266,45,35,5,38,4,6,2
 National,809,YouGov,2024-06-14,rv,Online Panel,None,415,45,55,0,59,3,13,2
-National,8815,Morning Consult,2024-06-16,rv,Online Panel,None,4458,47,55,0,32,3,13,2
 Minnesota,551,SurveyUSA,2024-06-16,lv,Online Panel,None,294,47,25,10,54,2,13,2
 National,1074,Beacon/Shaw,2024-06-17,rv,Live Phone/Text-to-Web,None,548,48,55,0,2,3,11,2
 New York,692,Siena,2024-06-17,rv,Live Phone/Online Panel/Text-to-Web,None,378,48,36,28,48,3,10,2
+National,942,Redfield & Wilton Strategies,2024-06-17,lv,Online Panel,None,471,48,55,0,44,2,13,2
 National,1172,YouGov,2024-06-18,rv,Online Panel,None,586,49,55,0,59,3,13,2
 Arizona,1000,Emerson,2024-06-18,rv,IVR/Online Panel/Text-to-Web,None,480,49,3,11,15,3,5,2
 Nevada,1000,Emerson,2024-06-18,rv,IVR/Online Panel/Text-to-Web,None,503,49,32,6,15,3,5,2
@@ -165,5 +166,7 @@ Wisconsin,1000,Emerson,2024-06-18,rv,IVR/Online Panel/Text-to-Web,None,487,49,53
 Georgia,1000,Emerson,2024-06-18,rv,IVR/Online Panel/Text-to-Web,None,477,49,11,16,15,3,5,2
 Missouri,1000,Emerson,2024-06-19,rv,IVR/Online Panel,None,433,50,27,10,15,3,4,2
 Arizona,540,North Star Opinion Research,2024-06-20,lv,Live Phone,None,252,51,3,11,36,2,7,2
+Maryland,546,PPP,2024-06-20,v,IVR/Text,None,356,51,22,10,38,4,6,2
 National,2029,ActiVote,2024-06-21,lv,App Panel,None,982,52,55,0,1,2,1,2
 National,1859,YouGov,2024-06-21,lv,Online Panel,None,920,52,55,0,59,2,13,2
+National,8940,Morning Consult,2024-06-23,rv,Online Panel,None,4470,54,55,0,32,3,13,2
