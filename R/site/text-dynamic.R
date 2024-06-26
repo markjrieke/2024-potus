@@ -75,7 +75,7 @@ headline_text <- function(state = "National",
     if_else(
       current_date == "November 5th",
       glue::glue("The final pre-election forecast is that"),
-      glue::glue("As of {current_date}, the model thinks that")
+      glue::glue("As of {current_date}, the forecast indicates that")
     )
 
   # set state to display based on rating/state
