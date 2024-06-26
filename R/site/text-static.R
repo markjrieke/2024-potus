@@ -2,9 +2,9 @@
 blurb_evs <- function(font = "Playfair Display") {
 
   glue::glue(
-    "### <span style='font-family:{font};'>Estimated electoral college votes</span>",
-    "Our model is updated every day and combines state and national polls with economic indicators to predict a range of outcomes.",
-    "The midpoint is the estimate of the electoral college vote for each party on election day.",
+    "### <span style='font-family:{font};'>Projected electoral college votes</span>",
+    "The model is updated daily, blending state and national polls with non-polling predictors, like economic growth and presidential approval, to generate a range of potential outcomes in the electoral college.",
+    "As we get closer to election day, the uncertainty around the estimate will decrease.",
     .sep = "\n"
   )
 
@@ -15,9 +15,8 @@ blurb_prob <- function(font = "Playfair Display") {
 
   glue::glue(
     "### <span style='font-family:{font};'>Presidential probabilities</span>",
-    "Each day, the model simulates thousands of plausible election results.",
-    "Each candidate's probability of winning is the proportion of simulations that they've won.",
-    "This is an additional sentence so that the temp blurb takes up the desired amount of space.",
+    "Each day, the model simulates thousands of plausible election results, from landslide victories to tightly contested races.",
+    "Each candidate’s probability of winning is the proportion of simulations that they’ve won.",
     .sep = "\n"
   )
 
@@ -28,9 +27,9 @@ blurb_map <- function(font = "Playfair Display") {
 
   glue::glue(
     "### <span style='font-family:{font};'>Chance of winning each state</span>",
-    "Our model combines the national prediction with polls and political-economic factors at the state level.",
-    "We take into account that states that are similar are likely to move with each other; if Donald Trump wins Minnesota,",
-    "he will probably win Wisconsin too.",
+    "State-level results determine the makeup of the electoral college.",
+    "Most states heavily favor a particular party, leaving a few competitive battlegrounds that will be decisive in determining the next president.",
+    "Hover/click to see more information about a particular state.",
     .sep = "\n"
   )
 
@@ -40,9 +39,9 @@ blurb_map <- function(font = "Playfair Display") {
 blurb_vote <- function(font = "Playfair Display") {
 
   glue::glue(
-    "### <span style='font-family:{font};'>Forecasted voteshare on each day</span>",
-    "The model first averages the polls, weighting them by their sample sizes and correcting them for tendencies to overestimate support for one party.",
-    "It then combines this average with our forecast based on non-polling data, pulling vote shares on each day slightly towards the final election-day projection.",
+    "### <span style='font-family:{font};'>Forecasted election-day voteshare</span>",
+    "The model first constructs a polling average, pooling data across similar states when polls are sparse.",
+    "It then projects forward to election day, initially relying on non-polling indicators like economic growth and partisanship, but aligning more closely with the polling average as election day approaches.",
     .sep = "\n"
   )
 
@@ -53,8 +52,8 @@ blurb_similarity <- function(font = "Playfair Display") {
 
   glue::glue(
     "### <span style='font-family:{font};'>State similarities</span>",
-    "Our model also simulates what would happen if the race moves, or if the polls are biased, in similar amounts in like states.",
-    "We calculate similarity between states by comparing their demographic and political profiles, such as the share of white voters who live there, how religious they are, and how urban or rural the state is.",
+    "The model uses state characteristics, like demographic composition, population density, and education, to estimate how similar states are to one another.",
+    "Similar states are more likely to share polling biases and see similar shifts in polling trendlines.",
     .sep = "\n"
   )
 
