@@ -1,4 +1,11 @@
-#' TODO: DOCUMENT
+#' Represent a date as a string with ordinal formatting
+#'
+#' @description
+#' Converts a date object to a string representation of the date with ordinal
+#' formatting for the day and excluding the year (i.e.,
+#' `label_date_ordinal(lubridate::mdy("5/1/24"))` returns `"May 1st"`).
+#'
+#' @param x date to be converted
 label_date_ordinal <- function(x) {
 
   m <- scales::label_date("%B")(x)
@@ -11,7 +18,11 @@ label_date_ordinal <- function(x) {
 
 }
 
-#' TODO: DOCUMENT
+#' Find the hex color code associated with the linear interpolation between a
+#' lower and upper bound
+#'
+#' @param x numeric, on the interval `[0, 1]`
+#' @param lower,upper hex color codes associated with positions `0` and `1`
 interpolate_fill <- function(x, lower, upper) {
 
   color_rgb <- colorRamp(c(lower, upper))
@@ -22,7 +33,10 @@ interpolate_fill <- function(x, lower, upper) {
 
 }
 
-#' TODO: DOCUMENT
+#' Reference a document on the specified branch in github, rather than locally
+#'
+#' @param document path to document, including document suffix
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
 find_document <- function(document,
                           branch = "dev") {
 
@@ -33,8 +47,18 @@ find_document <- function(document,
 }
 
 
-#' TODO: DOCUMENT
-#' TODO: UPDATE LINKS
+#' Generate a set of links to competitive states and a set to all states
+#'
+#' @description
+#' Generates two set of links used to navigate to state forecast pages:
+#'
+#' * Competitive states: states where the leading candidate has < 85% chance of
+#'                       winning. Links are ordered by "heat", a measure of how
+#'                       close the is to a pure 50-50 tossup.
+#' * All states: all state pages, ordered alphabetically.
+#'
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
 generate_links <- function(..., branch = "dev") {
 
   # currently just links to wikipedia page

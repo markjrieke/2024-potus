@@ -1,4 +1,15 @@
-#' TODO: DOCUMENT
+#' Generate an interactive plot of the electoral college forecast
+#'
+#' @param col_b color for plotting Biden's estimates/credible intervals
+#' @param col_t color for plotting Trump's estimates/credible intervals
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
+#' @param alpha_ribbon alpha parameter passed to `ggplot2::geom_ribbon()`
+#' @param col_hline color passed to `ggplot2::geom_hline()` used to mark 270
+#'                  votes and the y-intercept
+#' @param linewidth linewidth passed to `ggplot2::geom_hline()`
+#' @param size_evs_pt size of the current day median estimate passed to
+#'                    `ggplot2::geom_point()`
 plot_evs <- function(col_b,
                      col_t,
                      ...,

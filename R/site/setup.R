@@ -1,10 +1,3 @@
-#' Setup and configuration for site-related functions
-#'
-#' @description
-#' Loads necessary libraries & supplies static theming values for re-use
-#' throughout the site.
-#'
-
 # libraries --------------------------------------------------------------------
 
 library(tidyverse)

@@ -1,3 +1,16 @@
+#' Generate a paginated table of polls conducted in a given state
+#'
+#' @description
+#' Generates an interactive, paginated table of polls conducted in a given
+#' state. By default, polls are arranged by descending `end_date`, but can be
+#' sorted by any column in the table. If no polls have been conducted, returns
+#' a text blurb explaining how the forecasted voteshare is estimated.
+#'
+#' @param state state to display polls for
+#' @param col_b color for showing Biden's margins in the table
+#' @param col_t color for showing Trump's margins in the table
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
 table_polls <- function(state = "National",
                         col_b,
                         col_t,

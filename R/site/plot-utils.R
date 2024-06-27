@@ -1,4 +1,14 @@
-#' TODO: DOCUMENT
+#' Add static plot annotation for election day
+#'
+#' @param ymin,ymax plot boundaries
+#' @param ... unused
+#' @param x,xend segment annotation start/end
+#' @param ymult,ymult_label multipliers used to position the segment endpoint
+#'                          and label positions, respectively
+#' @param linewidth segment linewidth
+#' @param color color applied to all annotation elements
+#' @param label_size size of the label
+#' @param label_font font used for the label
 annotate_end_date <- function(ymin,
                               ymax,
                               ...,
@@ -47,7 +57,19 @@ annotate_end_date <- function(ymin,
   return(annotation)
 }
 
-#' TODO: DOCUMENT
+#' Add static plot annotation for the current day
+#'
+#' @param current_date the current date
+#' @param date_pt formatted date string used to label the current date
+#' @param ymin,ymax plot boundaries
+#' @param ... unused
+#' @param ymult,ymult_label multipliers used to position the segment endpoint
+#'                          and label positions, respectively
+#' @param linewidth segment linewidth
+#' @param color color applied to all annotation elements
+#' @param label_size size of the label
+#' @param label_font font used for the label
+#' @param bg.color,bg.r label parameters passed to `shadowtext::geom_shadowtext()`
 annotate_current_date <- function(current_date,
                                   date_pt,
                                   ymin,
@@ -97,7 +119,14 @@ annotate_current_date <- function(current_date,
 
 }
 
-#' TODO: DOCUMENT
+#' Add a `geom_line()` with and underline to a plot
+#'
+#' @param mapping Set of aesthetic mappings created by `ggplot2::aes()`
+#' @param color color to be passed to `ggplot2::geom_line()`
+#' @param ... unused
+#' @param under_color color of the underline
+#' @param under_width,over_width linewidths of the underline and overline,
+#'                               respectively
 geom_underline <- function(mapping,
                            color,
                            ...,
@@ -122,7 +151,17 @@ geom_underline <- function(mapping,
 
 }
 
-#' TODO: DOCUMENT
+#' Add a text label for current-day estimates
+#'
+#' @param mapping Set of aesthetic mappings created by `ggplot2::aes()`
+#' @param y y-location to place the label
+#' @param color color for the text
+#' @param ... unused
+#' @param nudge_x label offset in the x-direction
+#' @param family label font
+#' @param fontface label weight/face
+#' @param size label size
+#' @param bg.color,bg.r label parameters passed to `shadowtext::geom_shadowtext()`
 geom_current_text <- function(mapping,
                               y,
                               color,
@@ -146,7 +185,14 @@ geom_current_text <- function(mapping,
 
 }
 
-#' TODO: DOCUMENT
+#' Create an invisible tiling used to pass data to an interactive tooltip
+#'
+#' @param mapping Set of aesthetic mappings created by `ggplot2::aes()`
+#' @param height height passed to `ggiraph::geom_tile_interactive()`
+#' @param ... unused
+#' @param width width passed to `ggiraph::geom_tile_interactive()`
+#' @param size size passed to `ggiraph::geom_tile_interactive()`
+#' @param alpha alpha passed to `ggiraph::geom_tile_interactive()`
 geom_tooltip <- function(mapping,
                          height,
                          ...,
@@ -162,7 +208,20 @@ geom_tooltip <- function(mapping,
 
 }
 
-#' TODO: DOCUMENT
+#' Custom theme used in plots across the site
+#'
+#' @param ymin,ymax plot boundaries
+#' @param breaks breaks along the y-axis
+#' @param labels labels along the y-axis
+#' @param xlims,ylims limits passed to `ggplot2::expand_limits()`
+#' @param ... unused
+#' @param base_size base_size passed to `riekelib::theme_rieke()`
+#' @param linewidth linewidth passed to the major y grid
+#' @param vjust vertical adjustment for y-axis text
+#' @param hjust horizontal adjustment for y-axis text
+#' @param halign horizontal alignment for y-axis text
+#' @param ymult multiplier used to set plot expansion limits if `ylims` is not
+#'              supplied
 theme_2024 <- function(ymin,
                        ymax,
                        breaks,
@@ -209,7 +268,9 @@ theme_2024 <- function(ymin,
 
 }
 
-#' TODO: document
+#' Render an interactive plot as a html object
+#'
+#' @param ggobj ggplot2 plot to render as interactive
 render_interactive <- function(ggobj) {
 
   css <-

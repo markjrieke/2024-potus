@@ -1,4 +1,15 @@
-#' TODO: DOCUMENT
+#' Generate a formatted summary of the forecast for the specified state
+#'
+#' @description
+#' Generates the headline summary of the forecast for the specified state. When
+#' `state = "National"`, generates a summary of the forecast for the overall
+#' winner of the presidency.
+#'
+#' @param state state to generate the summary for
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
+#' @param font font used in the headline
+#' @param size headline font size
 headline_text <- function(state = "National",
                           ...,
                           branch = "dev",
@@ -107,8 +118,12 @@ headline_text <- function(state = "National",
 
 }
 
-#' TODO: DOCUMENT
-#' TODO: UPDATE LINKS
+#' Generate the margin text that links to individual state pages
+#'
+#' @description
+#' Applies formatting to `generate_links()` for use in the site margin.
+#'
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
 margin_text <- function(branch = "dev") {
 
   national_link <- "**[National Forecast](National.qmd)**"
@@ -130,7 +145,18 @@ margin_text <- function(branch = "dev") {
 
 }
 
-#' TODO: DOCUMENT
+#' Generate a summary blurb for each candidate on the national page
+#'
+#' @description
+#' Generates a summary blurb for the specified candidate, including their
+#' current probability of winning and the 95% credible interval for the
+#' posterior-predictive electoral college votes.
+#'
+#' @param candidate candidate name (i.e., "Biden" or "Trump")
+#' @param color color used to highlight probability of winning and range of
+#'              electoral college votes
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
 candidate_summary <- function(candidate,
                               color,
                               ...,
@@ -194,6 +220,10 @@ candidate_summary <- function(candidate,
 
 }
 
+#' Generate formatted text outlining the probability of an electoral tie
+#'
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
 tie_text <- function(..., branch = "dev") {
 
   # import current probability of a tie in the electoral college

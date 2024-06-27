@@ -1,4 +1,15 @@
-#' TODO: DOCUMENT
+#' Generate a map that colors states based on similarity to a target state
+#'
+#' @description
+#' Generates a map of the US that colors states based on similarity to a target
+#' state. Similarity between two states is measured as the euclidean distance
+#' in a feature space of the following features:
+#'
+#' @param state state to be plotted
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
+#' @param col_low fill color associated with no correlation
+#' @param col_high fill color associated with perfect correlation
 plot_similarity <- function(state,
                             ...,
                             branch = "dev",

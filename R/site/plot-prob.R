@@ -1,4 +1,21 @@
-#' TODO: DOCUMENT
+#' Generate an interactive plot of the probability of each candidate winning
+#'
+#' @description
+#' Generates an interactive plot of the probability of each candidate winning in
+#' the specified state. If `state` is set to `"National"`, the resulting
+#' probabilities may not necessarily sum to 100% given the probability of a tie
+#' (269-269) in the electoral college.
+#'
+#' @param state state to be plotted
+#' @param col_b color for plotting Biden's probability of winning
+#' @param col_t color for plotting Trump's probability of winning
+#' @param ... unused
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
+#' @param col_hline color passed to `ggplot2::geom_hline()` used to mark 270
+#'                  votes and the y-intercept
+#' @param linewidth linewidth passed to `ggplot2::geom_hline()`
+#' @param size_prob_pt size of the current day probability estimate passed to
+#'                     `ggplot2::geom_point()`
 plot_prob <- function(state = "National",
                       col_b,
                       col_t,

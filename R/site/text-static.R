@@ -1,4 +1,17 @@
-#' TODO: DOCUMENT
+#' Generate formatted static text
+#'
+#' @description
+#' Generate formatted static text that is reused throughout the site to describe
+#' charts. `blurb_evs()` and `blurb_map()` are unique to the national page.
+#' `blurb_similarity()` only appears on state pages. All others appear on both
+#' the national and state pages
+#'
+#' @param font header font for the blurb title
+#'
+#' @name static-blurbs
+NULL
+
+#' @rdname static-blurbs
 blurb_evs <- function(font = "Playfair Display") {
 
   glue::glue(
@@ -10,7 +23,7 @@ blurb_evs <- function(font = "Playfair Display") {
 
 }
 
-#' TODO: DOCUMENT
+#' @rdname static-blurbs
 blurb_prob <- function(font = "Playfair Display") {
 
   glue::glue(
@@ -22,7 +35,7 @@ blurb_prob <- function(font = "Playfair Display") {
 
 }
 
-#' TODO: DOCUMENT
+#' @rdname static-blurbs
 blurb_map <- function(font = "Playfair Display") {
 
   glue::glue(
@@ -35,7 +48,7 @@ blurb_map <- function(font = "Playfair Display") {
 
 }
 
-#' TODO: DOCUMENT
+#' @rdname static-blurbs
 blurb_vote <- function(font = "Playfair Display") {
 
   glue::glue(
@@ -47,7 +60,7 @@ blurb_vote <- function(font = "Playfair Display") {
 
 }
 
-#' TODO: DOCUMENT
+#' @rdname static-blurbs
 blurb_similarity <- function(font = "Playfair Display") {
 
   glue::glue(
@@ -59,7 +72,13 @@ blurb_similarity <- function(font = "Playfair Display") {
 
 }
 
-#' TODO: DOCUMENT
+#' Generate formatted footer text
+#'
+#' @description
+#' Generates formatted footer text that cites sources and links to the source
+#' code/data in the repository.
+#'
+#' @param branch github branch to extract data from. Defaults to `"dev"`.
 footer <- function(branch = "dev") {
 
   gh_icon <- "{{< fa brands github >}}"
