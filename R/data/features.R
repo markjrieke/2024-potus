@@ -1,3 +1,8 @@
+# setup ------------------------------------------------------------------------
+
+library(tidyverse)
+library(riekelib)
+
 # functions --------------------------------------------------------------------
 
 #' Transform a beta-distributed variable to a normal distribution via a copula
@@ -97,7 +102,8 @@ for (r in 1:nrow(F_r)) {
 }
 
 # scale for consistent prior allocation
-F_r <- F_r/max(F_r)
+max_fr <- max(F_r)
+F_r <- F_r/max_fr
 
 # create aggregate weights
 wt <-
@@ -221,8 +227,8 @@ for (r in 1:nrow(F_s)) {
 }
 
 # scale for consistent prior allocation
-# dividing by max(F_r) instead of max(F_s) so that the original distances are respected
-F_s <- F_s/max(F_r)
+# dividing by max_fr instead of max(F_s) so that the original distances are respected
+F_s <- F_s/max_fr
 
 # write out --------------------------------------------------------------------
 
