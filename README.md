@@ -24,7 +24,15 @@ A more general overview of the model methodology can be found \[here\]
 (LINK WHEN PUBLISHED), and the full output can be explored \[here\]
 (LINK WHEN PUBLISHED).
 
-### Other forecasts
+## Version history
+
+### 1.0
+
+###### 2024-06-30
+
+- Initial release
+
+## Other forecasts
 
 - [FiveThirtyEight](https://projects.fivethirtyeight.com/2024-election-forecast/)
 - [The
