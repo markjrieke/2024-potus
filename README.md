@@ -28,7 +28,7 @@ A more general overview of the model methodology can be found \[here\]
 
 ### 1.0
 
-###### 2024-06-30
+###### 2024-07-04
 
 - Initial release
 
