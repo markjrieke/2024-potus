@@ -127,7 +127,7 @@ headline_text <- function(state = "National",
 margin_text <- function(branch = "dev") {
 
   national_link <- "**[National Forecast](National.qmd)**"
-  methods_link <- "[How this works](https://www.thedatadiary.net/posts/2022-09-16-forecast-launch/)"
+  methods_link <- "[How this works](../posts/2024-07-04-forecast-methodology/index.qmd)"
   state_links <- generate_links(branch = branch)
 
   out <-
