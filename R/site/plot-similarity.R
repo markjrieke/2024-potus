@@ -47,12 +47,12 @@ plot_similarity <- function(state,
   similarity_map <-
     base %>%
     ggplot(aes(fill = similarity)) +
-    geom_sf(color = "#ededed",
-            linewidth = 0.5) +
-    geom_sf(data = highlight,
-            fill = "white",
-            color = "black",
-            linewidth = 0.7) +
+    geom_sf_interactive(color = "#ededed",
+                        linewidth = 0.5) +
+    geom_sf_interactive(data = highlight,
+                        fill = "white",
+                        color = "black",
+                        linewidth = 0.7) +
     scale_color_identity() +
     scale_fill_gradientn(colors = c(col_low, col_high),
                          breaks = c(0, 0.25, 0.5, 0.75, 1),
