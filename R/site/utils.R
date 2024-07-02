@@ -18,21 +18,6 @@ label_date_ordinal <- function(x) {
 
 }
 
-#' Find the hex color code associated with the linear interpolation between a
-#' lower and upper bound
-#'
-#' @param x numeric, on the interval `[0, 1]`
-#' @param lower,upper hex color codes associated with positions `0` and `1`
-interpolate_fill <- function(x, lower, upper) {
-
-  color_rgb <- colorRamp(c(lower, upper))
-  rgb_vals <- color_rgb(x)
-  hex <- rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 255)
-
-  return(hex)
-
-}
-
 #' Reference a document on the specified branch in github, rather than locally
 #'
 #' @param document path to document, including document suffix
