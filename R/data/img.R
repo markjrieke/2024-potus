@@ -105,7 +105,6 @@ for (state in states) {
   similarity <- plot_similarity(state)
   ggquicksave(
     paste0("img/", state, ".png"),
-    height = 8,
     dpi = 300
   )
 
