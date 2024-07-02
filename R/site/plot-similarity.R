@@ -44,7 +44,8 @@ plot_similarity <- function(state,
     filter(NAME == state_int)
 
   # similarity map
-  base %>%
+  similarity_map <-
+    base %>%
     ggplot(aes(fill = similarity)) +
     geom_sf(color = "#ededed",
             linewidth = 0.5) +
@@ -66,5 +67,10 @@ plot_similarity <- function(state,
           legend.text = ggtext::element_markdown(family = "IBM Plex Sans")) +
     guides(fill = guide_legend(title = glue::glue("**Similarity with {state}**"),
                                family = "IBM Plex Sans"))
+
+  # render "interactive"
+  out <- girafe(similarity_map)
+
+  return(out)
 
 }

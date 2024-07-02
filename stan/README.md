@@ -186,10 +186,10 @@ The remaining parameters, $\beta_g$ and $\beta_c$, have too few subgroups to be 
 The polling model generates a series of outputs that are referenced throughout the site:
 
 * Biden's forecasted election-day two-party voteshare in each state: $\theta_{s,D} = \alpha_s + \beta_s + \beta_{s,D}$
-* Whether (or not) Biden wins in each state: $W_s = 1 \text{if } \theta_{s,D} > 0.5$, otherwise $W_s = 0$
+* Whether (or not) Biden wins in each state: $W_s = 1\ \text{if } \theta_{s,D} > 0.5$, otherwise $W_s = 0$
 * The number of electors Biden wins: $E = W \cdot e$, where $e$ is a vector of electors for each state
-* Whether (or not) Biden wins the electoral college: $P = 1 \text{if } E > 269$, otherwise $P = 0$
-* Whether (or not) there is a tie in the electoral college: $T = 1 \text{if } E = 269$, otherwise $T = 0$
+* Whether (or not) Biden wins the electoral college: $P = 1\ \text{if } E > 269$, otherwise $P = 0$
+* Whether (or not) there is a tie in the electoral college: $T = 1\ \text{if } E = 269$, otherwise $T = 0$
 
 When summarized across draws, these give the median, 66, and 95% credible intervals for Biden's forecasted voteshare in each state and his forcasted number of electors won, and probabilities for a win in each state, a win in the electoral college, and a tie in the electoral college. 
 
