@@ -69,7 +69,7 @@ plot_similarity <- function(state,
                                family = "IBM Plex Sans"))
 
   # render "interactive"
-  out <- girafe(similarity_map)
+  out <- girafe(ggobj = similarity_map)
 
   return(out)
 
