@@ -20,9 +20,10 @@ concluded. In the interim, you can view a brief overview of the model
 definition in the [README in the `stan/`
 folder](https://github.com/markjrieke/2024-potus/tree/main/stan).
 
-A more general overview of the model methodology can be found \[here\]
-(LINK WHEN PUBLISHED), and the full output can be explored \[here\]
-(LINK WHEN PUBLISHED).
+A more general overview of the model methodology can be found
+[here](https://www.thedatadiary.net/posts/2024-07-04-forecast-methodology/),
+and the full output can be explored
+[here](https://www.thedatadiary.net/2024-potus/national).
 
 ## Version history
 

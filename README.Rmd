@@ -8,7 +8,7 @@ This repository contains the code for running a dynamic and hierarchical Bayesia
 
 The model improves upon the [Economist's 2020 model](https://github.com/TheEconomist/us-potus-model) (which, in turn, improved upon [Pierre Kemp's implementation](https://www.slate.com/features/pkremp_forecast/report.html) of [Drew Linzer's model](https://votamatic.org/wp-content/uploads/2013/07/Linzer-JASA13.pdf)) by estimating the parameters used to generate state covariance matrices, rather than being passed the matrices as data. I intend to write a formal explanation of the model, likely after the election has concluded. In the interim, you can view a brief overview of the model definition in the [README in the `stan/` folder](https://github.com/markjrieke/2024-potus/tree/main/stan).
 
-A more general overview of the model methodology can be found [here] (LINK WHEN PUBLISHED), and the full output can be explored [here] (LINK WHEN PUBLISHED).
+A more general overview of the model methodology can be found [here](https://www.thedatadiary.net/posts/2024-07-04-forecast-methodology/), and the full output can be explored [here](https://www.thedatadiary.net/2024-potus/national).
 
 ## Version history
 
