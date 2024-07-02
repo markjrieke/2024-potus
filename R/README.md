@@ -25,6 +25,9 @@ Contains scripts for generating data that doesn't need to be recomputed each run
     * `F_s.rds`: a matrix measuring the similarity between states. Similarity is defined as 1 - distance.
     * `sid.csv`: a table mapping each state to an integer id. Includes both "raw" and aggregate states.
     * `wt.rds`: a matrix with the population weight each state contributes to each aggregate state.
+* `img.R`
+  * Generates state similarity plots based on the feature matrices generated in `features.R`.
+  * Rendering similarity plots locally save a bit of rendering time on site deployment.
 * `polls.R`
   * Imports and saves polls collected in prior election cycles (2008-2020) for backtesting.
   * Imported from [FiveThirtyEight](https://projects.fivethirtyeight.com/polls/) and [The Economist](https://github.com/TheEconomist/us-potus-model/tree/master/data).
@@ -57,7 +60,6 @@ Contains functions for running each of the pipelines for each model as well as a
 * `plot-evs.R`: generates the forecasted electoral college outcome plot.
 * `plot-map.R`: generates the current state ratings map.
 * `plot-prob.R`: generates state or national level probability of winning plots.
-* `plot-similarity.R`: generates state similarity maps.
 * `plot-utils.R`: common functions used throughout other plotting functions.
 * `plot-voteshare.R`: generates state or national level forecasted voteshare plots.
 * `setup.R`: sets up libraries and environment variables needed to render site pages.
