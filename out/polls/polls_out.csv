@@ -188,6 +188,7 @@ Georgia,519,P2 Insights,2024-06-20,lv,Live Phone/Text-to-Web,REP,227,51,11,16,49
 Michigan,540,P2 Insights,2024-06-20,lv,Live Phone/Text-to-Web,REP,260,51,24,15,49,2,13,3
 Nevada,500,P2 Insights,2024-06-20,lv,Live Phone/Text-to-Web,REP,240,51,32,6,49,2,13,3
 Wisconsin,565,P2 Insights,2024-06-20,lv,Live Phone/Text-to-Web,REP,273,51,53,10,49,2,13,3
+National,932,Clarity,2024-06-20,lv,Online Panel,None,471,51,55,0,14,2,17,2
 National,2029,ActiVote,2024-06-21,lv,App Panel,None,982,52,55,0,3,2,1,2
 National,1859,YouGov,2024-06-21,lv,Online Panel,None,920,52,55,0,82,2,17,2
 National,738,Leger,2024-06-24,lv,Online Panel,None,378,55,55,0,37,2,17,2
@@ -262,4 +263,6 @@ National,1370,Emerson,2024-07-08,rv,IVR/Online Panel/Text-to-Web,None,682,69,55,
 National,935,Redfield & Wilton Strategies,2024-07-08,lv,Online Panel,None,462,69,55,0,60,2,17,2
 National,1197,YouGov,2024-07-09,rv,Online Panel,None,577,70,55,0,82,3,17,2
 National,1878,Ipsos,2024-07-09,rv,Probability Panel,None,939,70,55,0,32,3,19,2
+National,1151,Marist,2024-07-10,rv,Live Phone/Online Panel,None,587,71,55,0,39,3,10,2
+Wisconsin,540,North Star Opinion Research,2024-07-10,lv,Live Phone,None,264,71,53,10,48,2,8,2
 Virginia,910,SoCal Research,2024-07-11,a,Online Panel,None,470,72,50,13,68,1,17,2
