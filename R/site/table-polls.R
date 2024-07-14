@@ -28,11 +28,19 @@ table_polls <- function(state = "National",
   # if no polls, return formatted text
   if (nrow(polls) == 0) {
 
+    # modify state name for D.C.
+    state_name <-
+      if_else(
+        state == "District of Columbia",
+        "the District of Columbia",
+        state
+      )
+
     out <-
       glue::glue(
         "<br>",
         "<span style='display:inline-block;width:60%;'>",
-        "*No polls have been conducted in {state}. ",
+        "*No polls have been conducted in {state_name}. ",
         "The projected voteshare is estimated using economic and approval indicators, ",
         "as well as polling information from similar states.*",
         "</span>",
