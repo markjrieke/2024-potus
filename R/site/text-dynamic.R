@@ -89,13 +89,21 @@ headline_text <- function(state = "National",
       glue::glue("As of {current_date}, the forecast indicates that")
     )
 
+  # modify state name for D.C.
+  state_name <-
+    if_else(
+      state == "District of Columbia",
+      "the District of Columbia",
+      state
+    )
+
   # set state to display based on rating/state
   state_text <-
     case_when(
       rating == "uncertain" & state == "National" ~ "the presidency",
-      rating == "uncertain" & state != "National" ~ glue::glue("in {state}"),
+      rating == "uncertain" & state != "National" ~ glue::glue("in {state_name}"),
       state == "National" ~ "the electoral college",
-      .default = state
+      .default = state_name
     )
 
   # rating text changes if outcome is uncertain

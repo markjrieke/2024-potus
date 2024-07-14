@@ -27,6 +27,13 @@ and the full output can be explored
 
 ## Version history
 
+### 1.1
+
+###### 2024-07-14
+
+- Modified header text to include the article “the” on D.C.’s state
+  page.
+
 ### 1.0
 
 ###### 2024-07-04
