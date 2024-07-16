@@ -47,6 +47,9 @@
 #' * win_pres: the posterior probability of Biden winning the presidency on
 #'             election day
 #' * tie_pres: the posterior probability of an electoral tie (269-269)
+#' * conditional_probabilities: the probability of a win or tie in the electoral
+#'                              college conditional on a win or tie in each
+#'                              state
 #'
 #' The poll model is updated daily and thus is not dependent on "trigger files."
 #' Minor changes to the following files, however, warrant a note and version
@@ -384,10 +387,14 @@ run_poll_model <- function(run_date) {
     append_daily_estimate("out/polls/win_state.csv",
                           run_date)
 
+  # number of electoral college votes won in each draw
+  evs_won <-
+    poll_fit$draws("evs",
+                   format = "df") %>%
+    as_tibble()
+
   # number of electoral college votes
-  poll_fit$draws("evs",
-                 format = "df") %>%
-    as_tibble() %>%
+  evs_won %>%
     tidybayes::median_qi(evs, .width = c(0.66, 0.95)) %>%
     select(evs,
            .lower,
@@ -407,6 +414,54 @@ run_poll_model <- function(run_date) {
     select(p_tie = mean) %>%
     append_daily_estimate("out/polls/tie_pres.csv",
                           run_date)
+
+  # draws in which each candidate wins in each state
+  state_wins <-
+
+    # convert to long tibble
+    poll_fit$draws("win_state",
+                   format = "df") %>%
+    as_tibble() %>%
+    pivot_longer(starts_with("win"),
+                 names_to = "variable",
+                 values_to = "win") %>%
+    filter(win > 0) %>%
+    mutate(sid = parse_number(variable)) %>%
+    left_join(sid) %>%
+    select(state,
+           draw = .draw) %>%
+    nest(data = -state) %>%
+    arrange(state) %>%
+
+    # outcomes conditional on a biden win
+    mutate(evs = list(evs_won),
+           state_win_evs = pmap(list(data, evs), ~filter(..2, .draw %in% ..1$draw)),
+           win_draws = map_dbl(state_win_evs, nrow),
+           state_win_ec_win = map_dbl(state_win_evs, ~nrow(filter(.x, evs >= 270))),
+           state_win_ec_win = state_win_ec_win/win_draws,
+           state_win_ec_tie = map_dbl(state_win_evs, ~nrow(filter(.x, evs == 269))),
+           state_win_ec_tie = state_win_ec_tie/win_draws) %>%
+    select(-state_win_evs) %>%
+
+    # outcomes conditional on a trump win
+    mutate(state_lose_evs = pmap(list(data, evs), ~filter(..2, !.draw %in% ..1$draw)),
+           lose_draws = map_dbl(state_lose_evs, nrow),
+           state_lose_ec_win = map_dbl(state_lose_evs, ~nrow(filter(.x, evs >= 270))),
+           state_lose_ec_win = state_lose_ec_win/lose_draws,
+           state_lose_ec_tie = map_dbl(state_lose_evs, ~nrow(filter(.x, evs == 270))),
+           state_lose_ec_tie = state_lose_ec_tie/lose_draws) %>%
+
+    # write results
+    select(state,
+           win_draws,
+           state_win_ec_win,
+           state_win_ec_tie,
+           lose_draws,
+           state_lose_ec_win,
+           state_lose_ec_tie) %>%
+    full_join(sid %>% select(state)) %>%
+    arrange(state) %>%
+    write_csv("out/polls/conditional_probabilities.csv")
 
   # diagnostics
   diagnostics <-
