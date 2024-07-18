@@ -254,7 +254,7 @@ Nevada,880,Emerson,2024-07-02,rv,Unknown,DEM,410,63,32,6,23,3,23,1
 Wisconsin,570,Fabrizio/Impact,2024-07-02,lv,Live Phone/Text-to-Web,None,270,63,53,10,26,2,13,2
 National,890,J.L. Partners,2024-07-03,lv,Live Phone/Text-to-Web/Online Ad,None,420,64,55,0,37,2,14,2
 National,1922,Split Ticket/Data for Progress,2024-07-03,lv,Online Panel,None,971,64,55,0,75,2,17,2
-Virginia,607,Virginia Commonwealth U.,2024-07-03,a,Live Phone,None,291,64,50,13,89,1,8,2
+Virginia,571,Virginia Commonwealth U.,2024-07-03,rv,Live Phone,None,280,64,50,13,89,3,8,2
 Georgia,734,Morning Consult,2024-07-04,rv,Online Panel,None,363,65,11,16,50,3,17,2
 North Carolina,619,Morning Consult,2024-07-04,rv,Online Panel,None,299,65,37,16,50,3,17,2
 Nevada,420,Morning Consult,2024-07-04,rv,Online Panel,None,203,65,32,6,50,3,17,2
@@ -285,11 +285,18 @@ Virginia,910,SoCal Research,2024-07-11,a,Online Panel,None,470,72,50,13,74,1,17,
 National,2043,Noble Predictive Insights,2024-07-11,lv,Online Panel/Text-to-Web,None,987,72,55,0,53,2,18,2
 Pennsylvania,811,Siena/NYT,2024-07-11,lv,Live Phone,None,392,72,42,19,72,2,8,2
 Virginia,614,Siena/NYT,2024-07-12,lv,Live Phone,None,317,73,50,13,72,2,8,2
+Wisconsin,607,PPP,2024-07-12,v,IVR/Text,DEM,307,73,53,10,57,4,6,1
 Michigan,450,MRG (Marketing Resource Group),2024-07-13,rv,Unknown,None,216,74,24,15,43,3,23,2
+Washington,609,SurveyUSA,2024-07-13,lv,Online Panel,None,354,74,51,12,80,2,17,2
+National,1953,Manhattan Institute,2024-07-13,lv,Online Panel/Text-to-Web,None,945,74,55,0,44,2,18,2
 National,2166,3W Insights,2024-07-14,lv,Online Panel,DEM,1038,75,55,0,3,2,17,1
 National,1225,Big Village,2024-07-14,lv,Online Panel,None,613,75,55,0,9,2,17,2
 National,1861,Morning Consult,2024-07-15,rv,Online Panel,None,920,76,55,0,50,3,17,2
 National,2228,Redfield & Wilton Strategies,2024-07-15,lv,Online Panel,None,1101,76,55,0,66,2,17,2
 National,1000,ActiVote,2024-07-15,lv,App Panel,None,495,76,55,0,4,2,1,2
-Georgia,728,InsiderAdvantage,2024-07-16,lv,Unknown,None,352,77,11,16,34,2,23,2
+National,1918,HarrisX,2024-07-15,rv,Online Panel,None,940,76,55,0,29,3,17,2
+Virginia,817,Florida Atlantic University/Mainstreet Research,2024-07-15,lv,IVR/Online Panel,None,431,76,50,13,27,2,4,2
+Georgia,903,Florida Atlantic University/Mainstreet Research,2024-07-15,lv,IVR/Online Panel,None,422,76,11,16,27,2,4,2
+Georgia,730,InsiderAdvantage,2024-07-16,lv,Unknown,None,352,77,11,16,34,2,23,2
 National,834,Ipsos,2024-07-16,rv,Probability Panel,None,407,77,55,0,35,3,19,2
+National,1180,YouGov,2024-07-16,rv,Online Panel,None,576,77,55,0,90,3,17,2
