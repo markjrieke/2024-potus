@@ -24,7 +24,7 @@ pal <-
   )
 
 # candidate colors
-col_b <- pal[1]
+col_h <- pal[1]
 col_t <- pal[7]
 
 # header font across the site

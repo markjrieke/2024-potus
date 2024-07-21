@@ -1,6 +1,6 @@
 #' Generate an interactive plot of the electoral college forecast
 #'
-#' @param col_b color for plotting Biden's estimates/credible intervals
+#' @param col_h color for plotting Harris' estimates/credible intervals
 #' @param col_t color for plotting Trump's estimates/credible intervals
 #' @param ... unused
 #' @param branch github branch to extract data from. Defaults to `"dev"`.
@@ -10,7 +10,7 @@
 #' @param linewidth linewidth passed to `ggplot2::geom_hline()`
 #' @param size_evs_pt size of the current day median estimate passed to
 #'                    `ggplot2::geom_point()`
-plot_evs <- function(col_b,
+plot_evs <- function(col_h,
                      col_t,
                      ...,
                      branch = "dev",
@@ -32,7 +32,7 @@ plot_evs <- function(col_b,
            current_date = if_else(run_date == max(run_date), run_date, NA),
            date_pt = label_date_ordinal(current_date)) %>%
     mutate(tooltip = glue::glue("{label_date_ordinal(run_date)}<br>",
-                                "Biden: <span style='float:right;'>",
+                                "Harris: <span style='float:right;'>",
                                 "{scales::label_comma(accuracy = 1)(evs)}",
                                 "</span><br>",
                                 "Trump: <span style='float:right;'>",
@@ -62,14 +62,14 @@ plot_evs <- function(col_b,
                 fill = col_t,
                 alpha = alpha_ribbon) +
 
-    # biden ec credible interval
+    # harris ec credible interval
     geom_ribbon(aes(ymin = .lower_0.95,
                     ymax = .upper_0.95),
-                fill = col_b,
+                fill = col_h,
                 alpha = alpha_ribbon) +
     geom_ribbon(aes(ymin = .lower_0.66,
                     ymax = .upper_0.66),
-                fill = col_b,
+                fill = col_h,
                 alpha = alpha_ribbon) +
 
     # plot dressing
@@ -82,14 +82,14 @@ plot_evs <- function(col_b,
     geom_underline(aes(y = 538 - evs),
                    color = col_t) +
     geom_underline(aes(y = evs),
-                   color = col_b) +
+                   color = col_h) +
 
     # current median estimates
     geom_point(aes(y = 538 - evs_pt),
                color = col_t,
                size = size_evs_pt) +
     geom_point(aes(y = evs_pt),
-               color = col_b,
+               color = col_h,
                size = size_evs_pt) +
 
     # text for current estimates
@@ -99,10 +99,10 @@ plot_evs <- function(col_b,
                       y = 538 - evs_pos,
                       color = col_t) +
     geom_current_text(aes(x = current_date,
-                          label = paste("Biden", scales::label_comma(accuracy = 1)(evs_pt),
+                          label = paste("Harris", scales::label_comma(accuracy = 1)(evs_pt),
                                         sep = "\n")),
                       y = evs_pos,
-                      color = col_b) +
+                      color = col_h) +
 
     # tooltip for historical data
     geom_tooltip(aes(y = 270,

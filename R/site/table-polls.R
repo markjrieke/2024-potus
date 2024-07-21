@@ -7,12 +7,12 @@
 #' a text blurb explaining how the forecasted voteshare is estimated.
 #'
 #' @param state state to display polls for
-#' @param col_b color for showing Biden's margins in the table
+#' @param col_h color for showing Harris' margins in the table
 #' @param col_t color for showing Trump's margins in the table
 #' @param ... unused
 #' @param branch github branch to extract data from. Defaults to `"dev"`.
 table_polls <- function(state = "National",
-                        col_b,
+                        col_h,
                         col_t,
                         ...,
                         branch = "dev") {
@@ -56,15 +56,15 @@ table_polls <- function(state = "National",
     polls %>%
 
     # formatting chnages needed for table
-    mutate(biden = Y/K,
-           trump = 1 - biden,
-           margin = biden - trump) %>%
+    mutate(harris = Y/K,
+           trump = 1 - harris,
+           margin = harris - trump) %>%
     select(pollster,
            end_date,
            group,
            mode,
            sample_size = K,
-           biden,
+           harris,
            trump,
            margin) %>%
     arrange(desc(end_date)) %>%
@@ -144,13 +144,13 @@ table_polls <- function(state = "National",
     ) %>%
 
     # apply formatting to pct columns based on the leader
-    fmt_percent(columns = c(biden, trump),
+    fmt_percent(columns = c(harris, trump),
                 decimals = 1) %>%
     tab_style(style = list(cell_text(color = "lightgray",
                                      weight = 800)),
               locations = cells_body(columns = margin,
                                      rows = winner == "Tie")) %>%
-    tab_style(style = list(cell_text(color = col_b,
+    tab_style(style = list(cell_text(color = col_h,
                                      weight = 800)),
               locations = cells_body(columns = margin,
                                      rows = winner == "D")) %>%
