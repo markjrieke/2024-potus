@@ -20,6 +20,7 @@ This directory contains the output of each of the models in the pipeline. Each f
 * `tie_pres.csv`: The forecasted probability of a tie in the electoral college.
 * `win_pres.csv`: Biden's forecasted probability of winning the electoral college.
 * `win_state.csv`: Biden's forecasted probability of winning in each state.
+* `conditional_probabilities.csv`: Biden's forecasted probability of winning the electoral college conditional on having won/lost in each state.
 
 ## priors/
 

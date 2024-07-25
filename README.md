@@ -27,6 +27,15 @@ and the full output can be explored
 
 ## Version history
 
+### 1.2
+
+###### 2024-07-16
+
+- [Added conditional probability as a poll model
+  output](https://github.com/markjrieke/2024-potus/commit/6eee3a3a8d08b6df66f71c3961e049fd91494c79).
+- The output is not yet made available in the UI, but will be as a
+  result of a later release.
+
 ### 1.1
 
 ###### 2024-07-14
