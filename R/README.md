@@ -49,7 +49,8 @@ Contains functions for running each of the pipelines for each model as well as a
     * Median, 66, and 95% credible interval estimates for the forecasted two-party voteshare that Biden wins in each state on each day.
     * The forecasted probability of a tie in the electoral college on each day.
     * The forecasted probability of Biden winning the electoral college on each day.
-    * The forecasted probability of biden winning in each state on each day.
+    * The forecasted probability of Biden winning in each state on each day.
+    * The forecasted probability of Biden winning the electoral college conditional on having won/lost in each state.
   * `priors.R`: runs the data pipeline/model for the prior model. Generates state-level election day priors. Rerun every day using updated approval model output. 
   * `pvi.R`: runs the data pipeline/model for the pvi (partisan voter index) model. Generates estimates of each state's partisan lean based on Cook's [CPVI](https://www.cookpolitical.com/cook-pvi). Only rerun when any of the upstream dependencies are changed.
   * `utils.R`: contains common functions used throughout the pipeline.
