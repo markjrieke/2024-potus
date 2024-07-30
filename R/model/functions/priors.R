@@ -136,7 +136,7 @@ run_prior_model <- function(run_date) {
       A_new_mu = e_day_approval_current$mean,
       A_new_sigma = e_day_approval_current$sd,
       G_new = G_new,
-      I_new = 1,
+      I_new = c(1,0),
       S = nrow(pvi_summary),
       e_day_mu = pvi_summary$pvi_mu,
       e_day_sigma = pvi_summary$pvi_sd
@@ -160,17 +160,25 @@ run_prior_model <- function(run_date) {
     pivot_longer(starts_with("theta_state"),
                  names_to = "parameter",
                  values_to = "estimate") %>%
+    nest(data = -parameter) %>%
+    mutate(candidate = if_else(str_detect(parameter, "\\[1"), "Biden", "Harris"),
+           parameter = str_remove_all(parameter, "theta_state\\[1,|theta_state\\[2,|\\]"),
+           sid = as.numeric(parameter)) %>%
+    select(candidate, sid, data) %>%
+    unnest(data) %>%
     mutate(estimate = logit(estimate)) %>%
     drop_na() %>%
-    filter(estimate < 100) %>%
-    group_by(parameter) %>%
+    filter(estimate < 100, estimate > -100) %>%
+    group_by(candidate, sid) %>%
     summarise(e_day_mu = mean(estimate),
               e_day_sigma = sd(estimate)) %>%
     ungroup() %>%
-    mutate(parameter = parse_number(parameter)) %>%
-    arrange(parameter) %>%
+    nest(data = -sid) %>%
+    arrange(sid) %>%
     bind_cols(pvi_summary) %>%
-    select(state,
+    unnest(data) %>%
+    select(candidate,
+           state,
            e_day_mu,
            e_day_sigma)
 
