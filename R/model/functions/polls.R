@@ -104,6 +104,18 @@ run_poll_model <- function(run_date) {
     filter(run_date == int_run_date,
            !state %in% c("National", "Nebraska", "Maine"))
 
+  # modify int_run_date based on run_date
+  if (run_date < mdy("5/3/24")) {
+
+    prior_check <- 0
+    int_run_date <- mdy("5/3/24")
+
+  } else {
+
+    prior_check <- 1
+
+  }
+
   # wrangle polls
   polls <-
     polls %>%
@@ -368,7 +380,7 @@ run_poll_model <- function(run_date) {
       omega = omega,
       electors = sid$electors,
       F_s = F_s,
-      prior_check = 0
+      prior_check = prior_check
     )
 
   # fit !
@@ -486,7 +498,7 @@ run_poll_model <- function(run_date) {
            state_lose_ec_win,
            state_lose_ec_tie) %>%
     full_join(sid %>% select(state)) %>%
-    arrange(state) %>% view()
+    arrange(state) %>%
     write_csv("out/polls/conditional_probabilities.csv")
 
   # diagnostics
