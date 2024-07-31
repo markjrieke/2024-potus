@@ -107,12 +107,12 @@ run_poll_model <- function(run_date) {
   # modify int_run_date based on run_date
   if (run_date < mdy("5/3/24")) {
 
-    prior_check <- 0
+    prior_check <- 1
     int_run_date <- mdy("5/3/24")
 
   } else {
 
-    prior_check <- 1
+    prior_check <- 0
 
   }
 
