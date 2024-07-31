@@ -1,33 +1,48 @@
 poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announcement,dem_candidate,Y,did,sid,electors,pid,gid,mid,cid,hid,hyp
-86836,National,952,Redfield & Wilton Strategies,2024-05-01,lv,Online Panel,None,FALSE,Biden,465,1,55,0,12,1,5,4,2,0
-86871,Virginia,736,McLaughlin,2024-05-01,lv,Live Phone/Text-to-Web,REP,FALSE,Biden,384,1,50,13,7,1,4,2,2,0
-86872,Minnesota,570,McLaughlin,2024-05-01,lv,Live Phone/Text-to-Web,REP,FALSE,Biden,276,1,25,10,7,1,4,2,2,0
-86886,National,1439,co/efficient,2024-05-01,lv,Text,None,FALSE,Biden,684,1,55,0,19,1,7,4,2,0
-86895,National,1153,Data for Progress,2024-05-02,lv,Online Panel,None,FALSE,Biden,583,2,55,0,4,1,5,4,2,0
-86848,National,738,Suffolk,2024-05-03,rv,Live Phone,None,FALSE,Biden,367,3,55,0,15,2,3,4,2,0
-86849,National,1037,TIPP,2024-05-03,rv,Online Panel,None,FALSE,Biden,531,3,55,0,17,2,5,4,2,0
-86893,New York,985,Slingshot Strategies,2024-05-03,rv,Online Panel,None,FALSE,Biden,593,3,36,28,14,2,5,4,2,0
-86903,Arizona,455,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,222,4,3,11,12,1,5,4,2,0
-86904,Florida,498,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,223,4,10,30,12,1,5,4,2,0
-86905,Georgia,394,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,185,4,11,16,12,1,5,4,2,0
-86906,Michigan,417,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,193,4,24,15,12,1,5,4,2,0
-86907,North Carolina,448,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,205,4,37,16,12,1,5,4,2,0
-86908,Pennsylvania,428,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,209,4,42,19,12,1,5,4,2,0
-86883,North Carolina,485,Cygnal,2024-05-05,lv,Live Phone,None,FALSE,Biden,229,5,37,16,3,1,3,4,2,0
-86896,Georgia,528,North Star Opinion Research,2024-05-05,lv,Live Phone/Text-to-Web,REP,FALSE,Biden,234,5,11,16,9,1,4,2,2,0
-86879,Wisconsin,1369,Quinnipiac,2024-05-06,rv,Live Phone,None,FALSE,Biden,728,6,53,10,11,2,3,4,2,0
-86932,National,366,Ipsos,2024-05-06,rv,Probability Panel,None,FALSE,Biden,187,6,55,0,6,2,6,4,2,0
-86876,National,1374,YouGov,2024-05-07,rv,Online Panel,None,FALSE,Biden,687,7,55,0,18,2,5,4,2,0
-86881,Maryland,661,PPP,2024-05-07,v,IVR/Text,DEM,FALSE,Biden,431,7,22,10,10,3,2,1,2,0
-86889,Florida,567,Cherry Communications,2024-05-07,lv,Live Phone,REP,FALSE,Biden,256,7,10,30,2,1,3,2,2,0
-86882,Maryland,1009,Emerson,2024-05-08,rv,IVR/Online Panel/Text-to-Web,None,FALSE,Biden,624,8,22,10,5,2,1,4,2,0
-86884,National,2365,Big Village,2024-05-08,lv,Online Panel,None,FALSE,Biden,1201,8,55,0,1,1,5,4,2,0
-86897,Arizona,576,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,269,9,3,11,13,1,3,4,2,0
-86898,Georgia,550,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,248,9,11,16,13,1,3,4,2,0
-86899,Michigan,573,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,290,9,24,15,13,1,3,4,2,0
-86900,Nevada,546,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,233,9,32,6,13,1,3,4,2,0
-86901,Pennsylvania,951,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,460,9,42,19,13,1,3,4,2,0
-86902,Wisconsin,571,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,282,9,53,10,13,1,3,4,2,0
-86948,Minnesota,537,SurveyUSA,2024-05-11,lv,Online Panel,None,FALSE,Biden,275,11,25,10,16,1,5,4,2,0
-86933,National,8911,Morning Consult,2024-05-12,rv,Online Panel,None,FALSE,Biden,4404,12,55,0,8,2,5,4,2,0
-86947,National,1080,YouGov,2024-05-13,rv,Online Panel,None,FALSE,Biden,540,13,55,0,18,2,5,4,2,0
+86836,National,952,Redfield & Wilton Strategies,2024-05-01,lv,Online Panel,None,FALSE,Biden,465,1,55,0,19,1,5,4,2,0
+86871,Virginia,736,McLaughlin,2024-05-01,lv,Live Phone/Text-to-Web,REP,FALSE,Biden,384,1,50,13,12,1,4,2,2,0
+86872,Minnesota,570,McLaughlin,2024-05-01,lv,Live Phone/Text-to-Web,REP,FALSE,Biden,276,1,25,10,12,1,4,2,2,0
+86886,National,1439,co/efficient,2024-05-01,lv,Text,None,FALSE,Biden,684,1,55,0,26,1,7,4,2,0
+86950,National,1131,Kaiser Family Foundation,2024-05-01,rv,Probability Panel,None,FALSE,Biden,572,1,55,0,11,2,6,4,2,0
+86895,National,1153,Data for Progress,2024-05-02,lv,Online Panel,None,FALSE,Biden,583,2,55,0,6,1,5,4,2,0
+86848,National,738,Suffolk,2024-05-03,rv,Live Phone,None,FALSE,Biden,367,3,55,0,22,2,3,4,2,0
+86849,National,1037,TIPP,2024-05-03,rv,Online Panel,None,FALSE,Biden,531,3,55,0,24,2,5,4,2,0
+86893,New York,985,Slingshot Strategies,2024-05-03,rv,Online Panel,None,FALSE,Biden,593,3,36,28,21,2,5,4,2,0
+86903,Arizona,455,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,222,4,3,11,19,1,5,4,2,0
+86904,Florida,498,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,223,4,10,30,19,1,5,4,2,0
+86905,Georgia,394,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,185,4,11,16,19,1,5,4,2,0
+86906,Michigan,417,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,193,4,24,15,19,1,5,4,2,0
+86907,North Carolina,448,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,205,4,37,16,19,1,5,4,2,0
+86908,Pennsylvania,428,Redfield & Wilton Strategies,2024-05-04,lv,Online Panel,None,FALSE,Biden,209,4,42,19,19,1,5,4,2,0
+86883,North Carolina,485,Cygnal,2024-05-05,lv,Live Phone,None,FALSE,Biden,229,5,37,16,5,1,3,4,2,0
+86896,Georgia,528,North Star Opinion Research,2024-05-05,lv,Live Phone/Text-to-Web,REP,FALSE,Biden,234,5,11,16,14,1,4,2,2,0
+86879,Wisconsin,1369,Quinnipiac,2024-05-06,rv,Live Phone,None,FALSE,Biden,728,6,53,10,17,2,3,4,2,0
+86932,National,366,Ipsos,2024-05-06,rv,Probability Panel,None,FALSE,Biden,187,6,55,0,10,2,6,4,2,0
+86876,National,1374,YouGov,2024-05-07,rv,Online Panel,None,FALSE,Biden,687,7,55,0,25,2,5,4,2,0
+86881,Maryland,661,PPP,2024-05-07,v,IVR/Text,DEM,FALSE,Biden,431,7,22,10,15,3,2,1,2,0
+86889,Florida,567,Cherry Communications,2024-05-07,lv,Live Phone,REP,FALSE,Biden,256,7,10,30,4,1,3,2,2,0
+86882,Maryland,1009,Emerson,2024-05-08,rv,IVR/Online Panel/Text-to-Web,None,FALSE,Biden,624,8,22,10,8,2,1,4,2,0
+86884,National,2365,Big Village,2024-05-08,lv,Online Panel,None,FALSE,Biden,1201,8,55,0,2,1,5,4,2,0
+86897,Arizona,576,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,269,9,3,11,20,1,3,4,2,0
+86898,Georgia,550,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,248,9,11,16,20,1,3,4,2,0
+86899,Michigan,573,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,290,9,24,15,20,1,3,4,2,0
+86900,Nevada,546,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,233,9,32,6,20,1,3,4,2,0
+86901,Pennsylvania,951,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,460,9,42,19,20,1,3,4,2,0
+86902,Wisconsin,571,Siena/NYT,2024-05-09,lv,Live Phone,None,FALSE,Biden,282,9,53,10,20,1,3,4,2,0
+86941,National,1720,RMG Research,2024-05-09,lv,Unknown,None,FALSE,Biden,880,9,55,0,18,1,8,4,2,0
+86948,Minnesota,537,SurveyUSA,2024-05-11,lv,Online Panel,None,FALSE,Biden,275,11,25,10,23,1,5,4,2,0
+86953,National,1092,Beacon/Shaw,2024-05-13,rv,Live Phone,None,FALSE,Biden,540,13,55,0,1,2,3,4,2,0
+86959,National,982,Redfield & Wilton Strategies,2024-05-13,lv,Online Panel,None,FALSE,Biden,497,13,55,0,19,1,5,4,2,0
+86949,National,1316,YouGov,2024-05-14,rv,Online Panel,None,FALSE,Biden,650,14,55,0,25,2,5,4,2,0
+86952,National,2952,Ipsos,2024-05-14,rv,Probability Panel,None,FALSE,Biden,1476,14,55,0,10,2,6,4,2,0
+86958,National,1614,McLaughlin,2024-05-14,lv,Online Panel,REP,FALSE,Biden,809,14,55,0,12,1,5,2,2,0
+86965,National,900,McLaughlin,2024-05-15,lv,Online Panel,None,FALSE,Biden,430,15,55,0,12,1,5,4,2,0
+86965,National,890,McLaughlin,2024-05-15,lv,Online Panel,None,FALSE,Harris,410,15,55,0,12,1,5,4,1,1
+86960,National,972,Echelon Insights,2024-05-16,lv,Online Panel,None,FALSE,Biden,471,16,55,0,7,1,5,4,2,0
+86961,Washington,578,PPP,2024-05-16,lv,IVR/Text,DEM,FALSE,Biden,338,16,51,12,15,1,2,1,2,0
+86963,Florida,1169,YouGov,2024-05-16,lv,Online Panel,None,FALSE,Biden,531,16,10,30,25,1,5,4,2,0
+86964,Arizona,1181,YouGov,2024-05-16,lv,Online Panel,None,FALSE,Biden,561,16,3,11,25,1,5,4,2,0
+86967,National,1660,HarrisX/Harris Poll,2024-05-16,rv,Online Panel,None,FALSE,Biden,780,16,55,0,9,2,5,4,2,0
+86971,National,8850,Morning Consult,2024-05-19,rv,Online Panel,None,FALSE,Biden,4374,19,55,0,13,2,5,4,2,0
+86980,New Hampshire,630,Praecones Analytica,2024-05-20,rv,Online Panel,None,FALSE,Biden,315,20,33,4,16,2,5,4,2,0
+86984,National,810,Bullfinch,2024-05-21,rv,Online Panel,None,FALSE,Biden,390,21,55,0,3,2,5,4,2,0
