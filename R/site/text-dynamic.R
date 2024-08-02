@@ -198,7 +198,7 @@ candidate_summary <- function(candidate,
     p_win <- harris_win
     evs_lower <- harris_evs_lower
     evs_upper <- harris_evs_upper
-    win_text <- "winning re-election"
+    win_text <- "becoming America's next president"
     pronoun <- "She"
 
   } else {
