@@ -48,6 +48,7 @@ plot_prob <- function(state = "National",
   # setup df for plotting
   prob_data <-
     prob_data %>%
+    filter(run_date >= mdy("8/1/24")) %>%
     mutate(p_win_pt = if_else(run_date == max(run_date), p_win, NA),
            p_lose_pt = if_else(run_date == max(run_date), p_lose, NA),
            p_win_pos = case_when(p_win_pt > 225/538 & p_win_pt < 269/538 ~ 225/538,

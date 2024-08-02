@@ -237,7 +237,7 @@ theme_2024 <- function(ymin,
                        ymult = 580/538) {
 
   # fill in limits if not supplied
-  x_expand <- if (is.null(xlims)) mdy(c("4/20/24", "11/15/24")) else xlims
+  x_expand <- if (is.null(xlims)) mdy(c("7/25/24", "11/10/24")) else xlims
   y_expand <- if (is.null(ylims)) c(ymin, ymult * (ymax - ymin) + ymin) else ylims
 
   dressing <-

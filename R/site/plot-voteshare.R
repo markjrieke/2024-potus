@@ -27,7 +27,8 @@ plot_vote <- function(state,
   # generate plot data
   voteshare <-
     read_csv(find_document("out/polls/theta.csv", branch = branch)) %>%
-    filter(state == state_int) %>%
+    filter(state == state_int,
+           run_date >= mdy("8/1/24")) %>%
     pivot_wider(names_from = .width,
                 values_from = c(.lower, .upper)) %>%
     mutate(theta_pt = if_else(run_date == max(run_date), theta, NA),

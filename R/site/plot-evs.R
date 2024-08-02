@@ -25,6 +25,7 @@ plot_evs <- function(col_h,
     read_csv(find_document("out/polls/evs.csv", branch = branch)) %>%
     pivot_wider(names_from = .width,
                 values_from = c(.lower, .upper)) %>%
+    filter(run_date >= mdy("8/1/24")) %>%
     mutate(evs_pt = if_else(run_date == max(run_date), evs, NA),
            evs_pos = case_when(evs_pt > 225 & evs_pt < 269 ~ 225,
                                evs_pt < 538 - 225 & evs_pt >= 269 ~ 538 - 225,
