@@ -166,7 +166,7 @@ render_interactive_map <- function(ggobj) {
           sep = ";")
 
   girafe(
-    ggobj = ec_map,
+    ggobj = ggobj,
     options = list(
       opts_tooltip(
         css = css,

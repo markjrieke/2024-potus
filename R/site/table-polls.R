@@ -23,7 +23,8 @@ table_polls <- function(state = "National",
   # import polls conducted in that state
   polls <-
     read_csv(find_document("out/polls/polls_out.csv", branch = branch)) %>%
-    filter(state == state_int)
+    filter(state == state_int,
+           dem_candidate == "Harris")
 
   # if no polls, return formatted text
   if (nrow(polls) == 0) {
