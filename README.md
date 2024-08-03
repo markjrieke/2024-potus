@@ -27,6 +27,37 @@ and the full output can be explored
 
 ## Version history
 
+### 2.0
+
+###### 2024-08-03
+
+#### Harris Model
+
+- Modified the prior/polling stan models and supporting R pipelines to
+  support Kamala Harris as the democratic candidate. More details can be
+  found in the `stan/` directory README.
+- Updated site functions’ internal variable naming and public facing
+  candidate names to refer to Kamala Harris.
+- Updated time-series plots on site to only display projections from 8/1
+  onwards.
+- Updated function documentation and READMEs based on new output.
+- Fully re-ran the entire model from 5/1 onwards. An archived version of
+  the final run with Biden as the democratic candidate can be found in
+  the
+  [`archive-biden`](https://github.com/markjrieke/2024-potus/tree/archive-biden)
+  branch in this repository.
+
+#### Other Fixes
+
+- Corrected the need to run the polling model with the `prior_check`
+  flag for run dates before 5/7. (#10)
+- `render_interactive_map()` now correctly renders the ggobj passed as
+  an argument, rather than looking for a specific object in the global
+  environment.
+- Fixed a small bug causing the prior stan model to underestimate
+  uncertainty in the combination of the estimated national voteshare and
+  state partisan lean.
+
 ### 1.2
 
 ###### 2024-07-16

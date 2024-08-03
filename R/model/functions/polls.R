@@ -2,8 +2,15 @@
 #'
 #' @description
 #' The poll model is a dynamic state-space model that uses polling results to
-#' estimate the latent probability of supporting Biden over Trump in each state
-#' on each day in the election cycle by way of a binomial likelihood.
+#' estimate the latent probability of supporting the democratic candidate over
+#' Trump in each state on each day in the election cycle by way of a binomial
+#' likelihood.
+#'
+#' On July 21st, Joe Biden suspended his campaign for re-election and Kamala
+#' Harris announced her intention to run as the democratic candidate. The model
+#' estimates support for both candidates based on polls from 5/1 onwards. Harris
+#' is modeled as a hypothetical candidate in polls with a start date prior to
+#' July 22nd. Polls of Biden that conclude after July 21st are discarded.
 #'
 #' State effects are modeled hierarchically via a Gaussian Process over the
 #' Euclidean distance between states in a feature space of state
@@ -15,9 +22,11 @@
 #'
 #' Several other measures of bias are included as parameters in the model. The
 #' model makes use of fixed effects for whether or not a poll was conducted with
-#' partisan sponsorship and for the sampled population (non-partisan polls and
-#' likely-voter polls are utilized as reference categories). Effects for poll
-#' mode and pollster are modeled hierarchically. Finally, the model includes a
+#' partisan sponsorship, the sampled population, and whether or not Harris is
+#' considered as a hypothetical candidate at the time the poll was conducted.
+#' Non-partisan polls, likely-voter polls, and non-hypothetical polls are
+#' utilized as reference categories for the fixed effects. Effects for poll mode
+#' and pollster are modeled hierarchically. Finally, the model includes a
 #' hierarchical parameter per poll to capture any further unmodeled bias.
 #'
 #' Polls are imported from FiveThirtyEight's data repository. Polls are filtered
@@ -25,8 +34,10 @@
 #'
 #' * The poll cannot have been conducted by one of the banned pollsters
 #' * The poll must have been conducted between 5/1/2024 and 11/5/2024
-#' * The question must include both Biden and Trump as possible named candidates
-#' * The question cannot include hypothetical candidates
+#' * The question must include either Biden or Harris and Trump as possible
+#'   named candidates
+#' * With the exception of Harris prior to 7/22, the question cannot include
+#'   hypothetical candidates
 #' * In the case of multiple questions per poll, the following filters are
 #'   applied in order
 #'    * Filter to the question with the minimum number of candidates to more
@@ -39,12 +50,12 @@
 #'
 #' The poll model estimates the following values for election day:
 #'
-#' * theta: Biden's posterior predicted voteshare in each state on election day
-#' * win_state: the posterior probability of Biden winning each state on
+#' * theta: Harris' posterior predicted voteshare in each state on election day
+#' * win_state: the posterior probability of Harris winning each state on
 #'              election day
 #' * evs: the posterior prediction for the number of electoral college votes
-#'        Biden will win on election day
-#' * win_pres: the posterior probability of Biden winning the presidency on
+#'        Harris will win on election day
+#' * win_pres: the posterior probability of Harris winning the presidency on
 #'             election day
 #' * tie_pres: the posterior probability of an electoral tie (269-269)
 #' * conditional_probabilities: the probability of a win or tie in the electoral
@@ -61,6 +72,7 @@
 #' * data/static/population_rank.csv
 #' * data/features/sid.csv
 #' * data/features/F_r.rds
+#' * data/features/F_s.rds
 #' * data/features/wt.rds
 #' * out/priors/priors.csv
 #' * stan/polls.stan

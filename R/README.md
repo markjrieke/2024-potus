@@ -43,15 +43,15 @@ Contains functions for running each of the pipelines for each model as well as a
   * `approval-prior.R`: runs the data pipeline/model for the approval-prior model. Generates estimates for election-day net approval for all incumbent presidents from 1948-2020, as well as an estimate of how much net approval tends to change throughout the election cycle. Only rerun when any of the upstream dependencies are changed.
   * `approval.R`: runs the data pipeline/model for the approval model. Generates an estimate for Biden's net approval on election day. Rerun every day using new data from FiveThirtyEight's [approval tracker](https://projects.fivethirtyeight.com/biden-approval-rating/).
   * `polls.R` runs the data pipeline/model for the poll model. Rerun every day using new data from FiveThirtyEight's [polling database](https://github.com/fivethirtyeight/data/tree/master/polls). Generates the following estimates:
-    * Median, 66, and 95% credible interval estimates for the forecasted number of elecotral college votes won by Biden each day.
+    * Median, 66, and 95% credible interval estimates for the forecasted number of elecotral college votes won by Harris each day.
     * A formatted table of polls.
     * An unformatted table of raw polling data as extracted from FiveThirtyEight.
-    * Median, 66, and 95% credible interval estimates for the forecasted two-party voteshare that Biden wins in each state on each day.
+    * Median, 66, and 95% credible interval estimates for the forecasted two-party voteshare that Harris wins in each state on each day.
     * The forecasted probability of a tie in the electoral college on each day.
-    * The forecasted probability of Biden winning the electoral college on each day.
-    * The forecasted probability of Biden winning in each state on each day.
-    * The forecasted probability of Biden winning the electoral college conditional on having won/lost in each state.
-  * `priors.R`: runs the data pipeline/model for the prior model. Generates state-level election day priors. Rerun every day using updated approval model output. 
+    * The forecasted probability of Harris winning the electoral college on each day.
+    * The forecasted probability of Harris winning in each state on each day.
+    * The forecasted probability of Harris winning the electoral college conditional on having won/lost in each state.
+  * `priors.R`: runs the data pipeline/model for the prior model. Generates state-level election day priors for both Biden and Harris. Rerun every day using updated approval model output. 
   * `pvi.R`: runs the data pipeline/model for the pvi (partisan voter index) model. Generates estimates of each state's partisan lean based on Cook's [CPVI](https://www.cookpolitical.com/cook-pvi). Only rerun when any of the upstream dependencies are changed.
   * `utils.R`: contains common functions used throughout the pipeline.
 * `run.R`: runs the entire pipeline and any out-of-date models.
