@@ -50,7 +50,8 @@ and the full output can be explored
 #### Other Fixes
 
 - Corrected the need to run the polling model with the `prior_check`
-  flag for run dates before 5/7. (#10)
+  flag for run dates before 5/7.
+  ([\#10](https://github.com/markjrieke/2024-potus/issues/10))
 - `render_interactive_map()` now correctly renders the ggobj passed as
   an argument, rather than looking for a specific object in the global
   environment.

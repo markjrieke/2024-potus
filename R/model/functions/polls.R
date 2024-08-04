@@ -16,7 +16,7 @@
 #' Euclidean distance between states in a feature space of state
 #' characteristics. Similarly, the random walk in the state space makes use of
 #' the hierarchical specification such that day-over-day movement in one state
-#' can influence the movement a similar state even in the absence of polls.
+#' can influence the movement in similar states even in the absence of polls.
 #' Finally, polling bias in each state makes further use of the hierarchical
 #' specification.
 #'
@@ -38,6 +38,7 @@
 #'   named candidates
 #' * With the exception of Harris prior to 7/22, the question cannot include
 #'   hypothetical candidates
+#' * Polls of Biden must conclude by 7/21/2024
 #' * In the case of multiple questions per poll, the following filters are
 #'   applied in order
 #'    * Filter to the question with the minimum number of candidates to more

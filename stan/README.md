@@ -102,7 +102,7 @@ $$
 \end{align*}
 $$
 
-True support for the democratic candidate $h$ in state $s$ on day $d$ is the linear combination of the prior mean support, $\alpha_{h,s}$, modeled deviation from the prior, $\beta_{h,s}$, and a time-varying parameter, $beta_{h,s,d}$, to capture changes in support throughout the election cycle. 
+True support for the democratic candidate $h$ in state $s$ on day $d$ is the linear combination of the prior mean support, $\alpha_{h,s}$, modeled deviation from the prior, $\beta_{h,s}$, and a time-varying parameter, $\beta_{h,s,d}$, to capture changes in support throughout the election cycle. 
 
 $$
 \begin{align*}

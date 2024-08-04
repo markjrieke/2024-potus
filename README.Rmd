@@ -26,7 +26,7 @@ A more general overview of the model methodology can be found [here](https://www
 
 #### Other Fixes
 
-* Corrected the need to run the polling model with the `prior_check` flag for run dates before 5/7. (#10)
+* Corrected the need to run the polling model with the `prior_check` flag for run dates before 5/7. ([#10](https://github.com/markjrieke/2024-potus/issues/10))
 * `render_interactive_map()` now correctly renders the ggobj passed as an argument, rather than looking for a specific object in the global environment.
 * Fixed a small bug causing the prior stan model to underestimate uncertainty in the combination of the estimated national voteshare and state partisan lean.
 
