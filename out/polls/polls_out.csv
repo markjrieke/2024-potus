@@ -481,6 +481,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87577,Michigan,475,SoCal Research,2024-07-26,rv,Online Ad,REP,TRUE,Harris,230,87,24,15,81,2,17,2,1,0
 87588,Georgia,486,SoCal Research,2024-07-26,rv,Online Ad,None,TRUE,Harris,234,87,11,16,81,2,17,4,1,0
 87634,Oregon,651,Hoffman Research,2024-07-26,lv,Live Phone,None,TRUE,Harris,343,87,41,8,37,1,9,4,1,0
+87659,National,946,Clarity,2024-07-26,lv,Online Panel,None,TRUE,Harris,478,87,55,0,18,1,18,4,1,0
 87612,Florida,704,U. North Florida,2024-07-27,lv,Live Phone/Text-to-Web,None,TRUE,Harris,325,88,10,30,95,1,14,4,1,0
 87617,National,895,Florida Atlantic University/Mainstreet Research,2024-07-27,lv,IVR/Online Panel,None,TRUE,Harris,457,88,55,0,30,1,5,4,1,0
 87597,National,10730,Morning Consult,2024-07-28,rv,Online Panel,None,TRUE,Harris,5423,89,55,0,56,2,18,4,1,0
