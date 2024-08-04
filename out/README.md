@@ -13,18 +13,18 @@ This directory contains the output of each of the models in the pipeline. Each f
 
 ## polls/
 
-* `evs.csv`: Median estimate and 66/95% credible intervals for the forecasted number of electoral college votes won by Biden.
+* `evs.csv`: Median estimate and 66/95% credible intervals for the forecasted number of electoral college votes won by Harris.
 * `polls_out.csv`: A dataframe of formatted polls that feed into the poll model.
 * `polls_raw.csv`: A dataframe of raw polling data extracted from FiveThirtyEight's [polling database](https://github.com/fivethirtyeight/data/tree/master/polls).
-* `theta.csv`: Median estimate and 66/95% credible intervals for Biden's forecasted two-party voteshare in each state.
+* `theta.csv`: Median estimate and 66/95% credible intervals for Harris' forecasted two-party voteshare in each state.
 * `tie_pres.csv`: The forecasted probability of a tie in the electoral college.
-* `win_pres.csv`: Biden's forecasted probability of winning the electoral college.
-* `win_state.csv`: Biden's forecasted probability of winning in each state.
-* `conditional_probabilities.csv`: Biden's forecasted probability of winning the electoral college conditional on having won/lost in each state.
+* `win_pres.csv`: Harris' forecasted probability of winning the electoral college.
+* `win_state.csv`: Harris' forecasted probability of winning in each state.
+* `conditional_probabilities.csv`: Harris' forecasted probability of winning the electoral college conditional on having won/lost in each state.
 
 ## priors/
 
-* `priors.csv`: State-level priors, updated daily. Priors are given on the [logit scale](https://en.wikipedia.org/wiki/Logit).
+* `priors.csv`: State-level priors for both Biden and Harris, updated daily. Priors are given on the [logit scale](https://en.wikipedia.org/wiki/Logit).
 
 ## pvi/
 

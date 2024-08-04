@@ -7,7 +7,7 @@
 #' (269-269) in the electoral college.
 #'
 #' @param state state to be plotted
-#' @param col_b color for plotting Biden's probability of winning
+#' @param col_h color for plotting Harris' probability of winning
 #' @param col_t color for plotting Trump's probability of winning
 #' @param ... unused
 #' @param branch github branch to extract data from. Defaults to `"dev"`.
@@ -17,7 +17,7 @@
 #' @param size_prob_pt size of the current day probability estimate passed to
 #'                     `ggplot2::geom_point()`
 plot_prob <- function(state = "National",
-                      col_b,
+                      col_h,
                       col_t,
                       ...,
                       branch = "dev",
@@ -48,6 +48,7 @@ plot_prob <- function(state = "National",
   # setup df for plotting
   prob_data <-
     prob_data %>%
+    filter(run_date >= mdy("8/1/24")) %>%
     mutate(p_win_pt = if_else(run_date == max(run_date), p_win, NA),
            p_lose_pt = if_else(run_date == max(run_date), p_lose, NA),
            p_win_pos = case_when(p_win_pt > 225/538 & p_win_pt < 269/538 ~ 225/538,
@@ -70,7 +71,7 @@ plot_prob <- function(state = "National",
                                       p_lose < 0.01 ~ "<1%",
                                       .default = scales::label_percent(accuracy = 1)(p_lose)),
            tooltip = glue::glue("{label_date_ordinal(run_date)}<br>",
-                                "Biden: <span style='float:right;'>",
+                                "Harris: <span style='float:right;'>",
                                 "{p_win_tooltip}",
                                 "</span><br>",
                                 "Trump: <span style='float:right;'>",
@@ -102,14 +103,14 @@ plot_prob <- function(state = "National",
     geom_underline(aes(y = p_lose),
                    color = col_t) +
     geom_underline(aes(y = p_win),
-                   color = col_b) +
+                   color = col_h) +
 
     # current median estimates
     geom_point(aes(y = p_lose_pt),
                color = col_t,
                size = size_prob_pt) +
     geom_point(aes(y = p_win_pt),
-               color = col_b,
+               color = col_h,
                size = size_prob_pt) +
 
     # text for current estimates
@@ -118,9 +119,9 @@ plot_prob <- function(state = "National",
                       y = p_lose_pos,
                       color = col_t) +
     geom_current_text(aes(x = current_date,
-                          label = paste("Biden", p_win_text, sep = "\n")),
+                          label = paste("Harris", p_win_text, sep = "\n")),
                       y = p_win_pos,
-                      color = col_b) +
+                      color = col_h) +
 
     # tooltip for historical data
     geom_tooltip(aes(y = 0.5,

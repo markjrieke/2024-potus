@@ -1,7 +1,7 @@
 #' Generate an interactive plot of the forecasted voteshare in a given state
 #'
 #' @param state state to be plotted
-#' @param col_b color for plotting Biden's estimates/credible intervals
+#' @param col_h color for plotting Harris' estimates/credible intervals
 #' @param col_t color for plotting Trump's estimates/credible intervals
 #' @param ... unused
 #' @param branch github branch to extract data from. Defaults to `"dev"`.
@@ -12,7 +12,7 @@
 #' @param size_theta_pt size of the current day median estimate passed to
 #'                      `ggplot2::geom_point()`
 plot_vote <- function(state,
-                      col_b,
+                      col_h,
                       col_t,
                       ...,
                       branch = "dev",
@@ -27,13 +27,14 @@ plot_vote <- function(state,
   # generate plot data
   voteshare <-
     read_csv(find_document("out/polls/theta.csv", branch = branch)) %>%
-    filter(state == state_int) %>%
+    filter(state == state_int,
+           run_date >= mdy("8/1/24")) %>%
     pivot_wider(names_from = .width,
                 values_from = c(.lower, .upper)) %>%
     mutate(theta_pt = if_else(run_date == max(run_date), theta, NA),
            current_date = if_else(run_date == max(run_date), run_date, NA),
            date_pt = label_date_ordinal(current_date),
-           tooltip = glue::glue("{label_date_ordinal(run_date)}<br>Biden: ",
+           tooltip = glue::glue("{label_date_ordinal(run_date)}<br>Harris: ",
                                 "<span style='float:right;'>",
                                 "{scales::label_percent(accuracy = 0.1)(theta)}",
                                 "</span><br>Trump: ",
@@ -59,14 +60,14 @@ plot_vote <- function(state,
                 fill = col_t,
                 alpha = alpha_ribbon) +
 
-    # biden voteshare credible interval
+    # harris voteshare credible interval
     geom_ribbon(aes(ymin = .lower_0.95,
                     ymax = .upper_0.95),
-                fill = col_b,
+                fill = col_h,
                 alpha = alpha_ribbon) +
     geom_ribbon(aes(ymin = .lower_0.66,
                     ymax = .upper_0.66),
-                fill = col_b,
+                fill = col_h,
                 alpha = alpha_ribbon)
 
   # extract y limits so I can set the x-axis & segments correctly
@@ -109,14 +110,14 @@ plot_vote <- function(state,
     geom_underline(aes(y = 1 - theta),
                    color = col_t) +
     geom_underline(aes(y = theta),
-                   color = col_b) +
+                   color = col_h) +
 
     # current median estimates
     geom_point(aes(y = 1 - theta_pt),
                color = col_t,
                size = size_theta_pt) +
     geom_point(aes(y = theta_pt),
-               color = col_b,
+               color = col_h,
                size = size_theta_pt) +
 
     # text for current estimates
@@ -126,10 +127,10 @@ plot_vote <- function(state,
                       y = 1 - theta_pos,
                       color = col_t) +
     geom_current_text(aes(x = current_date,
-                          label = paste("Biden", scales::label_percent(accuracy = 0.1)(theta_pt),
+                          label = paste("Harris", scales::label_percent(accuracy = 0.1)(theta_pt),
                                         sep = "\n")),
                       y = theta_pos,
-                      color = col_b) +
+                      color = col_h) +
 
     # tooltip for historical data
     geom_tooltip(aes(y = 0.5,

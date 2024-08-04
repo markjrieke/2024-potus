@@ -2,22 +2,31 @@
 #'
 #' @description
 #' The poll model is a dynamic state-space model that uses polling results to
-#' estimate the latent probability of supporting Biden over Trump in each state
-#' on each day in the election cycle by way of a binomial likelihood.
+#' estimate the latent probability of supporting the democratic candidate over
+#' Trump in each state on each day in the election cycle by way of a binomial
+#' likelihood.
+#'
+#' On July 21st, Joe Biden suspended his campaign for re-election and Kamala
+#' Harris announced her intention to run as the democratic candidate. The model
+#' estimates support for both candidates based on polls from 5/1 onwards. Harris
+#' is modeled as a hypothetical candidate in polls with a start date prior to
+#' July 22nd. Polls of Biden that conclude after July 21st are discarded.
 #'
 #' State effects are modeled hierarchically via a Gaussian Process over the
 #' Euclidean distance between states in a feature space of state
 #' characteristics. Similarly, the random walk in the state space makes use of
 #' the hierarchical specification such that day-over-day movement in one state
-#' can influence the movement a similar state even in the absence of polls.
+#' can influence the movement in similar states even in the absence of polls.
 #' Finally, polling bias in each state makes further use of the hierarchical
 #' specification.
 #'
 #' Several other measures of bias are included as parameters in the model. The
 #' model makes use of fixed effects for whether or not a poll was conducted with
-#' partisan sponsorship and for the sampled population (non-partisan polls and
-#' likely-voter polls are utilized as reference categories). Effects for poll
-#' mode and pollster are modeled hierarchically. Finally, the model includes a
+#' partisan sponsorship, the sampled population, and whether or not Harris is
+#' considered as a hypothetical candidate at the time the poll was conducted.
+#' Non-partisan polls, likely-voter polls, and non-hypothetical polls are
+#' utilized as reference categories for the fixed effects. Effects for poll mode
+#' and pollster are modeled hierarchically. Finally, the model includes a
 #' hierarchical parameter per poll to capture any further unmodeled bias.
 #'
 #' Polls are imported from FiveThirtyEight's data repository. Polls are filtered
@@ -25,8 +34,11 @@
 #'
 #' * The poll cannot have been conducted by one of the banned pollsters
 #' * The poll must have been conducted between 5/1/2024 and 11/5/2024
-#' * The question must include both Biden and Trump as possible named candidates
-#' * The question cannot include hypothetical candidates
+#' * The question must include either Biden or Harris and Trump as possible
+#'   named candidates
+#' * With the exception of Harris prior to 7/22, the question cannot include
+#'   hypothetical candidates
+#' * Polls of Biden must conclude by 7/21/2024
 #' * In the case of multiple questions per poll, the following filters are
 #'   applied in order
 #'    * Filter to the question with the minimum number of candidates to more
@@ -39,12 +51,12 @@
 #'
 #' The poll model estimates the following values for election day:
 #'
-#' * theta: Biden's posterior predicted voteshare in each state on election day
-#' * win_state: the posterior probability of Biden winning each state on
+#' * theta: Harris' posterior predicted voteshare in each state on election day
+#' * win_state: the posterior probability of Harris winning each state on
 #'              election day
 #' * evs: the posterior prediction for the number of electoral college votes
-#'        Biden will win on election day
-#' * win_pres: the posterior probability of Biden winning the presidency on
+#'        Harris will win on election day
+#' * win_pres: the posterior probability of Harris winning the presidency on
 #'             election day
 #' * tie_pres: the posterior probability of an electoral tie (269-269)
 #' * conditional_probabilities: the probability of a win or tie in the electoral
@@ -61,6 +73,7 @@
 #' * data/static/population_rank.csv
 #' * data/features/sid.csv
 #' * data/features/F_r.rds
+#' * data/features/F_s.rds
 #' * data/features/wt.rds
 #' * out/priors/priors.csv
 #' * stan/polls.stan
@@ -104,15 +117,14 @@ run_poll_model <- function(run_date) {
     filter(run_date == int_run_date,
            !state %in% c("National", "Nebraska", "Maine"))
 
-  # rely on prior when there's not enough polls
-  if (run_date < mdy("5/7/24")) {
+  # modify int_run_date based on run_date
+  if (run_date < mdy("5/3/24")) {
 
-    run_date_int <- mdy("5/7/24")
     prior_check <- 1
+    int_run_date <- mdy("5/3/24")
 
   } else {
 
-    run_date_int <- run_date
     prior_check <- 0
 
   }
@@ -127,6 +139,7 @@ run_poll_model <- function(run_date) {
            state,
            sample_size,
            pollster,
+           start_date,
            end_date,
            created_at,
            population,
@@ -139,21 +152,29 @@ run_poll_model <- function(run_date) {
     filter(!pollster %in% banned_pollsters$pollster) %>%
 
     # filter to only polls taken since may of the election year
-    mutate(end_date = mdy(end_date),
+    mutate(across(ends_with("_date"), mdy),
            pct = pct/100) %>%
     filter(end_date >= mdy("5/1/2024"),
            end_date < mdy("11/5/2024")) %>%
 
     # filter based on run date
     mutate(created_at = as_date(mdy_hm(created_at))) %>%
-    filter(created_at <= run_date_int) %>%
+    filter(created_at <= int_run_date) %>%
 
-    # only care about polls that include both biden & trump
+    # only care about polls that include biden & trump or harris & trump
     group_by(question_id) %>%
-    mutate(biden_trump = str_detect(candidate, "Biden|Trump"),
-           biden_trump = sum(biden_trump)) %>%
+    mutate(inclusion = str_detect(candidate, "Biden|Harris|Trump"),
+           inclusion = sum(inclusion)) %>%
     ungroup() %>%
-    filter(biden_trump == 2) %>%
+    filter(inclusion == 2) %>%
+    select(-inclusion) %>%
+
+    # categorize which comparison the poll is making
+    group_by(question_id) %>%
+    mutate(dem_candidate = if_else(str_detect(candidate, "Biden"), 1, 0),
+           dem_candidate = max(dem_candidate),
+           dem_candidate = if_else(dem_candidate == 1, "Biden", "Harris")) %>%
+    ungroup() %>%
 
     # remove questions with hypothetical candidates
     group_by(question_id) %>%
@@ -172,11 +193,14 @@ run_poll_model <- function(run_date) {
     # select the question most closely matching the model (min candidates)
     # if multiple populations polled, select the "best rank"
     left_join(population_rank) %>%
-    group_by(poll_id) %>%
+    group_by(poll_id, dem_candidate) %>%
     filter(n_candidates == min(n_candidates),
            rank == min(rank)) %>%
     select(-rank) %>%
     ungroup() %>%
+
+    # add flag if pre/post biden dropout announcement
+    mutate(post_announcement = if_else(start_date >= mdy("7/22/24"), TRUE, FALSE)) %>%
 
     # apply filter at the poll_id level
     # (some pollsters poll B/T vs B/T/K in separate polls, rather than in
@@ -187,26 +211,28 @@ run_poll_model <- function(run_date) {
              end_date,
              population,
              mode,
-             candidate_sponsored) %>%
+             candidate_sponsored,
+             post_announcement,
+             dem_candidate) %>%
     filter(n_candidates == min(n_candidates)) %>%
     select(-n_candidates) %>%
     ungroup() %>%
 
-    # only care about the results for biden & trump
-    filter(candidate %in% c("Biden", "Trump")) %>%
+    # only care about the results for biden, harris, & trump
+    filter(candidate %in% c("Biden", "Harris", "Trump")) %>%
 
     # use the response with the max total percent responding
     # (distinguishes between B/T & B/T/no-response)
-    group_by(poll_id) %>%
+    group_by(poll_id, dem_candidate) %>%
     filter(total_pct == max(total_pct)) %>%
     select(-total_pct) %>%
 
     # remove fully duplicate responses
-    group_by(poll_id, candidate) %>%
+    group_by(poll_id, candidate, dem_candidate) %>%
     distinct(pct, .keep_all = TRUE) %>%
 
     # use the max sample size in the case of multiple matches
-    group_by(poll_id) %>%
+    group_by(poll_id, dem_candidate) %>%
     filter(sample_size == max(sample_size)) %>%
 
     # average results across turnout models if necessary
@@ -218,7 +244,9 @@ run_poll_model <- function(run_date) {
              population,
              mode,
              candidate_sponsored,
-             candidate) %>%
+             post_announcement,
+             candidate,
+             dem_candidate) %>%
     summarise(pct = mean(pct)) %>%
     ungroup() %>%
 
@@ -226,10 +254,13 @@ run_poll_model <- function(run_date) {
     mutate(candidate = str_to_lower(candidate),
            responses = round(pct * sample_size)) %>%
     select(-pct) %>%
+    bind_rows(tibble(candidate = "harris")) %>%
     pivot_wider(names_from = candidate,
                 values_from = responses) %>%
-    mutate(sample_size = biden + trump) %>%
-    select(-c(trump, poll_id)) %>%
+    filter(!is.na(poll_id)) %>%
+    mutate(dem = if_else(is.na(biden), harris, biden),
+           sample_size = dem + trump) %>%
+    select(-c(biden, harris, trump)) %>%
 
     # fix missing values
     mutate(state = replace_na(state, "National"),
@@ -242,14 +273,20 @@ run_poll_model <- function(run_date) {
              pollster,
              group,
              mode,
-             candidate_sponsored) %>%
+             candidate_sponsored,
+             dem_candidate) %>%
     arrange(end_date) %>%
     mutate(diff = as.integer(lead(end_date) - end_date),
            diff = replace_na(diff, 100),
            final = if_else(diff > 1, 1, NA)) %>%
     filter(!is.na(final)) %>%
     ungroup() %>%
-    select(-c(diff, final))
+    select(-c(diff, final)) %>%
+
+    # drop any late-arrive biden polls
+    mutate(late_biden = dem_candidate == "Biden" & post_announcement) %>%
+    filter(!late_biden) %>%
+    select(-late_biden)
 
   # add mapping ids by day
   polls <-
@@ -259,9 +296,12 @@ run_poll_model <- function(run_date) {
 
   # create other mapping id tables
   pid <- polls %>% map_ids(pollster)
-  gid <- polls %>% map_ids(group)
   mid <- polls %>% map_ids(mode)
-  cid <- polls %>% map_ids(candidate_sponsored)
+
+  # fixed mapping id tables
+  gid <- population_rank %>% select(gid = rank, group = population)
+  cid <- tibble(cid = 1:4, candidate_sponsored = c("DEM", "REP", "IND", "None"))
+  hid <- tibble(hid = 1:2, dem_candidate = c("Harris", "Biden"))
 
   # append with mapping ids
   polls <-
@@ -271,8 +311,10 @@ run_poll_model <- function(run_date) {
     left_join(gid) %>%
     left_join(mid) %>%
     left_join(cid) %>%
+    left_join(hid) %>%
+    mutate(hyp = if_else(!post_announcement & dem_candidate == "Harris", 1, 0)) %>%
     rename(K = sample_size,
-           Y = biden)
+           Y = dem)
 
   # write formatted polls out
   polls %>%
@@ -282,8 +324,12 @@ run_poll_model <- function(run_date) {
   priors <-
     priors %>%
     left_join(sid %>% select(sid, state)) %>%
-    arrange(sid) %>%
+    arrange(sid, desc(candidate)) %>%
     select(-c(sid, run_date))
+
+  # convert alpha priors to wide matrix format
+  alpha_mu_r <- priors %>% format_alpha_prior(e_day_mu)
+  alpha_sigma_r <- priors %>% format_alpha_prior(e_day_sigma)
 
   # set omega
   omega <- set_omega(run_date)
@@ -315,25 +361,30 @@ run_poll_model <- function(run_date) {
       M = max(mid$mid),
       C = max(cid$cid),
       P = max(pid$pid),
+      H = 2,
       did = polls$did,
       sid = polls$sid,
       gid = polls$gid,
       mid = polls$mid,
       cid = polls$cid,
       pid = polls$pid,
+      hid = polls$hid,
       g_ref = gid %>% filter(group == "lv") %>% pull(gid),
       c_ref = cid %>% filter(candidate_sponsored == "None") %>% pull(cid),
+      h_ref = hid %>% filter(dem_candidate == "Harris") %>% pull(hid),
+      hyp = polls$hyp,
       F_r = F_r,
       wt = wt,
       K = polls$K,
       Y = polls$Y,
       beta_g_sigma = 0.02,
       beta_c_sigma = 0.015,
+      beta_hyp_sigma = 0.25,
       sigma_n_sigma = 0.02,
       sigma_p_sigma = 0.05,
       sigma_m_sigma = 0.02,
-      alpha_mu_r = priors$e_day_mu,
-      alpha_sigma_r = priors$e_day_sigma,
+      alpha_mu_r = alpha_mu_r,
+      alpha_sigma_r = alpha_sigma_r,
       rho_alpha = 3,
       rho_beta = 6,
       alpha_sigma = 0.05,
@@ -552,6 +603,26 @@ set_omega <- function(run_date,
   omega <- uniroot(find_omega, interval = c(0, 1), q = q, p = 0.975)$root
 
   return(omega)
+
+}
+
+#' Convert alpha priors from a long tibble to a wide matrix
+#'
+#' @description
+#' For correct functionality, requires that the prior data supplied to `data`
+#' is filtered to a single run date and arranged by state id & descending
+#' candidate.
+#'
+#' @param data a long tibble containing priors for each state on election day
+#' @param col column to be pivoted
+format_alpha_prior <- function(data, col) {
+
+  data %>%
+    select(candidate, state, {{ col }}) %>%
+    pivot_wider(names_from = state,
+                values_from = {{ col }}) %>%
+    select(-candidate) %>%
+    as.matrix()
 
 }
 

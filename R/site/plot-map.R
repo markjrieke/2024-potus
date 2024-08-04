@@ -6,7 +6,7 @@
 #' rating. The size of each state bubble is scaled to the number of electors in
 #' the state and the color color is set according to the following rating scale:
 #'
-#' * Safe Dem: >99% chance that Biden wins the state
+#' * Safe Dem: >99% chance that Harris wins the state
 #' * Very likely Dem: >85%
 #' * Likely Dem: >65%
 #' * Uncertain: Both candidates have a <65% chance of winning
@@ -80,16 +80,16 @@ plot_map <- function(..., branch = "dev") {
     left_join(clickables) %>%
     sf::st_as_sf(coords = c("long", "lat"),
                  crs = 4326) %>%
-    mutate(candidate = if_else(p_win >= 0.5, "Biden", "Trump")) %>%
+    mutate(candidate = if_else(p_win >= 0.5, "Harris", "Trump")) %>%
     left_join(rating_text) %>%
     mutate(rating_text = str_to_lower(rating_text),
            rating_text = str_remove_all(rating_text, " dem| rep"),
            rating_text = if_else(rating_text == "safe", "all but guaranteed", rating_text),
-           p_label = if_else(candidate == "Biden", p_win, 1 - p_win),
+           p_label = if_else(candidate == "Harris", p_win, 1 - p_win),
            p_label = if_else(p_label > 0.99, ">99%", scales::label_percent(accuracy = 1)(p_label)),
            ev_label = if_else(electors == 1, "EV", "EVs"),
            text_color = case_when(rating_text == "uncertain" ~ "gray",
-                                  candidate == "Biden" ~ pal[1],
+                                  candidate == "Harris" ~ pal[1],
                                   TRUE ~ pal[7]),
            summary_text = if_else(rating_text == "uncertain",
                                   glue::glue("<b>{candidate}</b> has a {p_label} chance of winning"),
@@ -166,7 +166,7 @@ render_interactive_map <- function(ggobj) {
           sep = ";")
 
   girafe(
-    ggobj = ec_map,
+    ggobj = ggobj,
     options = list(
       opts_tooltip(
         css = css,

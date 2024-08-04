@@ -81,32 +81,32 @@ V_c &\sim \text{Normal}(\mu_c, \sigma) \\
 \end{align*}
 $$
 
-Priors for each state, $s$, are given as a draw from a normal distribution where the mean is the national prior, $V$, plus the state partisan lean from the pvi model and the standard deviation is the output of the pvi model.
+Priors for each state, $s$, are given as a draw from a normal distribution where the mean is the national prior, $V$, plus the state partisan lean from the pvi model and the standard deviation is the output of the pvi model. Priors for both Biden and Harris are generated; for the purpose of prior estimation, Biden is considered an incumbent ($I=1$) and Harris is not ($I=0$).
 
 ## polls.stan
 
-The polling model is generates the main results of the forecast. It accomplishes this via a [dynamic linear model](https://mc-stan.org/docs/functions-reference/distributions_over_unbounded_vectors.html#gaussian-dynamic-linear-models) of Biden's support in each state and hierarchical adjustments for biases in the polls, explained further below. For a poll $i$ conducted in state $s$ on day $d$ of the campaign, the number of respondents saying they plan to vote for Biden in November is given as a draw from a binomial distribution:
+The polling model generates the main results of the forecast. It accomplishes this via a [dynamic linear model](https://mc-stan.org/docs/functions-reference/distributions_over_unbounded_vectors.html#gaussian-dynamic-linear-models) of both Biden's and Harris' support in each state and makes hierarchical adjustments for biases in the polls, explained further below. For a poll $i$ of candidate $h$ conducted in state $s$ on day $d$ of the campaign, the number of respondents saying they plan to vote for the democratic candidate in November is given as a draw from a binomial distribution:
 
 $$
 \begin{align*}
-Y_{i,s,d} &\sim \text{Binomial}(K_i, \theta_{i,s,d})
+Y_{i,h,s,d} &\sim \text{Binomial}(K_i, \theta_{i,h,s,d})
 \end{align*}
 $$
 
-$K_i$ is the total number of responses in favor of either Biden or Trump in the poll and $\theta_{i,s,d}$ is the modeled proportion of Biden's support in state $s$ on day $d$ with adjustments for polling bias in poll $i$. $\theta_{i,s,d}$ is represented as $\mu_{i,s,d}$ on the logit scale and can be considered as the sum of "true" latent support for Biden, $\gamma$ and bias in the polls, $\delta$.
+$K_i$ is the total number of responses in favor of either the democratic candidate or Trump in the poll and $\theta_{i,h,s,d}$ is the modeled proportion of support for the democratic candidate $h$ in state $s$ on day $d$ with adjustments for polling bias in poll $i$. $\theta_{i,h,s,d}$ is represented as $\mu_{i,h,s,d}$ on the logit scale and can be considered as the sum of "true" latent support for the democratic candidate, $\gamma$ and bias in the polls, $\delta$.
 
 $$
 \begin{align*}
-\theta_{i,s,d} &= \text{logit}(\mu_{i,s,d}) \\
-\mu_{i,s,d} &= \gamma_{s,d} + \delta_{i,s}
+\theta_{i,s,d} &= \text{logit}(\mu_{i,h,s,d}) \\
+\mu_{i,h,s,d} &= \gamma_{h,s,d} + \delta_{i,h,s}
 \end{align*}
 $$
 
-True support for Biden in state $s$ on day $d$ is the linear combination of the prior mean support, $\alpha_s$, modeled deviation from the prior, $\beta_s$, and a time-varying parameter, $beta_{s,d}$, to capture changes in support throughout the election cycle. 
+True support for the democratic candidate $h$ in state $s$ on day $d$ is the linear combination of the prior mean support, $\alpha_{h,s}$, modeled deviation from the prior, $\beta_{h,s}$, and a time-varying parameter, $\beta_{h,s,d}$, to capture changes in support throughout the election cycle. 
 
 $$
 \begin{align*}
-\gamma_{s,d} &= \alpha_s + \beta_s + \beta_{s,d}
+\gamma_{h,s,d} &= \alpha_{h,s} + \beta_{h,s} + \beta_{h,s,d}
 \end{align*}
 $$
 
@@ -114,44 +114,46 @@ The state level parameters here include "composite" groups that are comprised of
 
 $$
 \begin{align*}
-\alpha_s &= \alpha_r \cdot w_s \\
-\beta_s &= \beta_r \cdot w_s \\
-\beta_{s,d} &= \beta_{r,d} \cdot w_s
+\alpha_{h,s} &= \alpha_{h,r} \cdot w_s \\
+\beta_{h,s} &= \beta_{h,r} \cdot w_s \\
+\beta_{h,s,d} &= \beta_{h,r,d} \cdot w_s
 \end{align*}
 $$
 
-The raw state parameter, $\beta_r$, allows for correlation across states and as such is modeled as a draw from a multivariate normal distribution with covariance $K_r$. $K_r$ is estimated using a [exponentiated quadratic kernel](https://mc-stan.org/docs/functions-reference/matrix_operations.html#exponentiated-quadratic-kernel) given a matrix measuring the distance in feature space between two states, $F_r$, amplitude, $\alpha$, and length-scale, $\rho$. For computational efficiency, I utilize a [non-centered parameterization](https://mc-stan.org/docs/stan-users-guide/reparameterization.html) via a [cholesky decomposition](https://mc-stan.org/docs/functions-reference/matrix_operations.html#cholesky-decomposition) of the covariance matrix, $L_r$, and random deviates from the mean, $\eta_r$.
+The raw state parameter, $\beta_{h,r}$, allows for correlation across states and as such is modeled as a draw from a multivariate normal distribution with covariance $K_{h,r}$. $K_{h,r}$ is estimated using a [exponentiated quadratic kernel](https://mc-stan.org/docs/functions-reference/matrix_operations.html#exponentiated-quadratic-kernel) given a matrix measuring the distance in feature space between two states, $F_r$, amplitude, $\alpha_h$, and length-scale, $\rho$. For computational efficiency, I utilize a [non-centered parameterization](https://mc-stan.org/docs/stan-users-guide/reparameterization.html) via a [cholesky decomposition](https://mc-stan.org/docs/functions-reference/matrix_operations.html#cholesky-decomposition) of the covariance matrix, $L_{h,r}$, and random deviates from the mean, $\eta_{h,r}$.
 
 $$
 \begin{align*}
-\beta_r &= L_r \eta_r \\
-K_r &= L_r L_r^{\top} \\
-K_r &= \text{Exponentiated Quadratic}(F_r, \alpha, \rho)
+\beta_{h,r} &= L_{h,r} \eta_{h,r} \\
+K_{h,r} &= L_{h,r} L_{h,r}^{\top} \\
+K_{h,r} &= \text{Exponentiated Quadratic}(F_r, \alpha_h, \rho)
 \end{align*}
 $$
 
-The time-varying parameter, $\beta_{r,d}$, is the result of a correlated random walk, allowing similar states to drift in similar ways over time. The correlation matrix of the random walk is simply scaled down by a factor of $\phi$ (or $\sqrt{\phi}$ in the non-centered parameterization) so that the estimated level of support does not change drastically day-over-day.
+The time-varying parameter, $\beta_{h,r,d}$, is the result of a correlated random walk, allowing similar states to drift in similar ways over time. The correlation matrix of the random walk is simply scaled down by a factor of $\phi$ (or $\sqrt{\phi}$ in the non-centered parameterization) so that the estimated level of support does not change drastically day-over-day.
 
 $$
 \begin{align*}
-\beta_{r,d} &= \sum_1^d \sqrt{\phi} L_r \eta_{r,d}
+\beta_{h,r,d} &= \sum_1^d \sqrt{\phi} L_{h,r} \eta_{h,r,d}
 \end{align*}
 $$
 
-Polling bias, $\delta_{i,s}$ is comprised of several sources:
+Polling bias, $\delta_{i,h,s}$ is comprised of several sources:
 
-* $\beta_b$: state-level polling bias
+* $\beta_{h,b}$: state-level polling bias
 * $\beta_g$: polling group/polling population bias
 * $\beta_m$: poll mode bias
-* $\beta_c$: candidate-support (i.e., if the poll was sponsored by a particular party)
+* $\beta_c$: candidate-sponsorship (i.e., if the poll was sponsored by a particular party)
 * $\beta_p$: pollster bias
 * $\beta_n$: a parameter to capture other unmodeled polling biases
 
-Thus, for each poll, $i$, $\delta_{i,s}$ is:
+Further, in polls of Harris conducted prior to July 22nd (her first full day as the presumptive democratic nominee), she is considered as a hypothetical candidate. An additional parameter, $\beta_y$, is included to estimate the latent change in support she received prior to announcing her candidacy ($\beta_y=0$ in polls where she is *not* a hypothetical candidate).
+
+Thus, for each poll, $i$, $\delta_{i,h,s}$ is:
 
 $$
 \begin{align*}
-\delta_{i,s} &= \beta_{b[i]} + \beta_{g[i]} + \beta_{m[i]} + \beta_{c[i]} + \beta_{p[i]} + \beta_{n[i]}
+\delta_{i,s} &= \beta_{h,b[i]} + \beta_{g[i]} + \beta_{m[i]} + \beta_{c[i]} + \beta_{p[i]} + \beta_{y[i]} + \beta_{n[i]}
 \end{align*}
 $$
 
@@ -159,7 +161,7 @@ Much like previous state parameters, the state bias parameter is the dot product
 
 $$
 \begin{align*}
-\beta_{b[s]} &= \beta_{br} \cdot w_s
+\beta_{h,b[s]} &= \beta_{h,br} \cdot w_s
 \end{align*}
 $$
 
@@ -167,7 +169,7 @@ The raw state bias parameters are also modeled as correlated and utilize the sam
 
 $$
 \begin{align*}
-\beta_{br} &= \sqrt{\psi} L_r \eta_{br}
+\beta_{h,br} &= \sqrt{\psi} L_{h,r} \eta_{h,br}
 \end{align*}
 $$
 
@@ -181,17 +183,17 @@ $$
 \end{align*}
 $$
 
-The remaining parameters, $\beta_g$ and $\beta_c$, have too few subgroups to be modeled hierarchically. As such, they are modeled as fixed effects with the "likely voter" group as the reference condition in $\beta_g$ and "no sponsor" as the reference condition in $\beta_c$. 
+The remaining parameters, $\beta_g$, $\beta_c$, and $\beta_y$, have too few subgroups to be modeled hierarchically. As such, they are modeled as fixed effects with the "likely voter" group as the reference condition in $\beta_g$, "no sponsor" as the reference condition in $\beta_c$, and "non-hypothetical candidate" as the reference condition in $\beta_y$. 
 
-The polling model generates a series of outputs that are referenced throughout the site:
+For Harris, $h=1$. Thus, the polling model generates a series of outputs that are referenced throughout the site:
 
-* Biden's forecasted election-day two-party voteshare in each state: $\theta_{s,D} = \alpha_s + \beta_s + \beta_{s,D}$
-* Whether (or not) Biden wins in each state: $W_s = 1\ \text{if } \theta_{s,D} > 0.5$, otherwise $W_s = 0$
-* The number of electors Biden wins: $E = W \cdot e$, where $e$ is a vector of electors for each state
-* Whether (or not) Biden wins the electoral college: $P = 1\ \text{if } E > 269$, otherwise $P = 0$
+* Harris' forecasted election-day two-party voteshare in each state: $\theta_{s,D} = \alpha_{h=1,s} + \beta_{h=1,s} + \beta_{h=1,s,D}$
+* Whether (or not) Harris wins in each state: $W_s = 1\ \text{if } \theta_{s,D} > 0.5$, otherwise $W_s = 0$
+* The number of electors Harris wins: $E = W \cdot e$, where $e$ is a vector of electors for each state
+* Whether (or not) Harris wins the electoral college: $P = 1\ \text{if } E > 269$, otherwise $P = 0$
 * Whether (or not) there is a tie in the electoral college: $T = 1\ \text{if } E = 269$, otherwise $T = 0$
 
-When summarized across draws, these give the median, 66, and 95% credible intervals for Biden's forecasted voteshare in each state and his forcasted number of electors won, and probabilities for a win in each state, a win in the electoral college, and a tie in the electoral college. 
+When summarized across draws, these give the median, 66, and 95% credible intervals for Harris' forecasted voteshare in each state and her forcasted number of electors won, and probabilities for a win in each state, a win in the electoral college, and a tie in the electoral college. 
 
 ## functions.stan
 

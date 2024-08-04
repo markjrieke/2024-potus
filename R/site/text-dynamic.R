@@ -78,8 +78,8 @@ headline_text <- function(state = "National",
               .default = "uncertain")
 
   # set leader/trailer text
-  leader <- if (p_rating > 0.5) "Joe Biden" else "Donald Trump"
-  trailer <- if (leader == "Joe Biden") "Donald Trump" else "Joe Biden"
+  leader <- if (p_rating > 0.5) "Kamala Harris" else "Donald Trump"
+  trailer <- if (leader == "Kamala Harris") "Donald Trump" else "Kamala Harris"
 
   # Date-prefix is different for the final e-day forecast
   prefix_text <-
@@ -110,7 +110,7 @@ headline_text <- function(state = "National",
   rating_text <-
     if_else(
       rating == "uncertain",
-      glue::glue("it's **unclear whether Joe Biden or Donald Trump will win** {state_text}."),
+      glue::glue("it's **unclear whether Kamala Harris or Donald Trump will win** {state_text}."),
       glue::glue("**{leader} is {rating} to beat {trailer}** in {state_text}.")
     )
 
@@ -160,7 +160,7 @@ margin_text <- function(branch = "dev") {
 #' current probability of winning and the 95% credible interval for the
 #' posterior-predictive electoral college votes.
 #'
-#' @param candidate candidate name (i.e., "Biden" or "Trump")
+#' @param candidate candidate name (i.e., "Harris" or "Trump")
 #' @param color color used to highlight probability of winning and range of
 #'              electoral college votes
 #' @param ... unused
@@ -171,7 +171,7 @@ candidate_summary <- function(candidate,
                               branch = "dev") {
 
   # determine probability of winning for each candidate
-  biden_win <-
+  harris_win <-
     read_csv(find_document("out/polls/win_pres.csv", branch = branch)) %>%
     filter(run_date == max(run_date)) %>%
     pull(p_win)
@@ -181,7 +181,7 @@ candidate_summary <- function(candidate,
     filter(run_date == max(run_date)) %>%
     pull(p_tie)
 
-  trump_win <- 1 - biden_win - p_tie
+  trump_win <- 1 - harris_win - p_tie
 
   # pull in current electoral college range
   current_evs <-
@@ -189,23 +189,25 @@ candidate_summary <- function(candidate,
     filter(run_date == max(run_date),
            .width == 0.95)
 
-  biden_evs_lower <- current_evs %>% pull(.lower)
-  biden_evs_upper <- current_evs %>% pull(.upper)
+  harris_evs_lower <- current_evs %>% pull(.lower)
+  harris_evs_upper <- current_evs %>% pull(.upper)
 
   # set text based on candidate
-  if (candidate == "Joe Biden") {
+  if (candidate == "Kamala Harris") {
 
-    p_win <- biden_win
-    evs_lower <- biden_evs_lower
-    evs_upper <- biden_evs_upper
-    win_text <- "winning re-election"
+    p_win <- harris_win
+    evs_lower <- harris_evs_lower
+    evs_upper <- harris_evs_upper
+    win_text <- "being elected America's next president"
+    pronoun <- "She"
 
   } else {
 
     p_win <- trump_win
-    evs_lower <- 538 - biden_evs_upper
-    evs_upper <- 538 - biden_evs_lower
+    evs_lower <- 538 - harris_evs_upper
+    evs_upper <- 538 - harris_evs_lower
     win_text <- "re-taking the white house"
+    pronoun <- "He"
 
   }
 
@@ -219,7 +221,7 @@ candidate_summary <- function(candidate,
     glue::glue(
       "<span style='display:flex;align-items:center;height:120px;'>",
       "<p><br>**{color_text(candidate, color)}** currently has a **{color_text(p_win, color)}** chance of {win_text}.",
-      "He's projected to win between **{color_text(evs_lower, color)}** and **{color_text(evs_upper, color)}** electoral college votes.<br></p>",
+      "{pronoun}'s projected to win between **{color_text(evs_lower, color)}** and **{color_text(evs_upper, color)}** electoral college votes.<br></p>",
       "</span>",
       .sep = "\n"
     )

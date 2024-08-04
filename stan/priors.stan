@@ -23,7 +23,7 @@ data {
   real A_new_mu;                  // Biden Net Approval Mean
   real A_new_sigma;               // Biden Net Approval Scale
   real G_new;                     // 2024 Real 2nd Quarter GDP Growth
-  real I_new;                     // Incumbency Status
+  vector[2] I_new;                // Incumbency Status (Biden @ idx 1, Harris @ idx 2)
 
   // 2024 State Priors
   int<lower=0> S;                 // Number of States
@@ -73,11 +73,15 @@ generated quantities {
 
   // National Prior for 2024
   real A_new = normal_rng(A_new_mu, A_new_sigma);
-  real mu_nat = inv_logit(alpha + beta_a * A_new + beta_g * G_new + beta_i * I_new);
-  real theta_nat = normal_rng(mu_nat, sigma);
+  vector[2] mu_nat = inv_logit(alpha + beta_a * A_new + beta_g * G_new + beta_i * I_new);
+  array[2] real theta_nat = normal_rng(mu_nat, sigma);
 
   // State Priors for 2024
-  vector[S] mu_state = mu_nat + e_day_mu;
-  array[S] real theta_state = normal_rng(mu_state, e_day_sigma);
+  array[2] vector[S] mu_state;
+  array[2, S] real theta_state;
+  for (h in 1:2) {
+    mu_state[h] = theta_nat[h] + e_day_mu;
+    theta_state[h] = normal_rng(mu_state[h], e_day_sigma);
+  }
 }
 
