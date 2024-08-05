@@ -515,3 +515,4 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87633,Georgia,629,PPP,2024-07-30,rv,Unknown,DEM,TRUE,Harris,318,91,11,16,63,2,25,1,1,0
 87641,National,1055,Civiqs,2024-07-30,rv,Online Panel,DEM,TRUE,Harris,550,91,55,0,17,2,18,1,1,0
 87656,National,2670,RMG Research,2024-07-31,rv,Unknown,None,TRUE,Harris,1410,92,55,0,72,2,25,4,1,0
+87663,National,3061,YouGov,2024-08-02,lv,Online Panel,None,TRUE,Harris,1546,94,55,0,99,1,18,4,1,0
