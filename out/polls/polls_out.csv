@@ -517,7 +517,20 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87656,National,2670,RMG Research,2024-07-31,rv,Unknown,None,TRUE,Harris,1410,92,55,0,73,2,25,4,1,0
 87665,National,890,YouGov,2024-08-01,rv,Online Panel,None,TRUE,Harris,460,93,55,0,100,2,18,4,1,0
 87667,Pennsylvania,576,Fabrizio,2024-08-01,lv,Live Phone/Text-to-Web,REP,TRUE,Harris,288,93,42,19,27,1,14,2,1,0
+87678,New York,1103,Siena,2024-08-01,lv,Live Phone,None,TRUE,Harris,635,93,36,28,79,1,9,4,1,0
 87663,National,3061,YouGov,2024-08-02,lv,Online Panel,None,TRUE,Harris,1546,94,55,0,100,1,18,4,1,0
 87664,National,1207,TIPP,2024-08-02,rv,Online Panel,None,TRUE,Harris,610,94,55,0,90,2,18,4,1,0
+87682,Arizona,493,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,249,95,3,11,74,1,18,4,1,0
+87683,Florida,859,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,400,95,10,30,74,1,18,4,1,0
+87684,Georgia,1015,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,496,95,11,16,74,1,18,4,1,0
+87685,Michigan,640,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,316,95,24,15,74,1,18,4,1,0
+87686,Minnesota,468,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,247,95,25,10,74,1,18,4,1,0
+87687,Nevada,376,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,188,95,32,6,74,1,18,4,1,0
+87688,New Mexico,399,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,217,95,35,5,74,1,18,4,1,0
+87689,North Carolina,607,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,293,95,37,16,74,1,18,4,1,0
+87690,Pennsylvania,669,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,327,95,42,19,74,1,18,4,1,0
+87691,Wisconsin,514,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,257,95,53,10,74,1,18,4,1,0
 87675,National,10364,Morning Consult,2024-08-04,rv,Online Panel,None,TRUE,Harris,5407,96,55,0,57,2,18,4,1,0
+87679,National,1498,Marist,2024-08-04,rv,Live Phone/Online Panel/Text-to-Web,None,TRUE,Harris,772,96,55,0,52,2,13,4,1,0
 87677,National,1405,SurveyUSA,2024-08-05,lv,Online Panel,None,TRUE,Harris,725,97,55,0,88,1,18,4,1,0
+87694,National,1000,ActiVote,2024-08-06,lv,App Panel,None,TRUE,Harris,500,98,55,0,4,1,1,4,1,0
