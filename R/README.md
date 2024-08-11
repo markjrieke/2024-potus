@@ -58,6 +58,7 @@ Contains functions for running each of the pipelines for each model as well as a
 
 ## site/
 
+* `plot-conditionals.R` generates conditional probability plots for each candidate.
 * `plot-evs.R`: generates the forecasted electoral college outcome plot.
 * `plot-map.R`: generates the current state ratings map.
 * `plot-prob.R`: generates state or national level probability of winning plots.

@@ -27,6 +27,12 @@ and the full output can be explored
 
 ## Version history
 
+### 2.1
+
+###### 2024-08-11
+
+- Added conditional probability plot functions for the National page.
+
 ### 2.0
 
 ###### 2024-08-03
