@@ -66,7 +66,8 @@ blurb_conditional <- function(font = "Playfair Display") {
   glue::glue(
     "### <span style='font-family:{font};'>Conditional outcomes</span>",
     "From the thousands of simulations, the model can see how the electoral college outcome changes when each candidate wins in a specific state.",
-    "If Harris wins in a red-leaning state, for example, it's likelier that she also wins in competitive states."
+    "If Harris wins in a red-leaning state, for example, it's likelier that she also wins in competitive states.",
+    .sep = "\n"
   )
 
 }
