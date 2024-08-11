@@ -547,3 +547,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87709,National,1289,Ipsos,2024-08-07,rv,Probability Panel,None,TRUE,Harris,658,99,55,0,42,2,21,4,1,0
 87713,Michigan,768,InsiderAdvantage,2024-08-08,lv,Unknown,None,TRUE,Harris,392,100,24,15,41,1,25,4,1,0
 87714,Wisconsin,776,InsiderAdvantage,2024-08-08,lv,Unknown,None,TRUE,Harris,384,100,53,10,41,1,25,4,1,0
+87719,Michigan,595,Siena/NYT,2024-08-08,lv,Live Phone,None,TRUE,Harris,310,100,24,15,81,1,9,4,1,0
+87720,Wisconsin,634,Siena/NYT,2024-08-08,lv,Live Phone,None,TRUE,Harris,330,100,53,10,81,1,9,4,1,0
+87722,National,931,Quantus Polls and News,2024-08-08,rv,Online Panel,None,TRUE,Harris,472,100,55,0,72,2,18,4,1,0
+87721,Pennsylvania,665,Siena/NYT,2024-08-09,lv,Live Phone,None,TRUE,Harris,346,101,42,19,81,1,9,4,1,0
