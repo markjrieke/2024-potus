@@ -27,6 +27,12 @@ and the full output can be explored
 
 ## Version history
 
+### 2.2
+
+###### 2024-08-12
+
+- Added a model review/diagnostic display under `out/REVIEW.md`
+
 ### 2.1
 
 ###### 2024-08-11

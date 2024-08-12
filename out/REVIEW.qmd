@@ -1,0 +1,249 @@
+---
+title: "Output Review"
+subtitle: "Diagnositc summaries and weekly changelogs"
+format: gfm
+execute: 
+  echo: false
+  message: false
+  warning: false
+---
+
+```{r}
+library(tidyverse)
+library(riekelib)
+```
+
+This document contains a host of information/metadata about the model runtime and sampler conditions that is useful but not appropriate for displaying on-site. There are three broad categories of information displayed:
+
+**Weekly updates**
+
+* Top-level change in the probability of winning in the past week
+* State-level ratings changes
+
+**Data**
+
+* Number of polls conducted by rundate
+* Number of state-level polls by probability of a democratic win
+* Biden's forecasted approval by rundate
+
+**Diagnostics**
+
+* Observations by rundate
+* Model runtime by rundate
+* Number of divergent transitions by rundate
+* Number of transitions at max treedepth by rundate
+
+I also include here a plot of the change in state ratings over time because I think it looks nifty.
+
+## Weekly updates
+
+Weekly change in probability of winning the presidency:
+
+```{r}
+#| results: asis
+toplines <- 
+  read_csv("polls/win_pres.csv") %>% 
+  left_join(read_csv("polls/tie_pres.csv")) %>%
+  filter(run_date %in% c(Sys.Date(), Sys.Date() - 7)) %>%
+  mutate(p_lose = 1 - p_win - p_tie) %>%
+  arrange(run_date)
+
+glue::glue(
+  "* Harris: **{scales::label_percent(accuracy = 1)(toplines$p_win[1])}** &rarr; **{scales::label_percent(accuracy = 1)(toplines$p_win[2])}**",
+  "* Trump: **{scales::label_percent(accuracy = 1)(toplines$p_lose[1])}** &rarr; **{scales::label_percent(accuracy = 1)(toplines$p_lose[2])}**",
+  .sep = "\n"
+)
+```
+
+Weekly change in state ratings:
+
+```{r}
+read_csv("polls/win_state.csv") %>%
+  filter(state != "National",
+         run_date %in% c(Sys.Date(), Sys.Date() - 7)) %>%
+  mutate(rating = case_when(p_win > 0.99 | p_win < 0.01 ~ "Safe",
+                            p_win > 0.85 | p_win < 0.15 ~ "Very likely",
+                            p_win > 0.65 | p_win < 0.35 ~ "Likely",
+                            .default = "Uncertain"),
+         leader = if_else(p_win > 0.5, "Dem", "Rep"),
+         rating = if_else(rating != "Uncertain", paste(rating, leader), rating),
+         run_date = if_else(run_date == Sys.Date(), "today", "last_week")) %>%
+  select(state, run_date, rating) %>%
+  pivot_wider(names_from = run_date,
+              values_from = rating) %>%
+  filter(today != last_week) %>%
+  knitr::kable()
+```
+
+```{r}
+pal <-
+  c(
+    "#3579ac",
+    "#7cb0d7",
+    "#d3e5f2",
+    "#f2f2f2",
+    "#f2d5d5",
+    "#d78080",
+    "#b13737"
+  )
+
+read_csv("polls/win_state.csv") %>%
+  left_join(read_csv("../data/static/electors.csv")) %>%
+  mutate(rating = case_when(p_win < 0.01 ~ "Safe Rep",
+                            p_win < 0.15 ~ "Very likely Rep",
+                            p_win < 0.35 ~ "Likely Rep",
+                            p_win < 0.65 ~ "Uncertain",
+                            p_win < 0.85 ~ "Likely Dem",
+                            p_win < 0.99 ~ "Very likely Dem",
+                            TRUE ~ "Safe Dem")) %>%
+  filter(state != "National") %>%
+  group_by(run_date, rating) %>%
+  summarise(electors = sum(electors)) %>%
+  ungroup() %>%
+  mutate(rating = fct_relevel(rating, c("Safe Rep", 
+                                        "Very likely Rep", 
+                                        "Likely Rep",
+                                        "Uncertain", 
+                                        "Likely Dem", 
+                                        "Very likely Dem", 
+                                        "Safe Dem"))) %>%
+  ggplot(aes(x = run_date,
+             y = electors,
+             fill = rating)) + 
+  geom_col(width = 1) +
+  scale_fill_manual(values = pal[7:1]) +
+  theme_void() +
+  theme(legend.position = "none") + 
+  expand_limits(x = mdy(c("5/1/24", "11/5/24")))
+```
+
+
+## Data
+
+```{r}
+read_csv("polls/polls_out.csv") %>%
+  filter(dem_candidate == "Harris") %>%
+  count(end_date) %>%
+  arrange(end_date) %>%
+  mutate(n = cumsum(n)) %>%
+  ggplot(aes(x = end_date,
+             y = n)) + 
+  geom_step() +
+  scale_y_comma() + 
+  theme_rieke() + 
+  labs(title = "**Pollapalooza**",
+       subtitle = "Number of Harris/Trump polls conducted by poll end date",
+       x = NULL,
+       y = NULL) +
+  expand_limits(x = mdy("5/1/24"))
+```
+
+```{r}
+read_csv("polls/polls_out.csv") %>%
+  filter(state != "National",
+         dem_candidate == "Harris") %>%
+  count(state) %>%
+  left_join(read_csv("polls/win_state.csv") %>% filter(run_date == max(run_date))) %>%
+  left_join(read_csv("../data/static/state_abbreviations.csv")) %>%
+  ggplot(aes(x = p_win,
+             y = n,
+             label = abbr)) + 
+  ggrepel::geom_text_repel() +
+  scale_x_percent() + 
+  theme_rieke() +
+  labs(title = "**State schenanigans**",
+       subtitle = "Number of Harris/Trump polls by p(Harris win)",
+       x = NULL,
+       y = NULL) +
+  expand_limits(x = c(0, 1))
+```
+
+```{r}
+read_csv("approval/e_day_approval_current.csv") %>%
+  select(run_date, mean, sd) %>%
+  crossing(p = c(0.66, 0.95)) %>%
+  mutate(.lower = qnorm((1 - p)/2, mean, sd),
+         .upper = qnorm((1 - p)/2 + p, mean, sd)) %>%
+  ggplot(aes(x = run_date,
+             y = mean,
+             ymin = .lower,
+             ymax = .upper,
+             group = p)) + 
+  geom_ribbon(alpha = 0.125) + 
+  geom_line() +
+  scale_y_percent() +
+  theme_rieke() +
+  labs(title = "**Forecasting a wide net**",
+       subtitle = "Biden's forecasted election-day net approval",
+       x = NULL,
+       y = NULL,
+       caption = paste("Shaded region indicates 66/95% credible interval"))
+```
+
+## Diagnostics
+
+```{r}
+read_csv("model_log.csv") %>%
+  ggplot(aes(x = run_date,
+             y = observations)) + 
+  geom_point(shape = 21,
+             alpha = 0.5) + 
+  scale_y_comma() +
+  facet_wrap(~model_name, scales = "free_y") +
+  theme_rieke() + 
+  labs(title = "**The observation deck**",
+       subtitle = "Number of observations in each model by run date",
+       x = NULL,
+       y = NULL) +
+  expand_limits(y = c(0))
+```
+
+```{r}
+read_csv("model_log.csv") %>%
+  mutate(run_ts = end_ts - start_ts) %>%
+  ggplot(aes(x = run_date,
+             y = run_ts)) + 
+  geom_point(shape = 21,
+             alpha = 0.5) +
+  scale_y_comma() + 
+  facet_wrap(~model_name, scales = "free_y") +
+  theme_rieke() +
+  labs(title = "**Runnin' up that hill**",
+       subtitle = "Model runtime (s) by run date",
+       x = NULL,
+       y = NULL) + 
+  expand_limits(y = c(0))
+```
+
+```{r}
+read_csv("model_log.csv") %>%
+  ggplot(aes(x = run_date,
+             y = num_divergent)) + 
+  geom_point(shape = 21,
+             alpha = 0.5) +
+  scale_y_comma() + 
+  facet_wrap(~model_name, scales = "free_y") +
+  theme_rieke() +
+  labs(title = "**Do or diverge**",
+       subtitle = "Number of divergent transitions by run date",
+       x = NULL,
+       y = NULL) + 
+  expand_limits(y = c(0)) 
+```
+
+```{r}
+read_csv("model_log.csv") %>%
+  ggplot(aes(x = run_date,
+             y = num_max_treedepth)) + 
+  geom_point(shape = 21,
+             alpha = 0.5) +
+  scale_y_comma() + 
+  facet_wrap(~model_name, scales = "free_y") +
+  theme_rieke() + 
+  labs(title = "**Going for distance**",
+       subtitle = "Number of transitions at max treedepth by run date",
+       x = NULL,
+       y = NULL) + 
+  expand_limits(y = c(0))
+```
+

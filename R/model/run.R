@@ -29,3 +29,8 @@ missing_days("out/priors/priors.csv") %>%
 missing_days("out/polls/theta.csv") %>%
   walk(run_poll_model)
 
+# run review -------------------------------------------------------------------
+
+quarto::quarto_render(
+  "out/REVIEW.qmd"
+)
