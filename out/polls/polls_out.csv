@@ -478,8 +478,8 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87590,National,1942,AtlasIntel,2024-07-25,rv,Online Ad,None,TRUE,Harris,950,86,55,0,7,2,17,4,1,0
 87592,National,1499,Angus Reid,2024-07-25,rv,Online Panel,None,TRUE,Harris,767,86,55,0,6,2,18,4,1,0
 87614,National,940,Ipsos,2024-07-25,a,Probability Panel,None,TRUE,Harris,470,86,55,0,42,4,21,4,1,0
-87724,Maine CD-1,674,U. New Hampshire,2024-07-25,lv,Online Panel/Text-to-Web,None,TRUE,Harris,410,86,20,1,96,1,20,4,1,0
-87725,Maine CD-2,588,U. New Hampshire,2024-07-25,lv,Online Panel/Text-to-Web,None,TRUE,Harris,280,86,21,1,96,1,20,4,1,0
+87724,Maine CD-1,724,U. New Hampshire,2024-07-25,lv,Online Panel/Text-to-Web,None,TRUE,Harris,439,86,20,1,96,1,20,4,1,0
+87725,Maine CD-2,701,U. New Hampshire,2024-07-25,lv,Online Panel/Text-to-Web,None,TRUE,Harris,343,86,21,1,96,1,20,4,1,0
 87577,Michigan,475,SoCal Research,2024-07-26,rv,Online Ad,REP,TRUE,Harris,230,87,24,15,83,2,17,2,1,0
 87588,Georgia,486,SoCal Research,2024-07-26,rv,Online Ad,None,TRUE,Harris,234,87,11,16,83,2,17,4,1,0
 87634,Oregon,651,Hoffman Research,2024-07-26,lv,Live Phone,None,TRUE,Harris,343,87,41,8,39,1,9,4,1,0
@@ -536,7 +536,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87689,North Carolina,607,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,293,95,37,16,75,1,18,4,1,0
 87690,Pennsylvania,669,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,327,95,42,19,75,1,18,4,1,0
 87691,Wisconsin,514,Redfield & Wilton Strategies,2024-08-03,lv,Online Panel,None,TRUE,Harris,257,95,53,10,75,1,18,4,1,0
-87675,National,10364,Morning Consult,2024-08-04,rv,Online Panel,None,TRUE,Harris,5407,96,55,0,58,2,18,4,1,0
 87679,National,1498,Marist,2024-08-04,rv,Live Phone/Online Panel/Text-to-Web,None,TRUE,Harris,772,96,55,0,53,2,13,4,1,0
 87701,National,940,Hart/POS,2024-08-04,rv,Live Phone,None,TRUE,Harris,460,96,55,0,36,2,9,4,1,0
 87677,National,1405,SurveyUSA,2024-08-05,lv,Online Panel,None,TRUE,Harris,725,97,55,0,89,1,18,4,1,0
@@ -549,9 +548,14 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87709,National,1289,Ipsos,2024-08-07,rv,Probability Panel,None,TRUE,Harris,658,99,55,0,42,2,21,4,1,0
 87726,National,2351,Redfield & Wilton Strategies,2024-08-07,lv,Online Panel,None,TRUE,Harris,1214,99,55,0,75,1,18,4,1,0
 87713,Michigan,768,InsiderAdvantage,2024-08-08,lv,Unknown,None,TRUE,Harris,392,100,24,15,41,1,25,4,1,0
-87714,Wisconsin,776,InsiderAdvantage,2024-08-08,lv,Unknown,None,TRUE,Harris,384,100,53,10,41,1,25,4,1,0
+87714,Wisconsin,775,InsiderAdvantage,2024-08-08,lv,Unknown,None,TRUE,Harris,386,100,53,10,41,1,25,4,1,0
 87719,Michigan,595,Siena/NYT,2024-08-08,lv,Live Phone,None,TRUE,Harris,310,100,24,15,81,1,9,4,1,0
 87720,Wisconsin,634,Siena/NYT,2024-08-08,lv,Live Phone,None,TRUE,Harris,330,100,53,10,81,1,9,4,1,0
 87722,National,931,Quantus Polls and News,2024-08-08,rv,Online Panel,None,TRUE,Harris,472,100,55,0,72,2,18,4,1,0
 87721,Pennsylvania,665,Siena/NYT,2024-08-09,lv,Live Phone,None,TRUE,Harris,346,101,42,19,81,1,9,4,1,0
 87723,North Carolina,738,YouGov Blue,2024-08-09,rv,Online Panel,DEM,TRUE,Harris,369,101,37,16,103,2,18,1,1,0
+87729,Michigan,455,Bullfinch,2024-08-11,rv,Online Panel,None,TRUE,Harris,240,103,24,15,13,2,18,4,1,0
+87730,Pennsylvania,470,Bullfinch,2024-08-11,rv,Online Panel,None,TRUE,Harris,245,103,42,19,13,2,18,4,1,0
+87731,Wisconsin,465,Bullfinch,2024-08-11,rv,Online Panel,None,TRUE,Harris,255,103,53,10,13,2,18,4,1,0
+87734,National,683,Big Village,2024-08-11,lv,Online Panel,None,TRUE,Harris,352,103,55,0,12,1,18,4,1,0
+87742,National,10718,Morning Consult,2024-08-11,rv,Online Panel,None,TRUE,Harris,5536,103,55,0,58,2,18,4,1,0
