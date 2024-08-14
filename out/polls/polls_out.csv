@@ -552,6 +552,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87719,Michigan,595,Siena/NYT,2024-08-08,lv,Live Phone,None,TRUE,Harris,310,100,24,15,81,1,9,4,1,0
 87720,Wisconsin,634,Siena/NYT,2024-08-08,lv,Live Phone,None,TRUE,Harris,330,100,53,10,81,1,9,4,1,0
 87722,National,931,Quantus Polls and News,2024-08-08,rv,Online Panel,None,TRUE,Harris,472,100,55,0,72,2,18,4,1,0
+87748,Florida,768,McLaughlin,2024-08-08,lv,Unknown,None,TRUE,Harris,352,100,10,30,56,1,25,4,1,0
 87721,Pennsylvania,665,Siena/NYT,2024-08-09,lv,Live Phone,None,TRUE,Harris,346,101,42,19,81,1,9,4,1,0
 87723,North Carolina,738,YouGov Blue,2024-08-09,rv,Online Panel,DEM,TRUE,Harris,369,101,37,16,103,2,18,1,1,0
 87729,Michigan,455,Bullfinch,2024-08-11,rv,Online Panel,None,TRUE,Harris,240,103,24,15,13,2,18,4,1,0
@@ -559,3 +560,5 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87731,Wisconsin,465,Bullfinch,2024-08-11,rv,Online Panel,None,TRUE,Harris,255,103,53,10,13,2,18,4,1,0
 87734,National,683,Big Village,2024-08-11,lv,Online Panel,None,TRUE,Harris,352,103,55,0,12,1,18,4,1,0
 87742,National,10718,Morning Consult,2024-08-11,rv,Online Panel,None,TRUE,Harris,5536,103,55,0,58,2,18,4,1,0
+87744,Florida,443,Suffolk,2024-08-11,lv,Live Phone,None,TRUE,Harris,209,103,10,30,87,1,9,4,1,0
+87747,Texas,400,ActiVote,2024-08-13,lv,App Panel,None,TRUE,Harris,187,105,47,40,4,1,1,4,1,0
