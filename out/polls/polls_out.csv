@@ -598,3 +598,4 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87802,Wisconsin,569,Quantus Polls and News,2024-08-15,rv,Online Panel,None,TRUE,Harris,287,107,53,10,76,2,20,4,1,0
 87806,Arizona,643,Siena/NYT,2024-08-15,lv,Live Phone,None,TRUE,Harris,338,107,3,11,85,1,9,4,1,0
 87807,Nevada,643,Siena/NYT,2024-08-15,lv,Live Phone,None,TRUE,Harris,318,107,32,6,85,1,9,4,1,0
+87810,National,3220,YouGov,2024-08-16,lv,Online Panel,None,TRUE,Harris,1659,108,55,0,107,1,20,4,1,0
