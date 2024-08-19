@@ -27,6 +27,19 @@ and the full output can be explored
 
 ## Version history
 
+### 2.3
+
+###### 2024-08-19
+
+- Added a filter to drop poll questions with a `NA` sample size.
+  - This was previously an implicit drop.
+  - If a poll included multiple populations, but had incomplete sample
+    size data for the [best
+    population](https://github.com/markjrieke/2024-potus/blob/main/data/static/population_rank.csv),
+    the entire poll could have been dropped.
+  - This ensures that the poll is included provided at least one of the
+    populations has sample size data.
+
 ### 2.2
 
 ###### 2024-08-12

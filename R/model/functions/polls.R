@@ -157,6 +157,9 @@ run_poll_model <- function(run_date) {
     filter(end_date >= mdy("5/1/2024"),
            end_date < mdy("11/5/2024")) %>%
 
+    # filter out any polls without a sample size
+    filter(!is.na(sample_size)) %>%
+
     # filter based on run date
     mutate(created_at = as_date(mdy_hm(created_at))) %>%
     filter(created_at <= int_run_date) %>%
