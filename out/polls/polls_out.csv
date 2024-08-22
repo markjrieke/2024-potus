@@ -589,7 +589,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87780,National,1093,Beacon/Shaw,2024-08-12,rv,Live Phone,None,TRUE,Harris,541,104,55,0,8,2,10,4,1,0
 87747,Texas,400,ActiVote,2024-08-13,lv,App Panel,None,TRUE,Harris,187,105,47,40,4,1,1,4,1,0
 87760,National,1266,YouGov,2024-08-13,rv,Online Panel,None,TRUE,Harris,647,105,55,0,109,2,21,4,1,0
-87794,National,1857,Ipsos,2024-08-13,rv,Probability Panel,None,TRUE,Harris,968,105,55,0,45,2,24,4,1,0
+87794,National,1445,Ipsos,2024-08-13,lv,Probability Panel,None,TRUE,Harris,768,105,55,0,45,1,24,4,1,0
 87776,National,1000,ActiVote,2024-08-14,lv,App Panel,None,TRUE,Harris,524,106,55,0,4,1,1,4,1,0
 87781,National,1000,Emerson,2024-08-14,lv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,523,106,55,0,27,1,7,4,1,0
 87789,New Hampshire,1574,St. Anselm,2024-08-14,rv,Online Panel,None,TRUE,Harris,845,106,33,4,92,2,21,4,1,0
@@ -631,3 +631,9 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87843,National,1343,Big Village,2024-08-18,lv,Online Panel,None,TRUE,Harris,707,110,55,0,12,1,21,4,1,0
 87834,California,400,ActiVote,2024-08-19,lv,App Panel,None,TRUE,Harris,261,111,5,54,4,1,1,4,1,0
 87841,Pennsylvania,741,InsiderAdvantage,2024-08-19,lv,Unknown,None,TRUE,Harris,368,111,42,19,44,1,28,4,1,0
+87856,New Hampshire,2028,U. New Hampshire,2024-08-19,lv,Probability Panel,None,TRUE,Harris,1065,111,33,4,102,1,24,4,1,0
+87857,Vermont,915,U. New Hampshire,2024-08-19,lv,Probability Panel,None,TRUE,Harris,647,111,49,3,102,1,24,4,1,0
+87858,Maine,942,U. New Hampshire,2024-08-19,lv,Probability Panel,None,TRUE,Harris,552,111,57,2,102,1,24,4,1,0
+87859,Maine CD-1,476,U. New Hampshire,2024-08-19,lv,Probability Panel,None,TRUE,Harris,305,111,20,1,102,1,24,4,1,0
+87860,Maine CD-2,428,U. New Hampshire,2024-08-19,lv,Probability Panel,None,TRUE,Harris,225,111,21,1,102,1,24,4,1,0
+87853,National,1221,YouGov,2024-08-20,rv,Online Panel,None,TRUE,Harris,631,112,55,0,109,2,21,4,1,0
