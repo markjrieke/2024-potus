@@ -655,4 +655,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87882,New Mexico,965,Emerson,2024-08-22,rv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,517,114,35,5,27,2,7,4,1,0
 87885,National,2356,RMG Research,2024-08-22,lv,Online Panel,None,TRUE,Harris,1178,114,55,0,80,1,21,4,1,0
 87888,Virginia,594,Quantus Polls and News,2024-08-22,rv,Online Panel,None,TRUE,Harris,306,114,50,13,78,2,21,4,1,0
+87893,Michigan,700,TIPP,2024-08-22,lv,Online Panel,None,TRUE,Harris,359,114,24,15,99,1,21,4,1,0
 87889,National,1000,ActiVote,2024-08-23,lv,App Panel,None,TRUE,Harris,526,115,55,0,4,1,1,4,1,0
+87892,National,1564,Angus Reid,2024-08-23,rv,Online Panel,None,TRUE,Harris,826,115,55,0,6,2,21,4,1,0
+87894,Pennsylvania,677,SoCal Strategies,2024-08-23,lv,Online Panel,REP,TRUE,Harris,335,115,42,19,90,1,21,2,1,0
