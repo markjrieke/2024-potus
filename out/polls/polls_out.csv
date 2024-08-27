@@ -632,7 +632,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87861,Texas,1285,YouGov,2024-08-16,lv,Online Panel,None,TRUE,Harris,609,108,47,40,111,1,21,4,1,0
 87844,Nebraska CD-2,604,Remington,2024-08-17,lv,IVR,None,TRUE,Harris,328,109,30,1,82,1,2,4,1,0
 87869,Nebraska CD-2,389,Change Research,2024-08-17,lv,Text-to-Web/Online Ad,DEM,TRUE,Harris,205,109,30,1,15,1,27,1,1,0
-87832,National,10580,Morning Consult,2024-08-18,rv,Online Panel,None,TRUE,Harris,5520,110,55,0,62,2,21,4,1,0
 87833,National,858,SoCal Strategies,2024-08-18,lv,Online Panel,REP,TRUE,Harris,438,110,55,0,90,1,21,2,1,0
 87843,National,1343,Big Village,2024-08-18,lv,Online Panel,None,TRUE,Harris,707,110,55,0,12,1,21,4,1,0
 87834,California,400,ActiVote,2024-08-19,lv,App Panel,None,TRUE,Harris,261,111,5,54,4,1,1,4,1,0
@@ -659,3 +658,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87889,National,1000,ActiVote,2024-08-23,lv,App Panel,None,TRUE,Harris,526,115,55,0,4,1,1,4,1,0
 87892,National,1564,Angus Reid,2024-08-23,rv,Online Panel,None,TRUE,Harris,826,115,55,0,6,2,21,4,1,0
 87894,Pennsylvania,677,SoCal Strategies,2024-08-23,lv,Online Panel,REP,TRUE,Harris,335,115,42,19,90,1,21,2,1,0
+87900,National,1155,Kaplan Strategies,2024-08-24,lv,Unknown,None,TRUE,Harris,619,116,55,0,51,1,28,4,1,0
+87899,National,1000,Echelon Insights,2024-08-25,lv,Online Panel,None,TRUE,Harris,495,117,55,0,24,1,21,4,1,0
+87901,National,7193,Morning Consult,2024-08-25,rv,Online Panel,None,TRUE,Harris,3753,117,55,0,62,2,21,4,1,0
