@@ -36,16 +36,15 @@ Weekly change in probability of winning the presidency:
 
 Weekly change in state ratings:
 
-| state          | last_week       | today           |
-|:---------------|:----------------|:----------------|
-| Maine CD-2     | Likely Rep      | Uncertain       |
-| Montana        | Safe Rep        | Very likely Rep |
-| Nebraska CD-2  | Uncertain       | Likely Dem      |
-| New York       | Very likely Dem | Safe Dem        |
-| North Carolina | Likely Rep      | Uncertain       |
-| Texas          | Very likely Rep | Likely Rep      |
-| Utah           | Very likely Rep | Safe Rep        |
-| Maine          | Likely Dem      | Very likely Dem |
+| state      | last_week       | today           |
+|:-----------|:----------------|:----------------|
+| Maine CD-2 | Likely Rep      | Uncertain       |
+| Missouri   | Very likely Rep | Safe Rep        |
+| New York   | Very likely Dem | Safe Dem        |
+| Oregon     | Likely Dem      | Very likely Dem |
+| Texas      | Very likely Rep | Likely Rep      |
+| Utah       | Very likely Rep | Safe Rep        |
+| Maine      | Likely Dem      | Very likely Dem |
 
 ![](REVIEW_files/figure-commonmark/unnamed-chunk-4-1.png)
 

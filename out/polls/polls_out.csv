@@ -630,6 +630,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87818,Nevada,678,Focaldata,2024-08-16,lv,Unknown,None,TRUE,Harris,364,108,32,6,33,1,28,4,1,0
 87845,Virginia,629,Roanoke College,2024-08-16,lv,Live Phone/Online Panel,None,TRUE,Harris,325,108,50,13,83,1,12,4,1,0
 87861,Texas,1285,YouGov,2024-08-16,lv,Online Panel,None,TRUE,Harris,609,108,47,40,111,1,21,4,1,0
+87912,Arizona,912,Noble Predictive Insights,2024-08-16,rv,Online Panel,None,TRUE,Harris,441,108,3,11,65,2,21,4,1,0
 87844,Nebraska CD-2,604,Remington,2024-08-17,lv,IVR,None,TRUE,Harris,328,109,30,1,82,1,2,4,1,0
 87869,Nebraska CD-2,389,Change Research,2024-08-17,lv,Text-to-Web/Online Ad,DEM,TRUE,Harris,205,109,30,1,15,1,27,1,1,0
 87833,National,858,SoCal Strategies,2024-08-18,lv,Online Panel,REP,TRUE,Harris,438,110,55,0,90,1,21,2,1,0
@@ -643,6 +644,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87860,Maine CD-2,428,U. New Hampshire,2024-08-19,lv,Probability Panel,None,TRUE,Harris,225,111,21,1,104,1,24,4,1,0
 87853,National,1221,YouGov,2024-08-20,rv,Online Panel,None,TRUE,Harris,631,112,55,0,111,2,21,4,1,0
 87886,National,744,Fairleigh Dickinson,2024-08-20,rv,Live Phone/Text-to-Web,None,TRUE,Harris,400,112,55,0,31,2,16,4,1,0
+87915,Maryland,576,Fabrizio/Impact,2024-08-20,lv,Live Phone,None,TRUE,Harris,384,112,22,10,30,1,10,4,1,0
 87862,New York,400,ActiVote,2024-08-21,lv,App Panel,None,TRUE,Harris,233,113,36,28,4,1,1,4,1,0
 87870,North Carolina,884,SurveyUSA/High Point University,2024-08-21,lv,Online Panel,None,TRUE,Harris,442,113,37,16,97,1,21,4,1,0
 87874,National,860,Bullfinch,2024-08-21,rv,Online Panel,None,TRUE,Harris,470,113,55,0,13,2,21,4,1,0
@@ -655,9 +657,15 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87885,National,2356,RMG Research,2024-08-22,lv,Online Panel,None,TRUE,Harris,1178,114,55,0,80,1,21,4,1,0
 87888,Virginia,594,Quantus Polls and News,2024-08-22,rv,Online Panel,None,TRUE,Harris,306,114,50,13,78,2,21,4,1,0
 87893,Michigan,700,TIPP,2024-08-22,lv,Online Panel,None,TRUE,Harris,359,114,24,15,99,1,21,4,1,0
+87910,Texas,674,PPP,2024-08-22,rv,IVR/Text-to-Web,DEM,TRUE,Harris,319,114,47,40,70,2,9,1,1,0
+87911,Florida,820,PPP,2024-08-22,rv,IVR/Text-to-Web,DEM,TRUE,Harris,393,114,10,30,70,2,9,1,1,0
 87889,National,1000,ActiVote,2024-08-23,lv,App Panel,None,TRUE,Harris,526,115,55,0,4,1,1,4,1,0
 87892,National,1564,Angus Reid,2024-08-23,rv,Online Panel,None,TRUE,Harris,826,115,55,0,6,2,21,4,1,0
 87894,Pennsylvania,677,SoCal Strategies,2024-08-23,lv,Online Panel,REP,TRUE,Harris,335,115,42,19,90,1,21,2,1,0
 87900,National,1155,Kaplan Strategies,2024-08-24,lv,Unknown,None,TRUE,Harris,619,116,55,0,51,1,28,4,1,0
 87899,National,1000,Echelon Insights,2024-08-25,lv,Online Panel,None,TRUE,Harris,495,117,55,0,24,1,21,4,1,0
 87901,National,7193,Morning Consult,2024-08-25,rv,Online Panel,None,TRUE,Harris,3753,117,55,0,62,2,21,4,1,0
+87916,National,802,Florida Atlantic University/Mainstreet Research,2024-08-25,lv,IVR/Online Panel,None,TRUE,Harris,420,117,55,0,32,1,6,4,1,0
+87917,North Carolina,588,SoCal Strategies,2024-08-27,lv,Online Panel,REP,TRUE,Harris,282,119,37,16,90,1,21,2,1,0
+87918,National,1114,YouGov,2024-08-27,rv,Online Panel,None,TRUE,Harris,563,119,55,0,111,2,21,4,1,0
+87919,National,1050,Quantus Polls and News,2024-08-27,lv,Online Panel,None,TRUE,Harris,536,119,55,0,78,1,21,4,1,0
