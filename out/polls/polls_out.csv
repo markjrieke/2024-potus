@@ -729,3 +729,10 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87986,Pennsylvania,1574,Wick,2024-08-29,lv,IVR/Text-to-Web,None,TRUE,Harris,787,121,42,19,114,1,9,4,1,0
 87988,Minnesota,578,SurveyUSA,2024-08-29,lv,Online Panel,None,TRUE,Harris,305,121,25,10,99,1,21,4,1,0
 87987,Texas,960,Quantus Polls and News,2024-08-30,rv,Online Panel,None,TRUE,Harris,440,122,47,40,79,2,21,4,1,0
+87989,Nevada,755,InsiderAdvantage,2024-08-31,lv,Unknown,None,TRUE,Harris,372,123,32,6,46,1,28,4,1,0
+87990,Arizona,776,InsiderAdvantage,2024-08-31,lv,Unknown,None,TRUE,Harris,387,123,3,11,46,1,28,4,1,0
+87994,North Carolina,781,InsiderAdvantage,2024-08-31,lv,Unknown,None,TRUE,Harris,387,123,37,16,46,1,28,4,1,0
+87995,Georgia,767,InsiderAdvantage,2024-08-31,lv,Unknown,None,TRUE,Harris,386,123,11,16,46,1,28,4,1,0
+87996,North Carolina,400,ActiVote,2024-08-31,lv,App Panel,None,TRUE,Harris,200,123,37,16,4,1,1,4,1,0
+87997,Florida,400,ActiVote,2024-08-31,lv,App Panel,None,TRUE,Harris,186,123,10,30,4,1,1,4,1,0
+87998,Texas,400,ActiVote,2024-08-31,lv,App Panel,None,TRUE,Harris,182,123,47,40,4,1,1,4,1,0
