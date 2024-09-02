@@ -699,6 +699,9 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87949,National,1562,Quinnipiac,2024-08-27,lv,Live Phone,None,TRUE,Harris,789,119,55,0,80,1,10,4,1,0
 87951,Arizona,744,Morning Consult,2024-08-27,lv,Online Panel,None,TRUE,Harris,372,119,3,11,63,1,21,4,1,0
 87984,West Virginia,380,Research America,2024-08-27,rv,IVR,None,TRUE,Harris,136,119,52,4,84,2,2,4,1,0
+87999,National,2396,Ipsos,2024-08-27,a,Probability Panel,None,TRUE,Harris,1248,119,55,0,47,4,24,4,1,0
+88000,Nebraska,1176,SurveyUSA,2024-08-27,rv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,478,119,56,2,99,2,7,4,1,0
+88001,Nebraska CD-2,451,SurveyUSA,2024-08-27,rv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,238,119,30,1,99,2,7,4,1,0
 87926,Michigan,400,ActiVote,2024-08-28,lv,App Panel,None,TRUE,Harris,200,120,24,15,4,1,1,4,1,0
 87929,National,1415,Big Village,2024-08-28,lv,Online Panel,None,TRUE,Harris,762,120,55,0,12,1,21,4,1,0
 87935,Arizona,711,Emerson,2024-08-28,lv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,342,120,3,11,27,1,7,4,1,0
