@@ -27,6 +27,13 @@ and the full output can be explored
 
 ## Version history
 
+### 2.4
+
+###### 2024-09-03
+
+- Added ActiVote to the [banned pollsters
+  list](https://github.com/markjrieke/2024-potus/blob/main/data/static/banned_pollsters.csv).
+
 ### 2.3
 
 ###### 2024-08-19

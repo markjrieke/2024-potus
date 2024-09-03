@@ -36,6 +36,7 @@ Contains hand-entered datasets. Sources are listed below.
   * [Center Street PAC](https://gelliottmorris.substack.com/p/the-gory-details-about-how-modern): for utilizing a poor sampling and weighting strategy that severely underrepresents the uncertainty in their polls and severely overestimates Democratic support.
   * [Traflagar](https://split-ticket.org/2022/09/19/whats-going-on-with-trafalgars-polls/): for utilizing an opaque sampling methodology that appears to involve repeatedly contact voters from a consistent pool (rather than reaching out to new respondents until the desired number of responses is met).
   * [Rasmussen](https://web.archive.org/web/20240308212818/https://www.washingtonpost.com/politics/2024/03/08/rasmussen-538-polling/): for refusing to provide basic methodological information to FiveThirtyEight and consistently engaging in spreading conspiracy theories and false information as a polling outlet.
+  * [ActiVote](https://x.com/lxeagle17/status/1830799463281238077): for utilizing an opt-in app-based sampling method without clear methodology for de-biasing results (if even possible). 
   * Any pollsters who [use LLMs to generate results](https://ash.harvard.edu/articles/using-ai-for-political-polling/) will be banned.
 * `cpvi.csv`: results from the previous two elections and associated CPVI, taken from [Cook](https://www.cookpolitical.com/cook-pvi).
 * `electors.csv`: contains the number of electors per state.
