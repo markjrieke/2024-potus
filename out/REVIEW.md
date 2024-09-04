@@ -36,12 +36,15 @@ Weekly change in probability of winning the presidency:
 
 Weekly change in state ratings:
 
-| state          | last_week  | today           |
-|:---------------|:-----------|:----------------|
-| Colorado       | Likely Dem | Very likely Dem |
-| Georgia        | Likely Rep | Uncertain       |
-| North Carolina | Uncertain  | Likely Rep      |
-| Texas          | Likely Rep | Very likely Rep |
+| state        | last_week       | today           |
+|:-------------|:----------------|:----------------|
+| Colorado     | Likely Dem      | Very likely Dem |
+| Georgia      | Likely Rep      | Uncertain       |
+| Idaho        | Safe Rep        | Very likely Rep |
+| Missouri     | Safe Rep        | Very likely Rep |
+| Montana      | Very likely Rep | Safe Rep        |
+| Rhode Island | Very likely Dem | Safe Dem        |
+| Texas        | Likely Rep      | Very likely Rep |
 
 ![](REVIEW_files/figure-commonmark/unnamed-chunk-4-1.png)
 
