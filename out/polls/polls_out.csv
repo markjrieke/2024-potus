@@ -660,7 +660,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87894,Pennsylvania,677,SoCal Strategies,2024-08-23,lv,Online Panel,REP,TRUE,Harris,335,115,42,19,93,1,20,2,1,0
 87900,National,1155,Kaplan Strategies,2024-08-24,lv,Unknown,None,TRUE,Harris,619,116,55,0,53,1,27,4,1,0
 87899,National,1000,Echelon Insights,2024-08-25,lv,Online Panel,None,TRUE,Harris,495,117,55,0,23,1,20,4,1,0
-87901,National,7193,Morning Consult,2024-08-25,rv,Online Panel,None,TRUE,Harris,3753,117,55,0,64,2,20,4,1,0
 87916,National,802,Florida Atlantic University/Mainstreet Research,2024-08-25,lv,IVR/Online Panel,None,TRUE,Harris,420,117,55,0,33,1,5,4,1,0
 87968,National,829,Leger,2024-08-25,lv,Online Panel,None,TRUE,Harris,432,117,55,0,55,1,20,4,1,0
 87930,Arizona,1004,Beacon/Shaw,2024-08-26,rv,Live Phone/Text-to-Web,None,TRUE,Harris,507,118,3,11,7,2,15,4,1,0
@@ -732,6 +731,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87994,North Carolina,781,InsiderAdvantage,2024-08-31,lv,Unknown,None,TRUE,Harris,387,123,37,16,47,1,27,4,1,0
 87995,Georgia,767,InsiderAdvantage,2024-08-31,lv,Unknown,None,TRUE,Harris,386,123,11,16,47,1,27,4,1,0
 88028,Oklahoma,310,SoonerPoll.com,2024-08-31,lv,Online Panel,None,TRUE,Harris,129,123,40,7,94,1,20,4,1,0
+88067,Texas,1116,YouGov,2024-08-31,rv,Online Panel,None,TRUE,Harris,528,123,47,40,118,2,20,4,1,0
 88002,Ohio,570,SoCal Strategies,2024-09-01,lv,Online Panel,REP,TRUE,Harris,258,124,39,17,93,1,20,2,1,0
 88030,National,1709,McLaughlin,2024-09-01,lv,Online Panel,REP,TRUE,Harris,841,124,55,0,62,1,20,2,1,0
 88037,Alaska,384,Cygnal,2024-09-01,lv,Live Phone/Text-to-Web,REP,TRUE,Harris,172,124,2,3,18,1,15,2,1,0
@@ -745,6 +745,12 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88048,Georgia,791,Patriot Polling,2024-09-03,rv,IVR,None,TRUE,Harris,393,126,11,16,73,2,1,4,1,0
 88049,Arizona,767,Patriot Polling,2024-09-03,rv,IVR,None,TRUE,Harris,377,126,3,11,73,2,1,4,1,0
 88050,Nevada,739,Patriot Polling,2024-09-03,rv,IVR,None,TRUE,Harris,369,126,32,6,73,2,1,4,1,0
+88062,National,3720,Morning Consult,2024-09-03,rv,Online Panel,None,TRUE,Harris,1920,126,55,0,64,2,20,4,1,0
 88035,National,989,Emerson,2024-09-04,lv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,513,127,55,0,26,1,6,4,1,0
 88042,National,10843,Morning Consult,2024-09-04,lv,Online Panel,None,TRUE,Harris,5593,127,55,0,64,1,20,4,1,0
 88038,National,1890,Outward Intelligence,2024-09-05,lv,Online Panel,None,TRUE,Harris,983,128,55,0,69,1,20,4,1,0
+88053,National,2646,RMG Research,2024-09-05,lv,Unknown,None,TRUE,Harris,1350,128,55,0,82,1,27,4,1,0
+88063,California,806,Emerson,2024-09-05,lv,Online Panel/Text-to-Web,None,TRUE,Harris,496,128,5,54,26,1,22,4,1,0
+88064,Florida,804,Emerson,2024-09-05,lv,Online Panel/Text-to-Web,None,TRUE,Harris,388,128,10,30,26,1,22,4,1,0
+88065,Texas,836,Emerson,2024-09-05,lv,Online Panel/Text-to-Web,None,TRUE,Harris,406,128,47,40,26,1,22,4,1,0
+88066,Ohio,935,Emerson,2024-09-05,lv,Online Panel/Text-to-Web,None,TRUE,Harris,422,128,39,17,26,1,22,4,1,0
