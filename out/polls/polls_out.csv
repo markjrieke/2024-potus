@@ -736,7 +736,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88030,National,1709,McLaughlin,2024-09-01,lv,Online Panel,REP,TRUE,Harris,841,124,55,0,62,1,20,2,1,0
 88037,Alaska,384,Cygnal,2024-09-01,lv,Live Phone/Text-to-Web,REP,TRUE,Harris,172,124,2,3,18,1,15,2,1,0
 88021,National,1278,YouGov,2024-09-03,rv,Online Panel,None,TRUE,Harris,653,126,55,0,118,2,20,4,1,0
-88027,National,3048,Big Data Poll,2024-09-03,lv,Online Panel,None,TRUE,Harris,1524,126,55,0,10,1,20,4,1,0
+88027,National,3047,Big Data Poll,2024-09-03,lv,Online Panel/Text-to-Web,None,TRUE,Harris,1520,126,55,0,10,1,22,4,1,0
 88043,National,963,Patriot Polling,2024-09-03,rv,IVR,None,TRUE,Harris,489,126,55,0,73,2,1,4,1,0
 88044,Pennsylvania,831,Patriot Polling,2024-09-03,rv,IVR,None,TRUE,Harris,411,126,42,19,73,2,1,4,1,0
 88045,Michigan,789,Patriot Polling,2024-09-03,rv,IVR,None,TRUE,Harris,398,126,24,15,73,2,1,4,1,0
@@ -754,3 +754,8 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88064,Florida,804,Emerson,2024-09-05,lv,Online Panel/Text-to-Web,None,TRUE,Harris,388,128,10,30,26,1,22,4,1,0
 88065,Texas,836,Emerson,2024-09-05,lv,Online Panel/Text-to-Web,None,TRUE,Harris,406,128,47,40,26,1,22,4,1,0
 88066,Ohio,935,Emerson,2024-09-05,lv,Online Panel/Text-to-Web,None,TRUE,Harris,422,128,39,17,26,1,22,4,1,0
+88069,Arizona,887,TIPP,2024-09-05,lv,Online Panel,None,TRUE,Harris,444,128,3,11,104,1,20,4,1,0
+88070,Michigan,1066,YouGov,2024-09-06,lv,Online Panel,None,TRUE,Harris,538,129,24,15,118,1,20,4,1,0
+88071,Pennsylvania,1078,YouGov,2024-09-06,lv,Online Panel,None,TRUE,Harris,539,129,42,19,118,1,20,4,1,0
+88072,Wisconsin,946,YouGov,2024-09-06,lv,Online Panel,None,TRUE,Harris,482,129,53,10,118,1,20,4,1,0
+88073,National,1611,Siena/NYT,2024-09-06,lv,Live Phone,None,TRUE,Harris,797,129,55,0,90,1,9,4,1,0
