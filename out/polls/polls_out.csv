@@ -762,6 +762,8 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88069,Arizona,887,TIPP,2024-09-05,lv,Online Panel,None,TRUE,Harris,444,128,3,11,105,1,21,4,1,0
 88075,National,2358,HarrisX/Harris Poll,2024-09-05,rv,Online Panel,None,TRUE,Harris,1179,128,55,0,42,2,21,4,1,0
 88103,National,1370,Marist,2024-09-05,rv,Live Phone/Online Panel/Text,None,TRUE,Harris,692,128,55,0,60,2,13,4,1,0
+88132,National,1448,Cygnal,2024-09-05,lv,Unknown,None,TRUE,Harris,740,128,55,0,19,1,28,4,1,0
+88135,Wisconsin,738,Marquette Law School,2024-09-05,lv,Live Phone/Email,None,TRUE,Harris,384,128,53,10,61,1,10,4,1,0
 88070,Michigan,1066,YouGov,2024-09-06,lv,Online Panel,None,TRUE,Harris,538,129,24,15,120,1,21,4,1,0
 88071,Pennsylvania,1078,YouGov,2024-09-06,lv,Online Panel,None,TRUE,Harris,539,129,42,19,120,1,21,4,1,0
 88072,Wisconsin,946,YouGov,2024-09-06,lv,Online Panel,None,TRUE,Harris,482,129,53,10,120,1,21,4,1,0
@@ -771,6 +773,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88125,Michigan,876,co/efficient,2024-09-06,lv,IVR/Text,None,TRUE,Harris,438,129,24,15,124,1,7,4,1,0
 88126,Wisconsin,862,co/efficient,2024-09-06,lv,IVR/Text,None,TRUE,Harris,431,129,53,10,124,1,7,4,1,0
 88127,Pennsylvania,836,co/efficient,2024-09-06,lv,IVR/Text,None,TRUE,Harris,409,129,42,19,124,1,7,4,1,0
+88134,Virginia,637,Virginia Commonwealth U.,2024-09-06,rv,Live Phone/Text-to-Web,None,TRUE,Harris,370,129,50,13,117,2,16,4,1,0
 88083,North Carolina,642,SurveyUSA,2024-09-07,lv,Online Panel,None,TRUE,Harris,331,130,37,16,102,1,21,4,1,0
 88084,National,1453,Big Village,2024-09-08,lv,Online Panel,None,TRUE,Harris,762,131,55,0,12,1,21,4,1,0
 88085,Arizona,864,Morning Consult,2024-09-08,lv,Online Panel,None,TRUE,Harris,422,131,3,11,65,1,21,4,1,0
@@ -801,3 +804,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88120,New Mexico,484,Redfield & Wilton Strategies,2024-09-09,lv,Online Panel,None,TRUE,Harris,255,132,35,5,84,1,21,4,1,0
 88121,Pennsylvania,720,Redfield & Wilton Strategies,2024-09-09,lv,Online Panel,None,TRUE,Harris,360,132,42,19,84,1,21,4,1,0
 88122,Wisconsin,595,Redfield & Wilton Strategies,2024-09-09,lv,Online Panel,None,TRUE,Harris,307,132,53,10,84,1,21,4,1,0
+88130,National,1318,YouGov,2024-09-10,rv,Online Panel,None,TRUE,Harris,659,133,55,0,120,2,21,4,1,0
+88131,National,669,SoCal Strategies,2024-09-11,lv,Online Panel,REP,TRUE,Harris,345,134,55,0,94,1,21,2,1,0
+88136,National,1139,Leger,2024-09-11,lv,Online Panel,None,TRUE,Harris,587,134,55,0,56,1,21,4,1,0
