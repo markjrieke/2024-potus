@@ -21,17 +21,7 @@ headline_text <- function(state = "National",
     # import current win probability
     p_win <-
       read_csv(find_document("out/polls/win_pres.csv", branch = branch)) %>%
-      filter(run_date == max(run_date))
-
-    # set current date
-    current_date <-
-      p_win %>%
-      pull(run_date) %>%
-      label_date_ordinal()
-
-    # extract from tibble
-    p_win <-
-      p_win %>%
+      filter(run_date == max(run_date)) %>%
       pull(p_win)
 
     # import probability of an electoral tie
@@ -42,9 +32,6 @@ headline_text <- function(state = "National",
 
     # estimate trump's probability of winning
     p_lose <- 1 - p_win - p_tie
-
-    # rating used to set header text
-    p_rating <- p_win/(p_win + p_lose)
 
   } else {
 
@@ -57,36 +44,36 @@ headline_text <- function(state = "National",
       filter(state == state_int,
              run_date == max(run_date))
 
-    # set current date
-    current_date <-
-      p_win %>%
-      pull(run_date) %>%
-      label_date_ordinal()
-
     # extract from tibble
-    p_rating <-
+    p_win <-
       p_win %>%
       pull(p_win)
 
+    # estimate trump's probability of winning
+    p_lose <- 1 - p_win
+
   }
 
-  # convert rating probability to text
-  rating <-
-    case_when(p_rating > 0.99 | p_rating < 0.01 ~ "all but guaranteed",
-              p_rating > 0.85 | p_rating < 0.15 ~ "very likely",
-              p_rating > 0.65 | p_rating < 0.35 ~ "likely",
-              .default = "uncertain")
+  # set current date
+  current_date <-
+    read_csv(find_document("out/polls/win_pres.csv", branch = branch)) %>%
+    filter(run_date == max(run_date)) %>%
+    pull(run_date) %>%
+    label_date_ordinal()
 
   # set leader/trailer text
-  leader <- if (p_rating > 0.5) "Kamala Harris" else "Donald Trump"
+  leader <- if (p_win > p_lose) "Kamala Harris" else "Donald Trump"
   trailer <- if (leader == "Kamala Harris") "Donald Trump" else "Kamala Harris"
+
+  # set display probability
+  p_rating <- if (p_win > p_lose) p_win else p_lose
 
   # Date-prefix is different for the final e-day forecast
   prefix_text <-
     if_else(
       current_date == "November 5th",
-      glue::glue("The final pre-election forecast is that"),
-      glue::glue("As of {current_date}, the forecast indicates that")
+      glue::glue("The final pre-election forecast gives"),
+      glue::glue("As of {current_date}, the forecast gives")
     )
 
   # modify state name for D.C.
@@ -99,19 +86,24 @@ headline_text <- function(state = "National",
 
   # set state to display based on rating/state
   state_text <-
-    case_when(
-      rating == "uncertain" & state == "National" ~ "the presidency",
-      rating == "uncertain" & state != "National" ~ glue::glue("in {state_name}"),
-      state == "National" ~ "the electoral college",
-      .default = state_name
+    if_else(
+      state_name == "National",
+      "the electoral college",
+      state_name
     )
 
-  # rating text changes if outcome is uncertain
-  rating_text <-
+  # set percentage label if greater than 99%
+  percentage_text <-
     if_else(
-      rating == "uncertain",
-      glue::glue("it's **unclear whether Kamala Harris or Donald Trump will win** {state_text}."),
-      glue::glue("**{leader} is {rating} to beat {trailer}** in {state_text}.")
+      p_rating > 0.99,
+      ">99%",
+      scales::label_percent(accuracy = 1)(p_rating)
+    )
+
+  # set rating text
+  rating_text <-
+    glue::glue(
+      "**{leader} a {percentage_text} chance of beating {trailer}** in {state_text}."
     )
 
   # apply header formatting
