@@ -37,6 +37,9 @@ and the full output can be explored
 - Set state bubble color and summary bar fill based on a continuous
   gradient scaled by candidate probability of winning.
 - Added linked interactivity between map and bar.
+- Updated css to `cursor:pointer` when hovering over the map/bar to more
+  intuitively suggest that users can click and be taken to the state
+  pages.
 
 ### 2.4
 

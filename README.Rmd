@@ -20,6 +20,7 @@ A more general overview of the model methodology can be found [here](https://www
 * Removed rating textbar above state map.
 * Set state bubble color and summary bar fill based on a continuous gradient scaled by candidate probability of winning.
 * Added linked interactivity between map and bar.
+* Updated css to `cursor:pointer` when hovering over the map/bar to more intuitively suggest that users can click and be taken to the state pages.
 
 ### 2.4
 
