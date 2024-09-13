@@ -27,6 +27,15 @@ and the full output can be explored
 
 ## Version history
 
+### 2.5
+
+- Updated state and national headline text to refer to raw probability,
+  rather than ratings.
+- Removed rating textbar above state map.
+- Set state bubble color and summary bar fill based on a continuous
+  gradient scaled by candidate probability of winning.
+- Added linked interactivity between map and bar.
+
 ### 2.4
 
 ###### 2024-09-03
