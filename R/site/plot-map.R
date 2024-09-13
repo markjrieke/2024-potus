@@ -186,7 +186,7 @@ render_interactive_map <- function(ggobj) {
         opacity = 1
       ),
       opts_hover(
-        css = "opacity:1;"
+        css = "opacity:1;cursor:pointer;"
       ),
       opts_hover_inv(
         css = "opacity:0.1;transition:opacity 1s;"
