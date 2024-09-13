@@ -4,7 +4,7 @@
 #' @description
 #' Generates an interactive map of the US with states colored by their forecast
 #' rating. The size of each state bubble is scaled to the number of electors in
-#' the state and the color color is scaled to the probability of each candidate
+#' the state and the color is scaled to the probability of each candidate
 #' winning in the state.
 #'
 #' @param ... unused
