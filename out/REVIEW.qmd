@@ -87,36 +87,38 @@ pal <-
     "#b13737"
   )
 
-read_csv("polls/win_state.csv") %>%
+interpolate_fill <- function(x, pal) {
+
+  color_rgb <- colorRamp(rev(pal))
+  rgb_vals <- color_rgb(x)
+  hex <- rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 255)
+
+  return(hex)
+
+}
+
+state_ratings <- 
+  read_csv("polls/win_state.csv") %>%
   left_join(read_csv("../data/static/electors.csv")) %>%
-  mutate(rating = case_when(p_win < 0.01 ~ "Safe Rep",
-                            p_win < 0.15 ~ "Very likely Rep",
-                            p_win < 0.35 ~ "Likely Rep",
-                            p_win < 0.65 ~ "Uncertain",
-                            p_win < 0.85 ~ "Likely Dem",
-                            p_win < 0.99 ~ "Very likely Dem",
-                            TRUE ~ "Safe Dem")) %>%
-  filter(state != "National") %>%
-  group_by(run_date, rating) %>%
-  summarise(electors = sum(electors)) %>%
-  ungroup() %>%
-  mutate(rating = fct_relevel(rating, c("Safe Rep", 
-                                        "Very likely Rep", 
-                                        "Likely Rep",
-                                        "Uncertain", 
-                                        "Likely Dem", 
-                                        "Very likely Dem", 
-                                        "Safe Dem"))) %>%
+  mutate(rating = map_chr(p_win, ~interpolate_fill(.x, pal)))
+
+state_levels <- 
+  state_ratings %>%
+  arrange(p_win) %>%
+  distinct(rating) %>%
+  pull(rating)
+
+state_ratings %>%
+  mutate(rating = fct_relevel(rating, state_levels)) %>%
   ggplot(aes(x = run_date,
              y = electors,
-             fill = rating)) + 
-  geom_col(width = 1) +
-  scale_fill_manual(values = pal[7:1]) +
-  theme_void() +
+             fill = rating)) +
+  geom_col(width = 1) + 
+  scale_fill_identity() +
+  theme_void() + 
   theme(legend.position = "none") + 
   expand_limits(x = mdy(c("5/1/24", "11/5/24")))
 ```
-
 
 ## Data
 
