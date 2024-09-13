@@ -807,3 +807,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88130,National,1318,YouGov,2024-09-10,rv,Online Panel,None,TRUE,Harris,659,133,55,0,120,2,21,4,1,0
 88131,National,669,SoCal Strategies,2024-09-11,lv,Online Panel,REP,TRUE,Harris,345,134,55,0,94,1,21,2,1,0
 88136,National,1139,Leger,2024-09-11,lv,Online Panel,None,TRUE,Harris,587,134,55,0,56,1,21,4,1,0
+88145,National,3151,Morning Consult,2024-09-11,lv,Online Panel,None,TRUE,Harris,1658,134,55,0,65,1,21,4,1,0
+88148,National,961,YouGov,2024-09-11,lv,Online Panel,None,TRUE,Harris,501,134,55,0,120,1,21,4,1,0
+88143,Michigan,776,InsiderAdvantage,2024-09-12,lv,Text,None,TRUE,Harris,384,135,24,15,48,1,25,4,1,0
+88144,National,1250,Ipsos,2024-09-12,rv,Probability Panel,None,TRUE,Harris,660,135,55,0,49,2,24,4,1,0
