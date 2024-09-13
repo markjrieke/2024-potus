@@ -14,6 +14,8 @@ A more general overview of the model methodology can be found [here](https://www
 
 ### 2.5
 
+###### 2024-09-12
+
 * Updated state and national headline text to refer to raw probability, rather than ratings.
 * Removed rating textbar above state map.
 * Set state bubble color and summary bar fill based on a continuous gradient scaled by candidate probability of winning.

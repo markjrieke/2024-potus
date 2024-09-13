@@ -29,6 +29,8 @@ and the full output can be explored
 
 ### 2.5
 
+###### 2024-09-12
+
 - Updated state and national headline text to refer to raw probability,
   rather than ratings.
 - Removed rating textbar above state map.
