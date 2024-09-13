@@ -126,7 +126,6 @@ plot_map <- function(...,
               y = 269,
               label = "270 to win",
               family = "IBM Plex Sans",
-              fontface = "bold",
               color = "#363a3c",
               size = 3.25) +
     geom_text(x = -0.7,
@@ -135,7 +134,6 @@ plot_map <- function(...,
                                  538 - non_competitive_d - non_competitive_r,
                                  " votes"),
               family = "IBM Plex Sans",
-              fontface = "bold",
               color = "#363a3c",
               size = 3.25) +
     scale_fill_identity() +
