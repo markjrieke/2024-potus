@@ -4,17 +4,11 @@
 #' @description
 #' Generates an interactive map of the US with states colored by their forecast
 #' rating. The size of each state bubble is scaled to the number of electors in
-#' the state and the color color is set according to the following rating scale:
-#'
-#' * Safe Dem: >99% chance that Harris wins the state
-#' * Very likely Dem: >85%
-#' * Likely Dem: >65%
-#' * Uncertain: Both candidates have a <65% chance of winning
-#' * Likely Rep: >65% chance that Trump wins the state
-#' * Very likely Rep: >85%
-#' * Safe Rep: >99%
+#' the state and the color color is scaled to the probability of each candidate
+#' winning in the state.
 #'
 #' @param ... unused
+#' @param pal color palette to map probability of winning
 #' @param branch github branch to extract data from. Defaults to `"dev"`.
 plot_map <- function(...,
                      pal = c("#3579ac", "#7cb0d7", "#d3e5f2",
@@ -28,23 +22,30 @@ plot_map <- function(...,
     select(state) %>%
     mutate(link = glue::glue("window.open(\"{state}.html\")"))
 
+  # base map
   us_geo <-
     read_rds(find_document("data/tigris/tigris.rds", branch = branch))
 
+  # set color and fill based on probability of winning
   state_ratings <-
     read_csv(find_document("out/polls/win_state.csv", branch = branch)) %>%
     filter(run_date == max(run_date)) %>%
     left_join(read_csv(find_document("data/static/electors.csv", branch = branch))) %>%
     drop_na() %>%
     mutate(rating = map_chr(p_win, ~interpolate_fill(.x, pal)),
-           color = map_chr(p_win, ~interpolate_fill(.x, c(rep("white", 3), "black", rep("white", 3)))))
+           color = map_chr(p_win, ~interpolate_fill(.x, c(rep("white", 2),
+                                                          "gray60",
+                                                          "black",
+                                                          "gray60",
+                                                          rep("white", 2)))))
 
-  ratings_pal <-
+  # state vector used to relevel barchart
+  state_relevel <-
     state_ratings %>%
     arrange(p_win) %>%
-    distinct(rating) %>%
-    pull(rating)
+    pull(state)
 
+  # plot state bubbles and tooltips
   map_points <-
     state_ratings %>%
     left_join(read_csv(find_document("data/static/state_centers.csv", branch = branch))) %>%
@@ -62,6 +63,7 @@ plot_map <- function(...,
                                 .sep = "<br>"),
            tooltip = glue::glue("{color_text(tooltip, text_color)}"))
 
+  # us map!
   map_ratings <-
     us_geo %>%
     ggplot() +
@@ -82,28 +84,69 @@ plot_map <- function(...,
     theme_void() +
     theme(legend.position = "none")
 
-  map_bar <-
+  # counts of non-competitive races for summary bar
+  non_competitive_d <-
     state_ratings %>%
-    mutate(rating = fct_relevel(rating, ratings_pal)) %>%
+    filter(p_win > 0.85) %>%
+    pull(electors) %>%
+    sum()
+
+  non_competitive_r <-
+    state_ratings %>%
+    filter(p_win < 0.15) %>%
+    pull(electors) %>%
+    sum()
+
+  # generate summary bar
+  map_bar <-
+    map_points %>%
+    mutate(state = fct_relevel(state, state_relevel)) %>%
     ggplot(aes(x = 0,
                y = electors,
                fill = rating)) +
-    geom_bar(position = "stack",
-             stat = "identity") +
-    geom_segment(x = -0.5,
-                 xend = 0.5,
+    geom_bar_interactive(aes(onclick = link,
+                             tooltip = tooltip,
+                             data_id = state,
+                             group = state),
+                         position = "stack",
+                         stat = "identity") +
+    geom_rect(aes(ymin = non_competitive_d,
+                  ymax = 538 - non_competitive_r,
+                  xmin = -0.45,
+                  xmax = 0.45),
+              fill = NA,
+              color = "black") +
+    geom_segment(x = -0.45,
+                 xend = 0.45,
                  y = 269,
                  yend = 269,
-                 color = "gray60") +
+                 color = "black",
+                 linetype = "dotted") +
+    geom_text(x = 0.7,
+              y = 269,
+              label = "270 to win",
+              family = "IBM Plex Sans",
+              fontface = "bold",
+              color = "#363a3c",
+              size = 3.25) +
+    geom_text(x = -0.7,
+              y = non_competitive_d + (538 - non_competitive_d - non_competitive_r) / 2,
+              label = glue::glue("Competitive states: ",
+                                 538 - non_competitive_d - non_competitive_r,
+                                 " votes"),
+              family = "IBM Plex Sans",
+              fontface = "bold",
+              color = "#363a3c",
+              size = 3.25) +
     scale_fill_identity() +
     coord_flip() +
     theme_void() +
     expand_limits(x = c(-1, 1))
 
+  # bind together
   map_full <-
     (map_ratings / map_bar) +
     plot_layout(heights = c(9, 1))
-
 }
 
 #' Interpolate between an evenly distributed color palette
