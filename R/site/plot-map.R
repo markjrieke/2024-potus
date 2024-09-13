@@ -122,20 +122,22 @@ plot_map <- function(...,
                  yend = 269,
                  color = "black",
                  linetype = "dotted") +
-    geom_text(x = 0.7,
-              y = 269,
-              label = "270 to win",
-              family = "IBM Plex Sans",
-              color = "#363a3c",
-              size = 3.25) +
-    geom_text(x = -0.7,
-              y = non_competitive_d + (538 - non_competitive_d - non_competitive_r) / 2,
-              label = glue::glue("Competitive states: ",
-                                 538 - non_competitive_d - non_competitive_r,
-                                 " votes"),
-              family = "IBM Plex Sans",
-              color = "#363a3c",
-              size = 3.25) +
+    annotate(geom = "text",
+             x = 0.7,
+             y = 269,
+             label = "270 to win",
+             family = "IBM Plex Sans",
+             color = "#363a3c",
+             size = 3.25) +
+    annotate(geom = "text",
+             x = -0.7,
+             y = non_competitive_d + (538 - non_competitive_d - non_competitive_r) / 2,
+             label = glue::glue("Competitive states: ",
+                                538 - non_competitive_d - non_competitive_r,
+                                " votes"),
+             family = "IBM Plex Sans",
+             color = "#363a3c",
+             size = 3.25) +
     scale_fill_identity() +
     coord_flip() +
     theme_void() +
