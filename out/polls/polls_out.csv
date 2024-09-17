@@ -653,7 +653,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87873,National,1867,Outward Intelligence,2024-08-22,lv,Online Panel,None,TRUE,Harris,971,114,55,0,73,1,21,4,1,0
 87882,New Mexico,965,Emerson,2024-08-22,rv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,517,114,35,5,28,2,6,4,1,0
 87885,National,2356,RMG Research,2024-08-22,lv,Online Panel,None,TRUE,Harris,1178,114,55,0,86,1,21,4,1,0
-87888,Virginia,594,Quantus Polls and News,2024-08-22,rv,Online Panel,None,TRUE,Harris,306,114,50,13,84,2,21,4,1,0
+87888,Virginia,594,Quantus Polls and News,2024-08-22,rv,Online Panel,REP,TRUE,Harris,306,114,50,13,84,2,21,2,1,0
 87893,Michigan,700,TIPP,2024-08-22,lv,Online Panel,None,TRUE,Harris,359,114,24,15,109,1,21,4,1,0
 87910,Texas,674,PPP,2024-08-22,rv,IVR/Text-to-Web,DEM,TRUE,Harris,319,114,47,40,76,2,8,1,1,0
 87911,Florida,820,PPP,2024-08-22,rv,IVR/Text-to-Web,DEM,TRUE,Harris,393,114,10,30,76,2,8,1,1,0
@@ -728,7 +728,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88020,Wisconsin,917,CNN/SSRS,2024-08-29,lv,Probability Panel,None,TRUE,Harris,488,121,53,10,15,1,24,4,1,0
 88036,Montana,582,Fabrizio/David Binder Research,2024-08-29,lv,Live Phone/Text-to-Web,None,TRUE,Harris,246,121,28,4,31,1,16,4,1,0
 88162,Texas,752,Lake Research,2024-08-29,rv,Live Phone,None,TRUE,Harris,344,121,47,40,57,2,9,4,1,0
-87987,Texas,960,Quantus Polls and News,2024-08-30,rv,Online Panel,None,TRUE,Harris,440,122,47,40,84,2,21,4,1,0
 88007,National,1289,TIPP,2024-08-30,rv,Online Panel,None,TRUE,Harris,665,122,55,0,109,2,21,4,1,0
 88010,Maryland,746,Gonzales Research & Media Services,2024-08-30,rv,Live Phone,None,TRUE,Harris,459,122,22,10,41,2,9,4,1,0
 87989,Nevada,755,InsiderAdvantage,2024-08-31,lv,Unknown,None,TRUE,Harris,372,123,32,6,50,1,28,4,1,0
@@ -797,7 +796,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88100,Virginia,823,Morning Consult,2024-09-08,lv,Online Panel,None,TRUE,Harris,454,131,50,13,68,1,21,4,1,0
 88101,Georgia,921,Quinnipiac,2024-09-08,lv,Live Phone,None,TRUE,Harris,446,131,11,16,85,1,9,4,1,0
 88105,Virginia,945,Washington Post/George Mason University,2024-09-08,lv,Live Phone/Text-to-Web,None,TRUE,Harris,513,131,50,13,122,1,16,4,1,0
-88107,National,10076,Morning Consult,2024-09-08,lv,Online Panel,None,TRUE,Harris,5197,131,55,0,68,1,21,4,1,0
 88155,Minnesota,1510,Embold Research,2024-09-08,lv,Unknown,None,TRUE,Harris,789,131,25,10,27,1,28,4,1,0
 88113,North Carolina,441,Redfield & Wilton Strategies,2024-09-09,lv,Online Panel,None,TRUE,Harris,223,132,37,16,87,1,21,4,1,0
 88114,Arizona,712,Redfield & Wilton Strategies,2024-09-09,lv,Online Panel,None,TRUE,Harris,352,132,3,11,87,1,21,4,1,0
@@ -812,13 +810,12 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88130,National,1318,YouGov,2024-09-10,rv,Online Panel,None,TRUE,Harris,659,133,55,0,124,2,21,4,1,0
 88131,National,669,SoCal Strategies,2024-09-11,lv,Online Panel,REP,TRUE,Harris,345,134,55,0,98,1,21,2,1,0
 88136,National,1069,Leger,2024-09-11,lv,Online Panel,None,TRUE,Harris,552,134,55,0,59,1,21,4,1,0
-88145,National,3151,Morning Consult,2024-09-11,lv,Online Panel,None,TRUE,Harris,1658,134,55,0,68,1,21,4,1,0
 88160,Michigan,556,Mitchell,2024-09-11,lv,IVR/Text-to-Web,None,TRUE,Harris,278,134,24,15,67,1,8,4,1,0
 88179,Iowa,590,Selzer,2024-09-11,lv,Live Phone,None,TRUE,Harris,282,134,16,6,93,1,9,4,1,0
 88143,Michigan,773,InsiderAdvantage,2024-09-12,lv,Text,None,TRUE,Harris,384,135,24,15,50,1,25,4,1,0
 88144,National,1250,Ipsos,2024-09-12,rv,Probability Panel,None,TRUE,Harris,660,135,55,0,51,2,24,4,1,0
 88157,National,1679,Redfield & Wilton Strategies,2024-09-12,lv,Online Panel,None,TRUE,Harris,859,135,55,0,87,1,21,4,1,0
-88161,North Carolina,775,Quantus Polls and News,2024-09-12,lv,Online Panel,None,TRUE,Harris,381,135,37,16,84,1,21,4,1,0
+88161,North Carolina,775,Quantus Polls and News,2024-09-12,lv,Online Panel,REP,TRUE,Harris,381,135,37,16,84,1,21,2,1,0
 88163,New Hampshire,2107,St. Anselm,2024-09-12,lv,Online Panel,None,TRUE,Harris,1143,135,33,4,102,1,21,4,1,0
 88164,National,2701,RMG Research,2024-09-12,lv,Unknown,None,TRUE,Harris,1406,135,55,0,86,1,28,4,1,0
 88165,Alaska,1116,Alaska Survey Research,2024-09-12,lv,Online Panel,None,TRUE,Harris,527,135,2,3,4,1,21,4,1,0
@@ -831,3 +828,11 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88172,North Carolina,923,TIPP,2024-09-13,lv,Online Panel,None,TRUE,Harris,447,136,37,16,109,1,21,4,1,0
 88177,National,2152,Ipsos,2024-09-13,lv,Probability Panel,None,TRUE,Harris,1142,136,55,0,51,1,24,4,1,0
 88178,New Mexico,468,Research & Polling,2024-09-13,lv,Live Phone,None,TRUE,Harris,261,136,35,5,89,1,9,4,1,0
+88187,Maryland,877,Emerson,2024-09-13,lv,Online Panel/Text-to-Web,None,TRUE,Harris,581,136,22,10,28,1,23,4,1,0
+88188,Missouri,838,Emerson,2024-09-13,lv,Online Panel/Text-to-Web,None,TRUE,Harris,369,136,27,10,28,1,23,4,1,0
+88189,Indiana,986,Emerson,2024-09-13,lv,Online Panel/Text-to-Web,None,TRUE,Harris,407,136,15,11,28,1,23,4,1,0
+88184,Pennsylvania,471,Suffolk,2024-09-14,lv,Live Phone,None,TRUE,Harris,243,137,42,19,104,1,9,4,1,0
+88182,National,1473,Big Village,2024-09-15,lv,Online Panel,None,TRUE,Harris,792,138,55,0,13,1,21,4,1,0
+88186,Pennsylvania,784,InsiderAdvantage,2024-09-15,lv,Text,None,TRUE,Harris,384,138,42,19,50,1,25,4,1,0
+88190,National,10581,Morning Consult,2024-09-15,lv,Online Panel,None,TRUE,Harris,5621,138,55,0,68,1,21,4,1,0
+88185,National,1604,Angus Reid,2024-09-16,rv,Online Panel,None,TRUE,Harris,836,139,55,0,6,2,21,4,1,0
