@@ -27,6 +27,14 @@ and the full output can be explored
 
 ## Version history
 
+### 2.6
+
+###### 2024-09-18
+
+- Included Claudia De la Cruz as an [allowed
+  candidate](https://ballotpedia.org/Presidential_candidates,_2024).
+  Polls including her will now be included in the model.
+
 ### 2.5
 
 ###### 2024-09-12
