@@ -877,6 +877,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88233,Wisconsin,1182,Marist,2024-09-17,lv,Live Phone/Online Panel/Text-to-Web,None,TRUE,Harris,597,140,53,10,65,1,14,4,1,0
 88234,Michigan,1127,Marist,2024-09-17,lv,Live Phone/Online Panel/Text-to-Web,None,TRUE,Harris,592,140,24,15,65,1,14,4,1,0
 88245,National,761,Florida Atlantic University/Mainstreet Research,2024-09-17,lv,IVR/Online Panel,None,TRUE,Harris,397,140,55,0,37,1,5,4,1,0
+88271,National,930,Hart/POS,2024-09-17,rv,Live Phone,None,TRUE,Harris,490,140,55,0,46,2,9,4,1,0
 88235,Arizona,855,Emerson,2024-09-18,lv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,423,141,3,11,30,1,6,4,1,0
 88236,Georgia,960,Emerson,2024-09-18,lv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,470,141,11,16,30,1,6,4,1,0
 88237,Michigan,868,Emerson,2024-09-18,lv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,438,141,24,15,30,1,6,4,1,0
@@ -903,3 +904,4 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88267,Pennsylvania,792,MassINC Polling Group,2024-09-18,lv,Live Phone/Text-to-Web,None,TRUE,Harris,416,141,42,19,68,1,16,4,1,0
 88246,National,1880,Outward Intelligence,2024-09-19,lv,Online Panel,None,TRUE,Harris,995,142,55,0,76,1,21,4,1,0
 88264,National,2909,RMG Research,2024-09-19,lv,Unknown,None,TRUE,Harris,1484,142,55,0,90,1,29,4,1,0
+88274,National,3129,YouGov,2024-09-20,lv,Online Panel,None,TRUE,Harris,1627,143,55,0,130,1,21,4,1,0
