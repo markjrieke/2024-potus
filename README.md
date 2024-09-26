@@ -27,6 +27,14 @@ and the full output can be explored
 
 ## Version history
 
+### 2.8
+
+###### 2024-09-26
+
+- Included Shiva Ayyadurai as an [allowed
+  candidate](https://ballotpedia.org/Presidential_candidates,_2024).
+  Polls including him will now be included in the model.
+
 ### 2.7
 
 ###### 2024-09-25
