@@ -31,9 +31,9 @@ and the full output can be explored
 
 ###### 2024-09-26
 
-- Included Shiva Ayyadurai as an [allowed
-  candidate](https://ballotpedia.org/Presidential_candidates,_2024).
-  Polls including him will now be included in the model.
+- Included Shiva Ayyadurai and Lars Mapstead as [allowed
+  candidates](https://ballotpedia.org/Presidential_candidates,_2024).
+  Polls including them will now be included in the model.
 
 ### 2.7
 
