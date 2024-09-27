@@ -27,6 +27,18 @@ and the full output can be explored
 
 ## Version history
 
+### 2.9
+
+###### 2024-09-27
+
+- Parameter outputs for the poll model are now saved to the `out/polls/`
+  directory:
+  - beta_b: state-level polling bias
+  - beta_c: party-sponsor polling bias
+  - beta_g: group (population) polling bias
+  - beta_m: mode polling bias
+  - beta_p: pollster bias
+
 ### 2.8
 
 ###### 2024-09-26

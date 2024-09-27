@@ -517,6 +517,67 @@ run_poll_model <- function(run_date) {
     arrange(state) %>%
     write_csv("out/polls/conditional_probabilities.csv")
 
+  # parameter estimates: beta_g
+  poll_fit$draws("beta_g", format = "df") %>%
+    as_tibble() %>%
+    pivot_longer(starts_with("beta"),
+                 names_to = "variable",
+                 values_to = "estimate") %>%
+    mutate(gid = parse_number(variable)) %>%
+    left_join(gid) %>%
+    group_by(group) %>%
+    tidybayes::median_qi(estimate, .width = c(0.66, 0.95)) %>%
+    write_csv("out/polls/beta_g.csv")
+
+  # parameter estimates: beta_c
+  poll_fit$draws("beta_c", format = "df") %>%
+    as_tibble() %>%
+    pivot_longer(starts_with("beta"),
+                 names_to = "variable",
+                 values_to = "estimate") %>%
+    mutate(cid = parse_number(variable)) %>%
+    left_join(cid) %>%
+    group_by(candidate_sponsored) %>%
+    tidybayes::median_qi(estimate, .width = c(0.66, 0.95)) %>%
+    write_csv("out/polls/beta_c.csv")
+
+  # parameter estimates: beta_p
+  poll_fit$draws("beta_p", format = "df") %>%
+    as_tibble() %>%
+    pivot_longer(starts_with("beta"),
+                 names_to = "variable",
+                 values_to = "estimate") %>%
+    mutate(pid = parse_number(variable)) %>%
+    left_join(pid) %>%
+    group_by(pollster) %>%
+    tidybayes::median_qi(estimate, .width = c(0.66, 0.95)) %>%
+    write_csv("out/polls/beta_p.csv")
+
+  # parameter estimates: beta_m
+  poll_fit$draws("beta_m", format = "df") %>%
+    as_tibble() %>%
+    pivot_longer(starts_with("beta"),
+                 names_to = "variable",
+                 values_to = "estimate") %>%
+    mutate(mid = parse_number(variable)) %>%
+    left_join(mid) %>%
+    group_by(mode) %>%
+    tidybayes::median_qi(estimate, .width = c(0.66, 0.95)) %>%
+    write_csv("out/polls/beta_m.csv")
+
+  # parameter estimates: beta_b
+  poll_fit$draws(paste0("beta_b[1,", 1:max(sid$sid), "]"), format = "df") %>%
+    as_tibble() %>%
+    pivot_longer(starts_with("beta"),
+                 names_to = "variable",
+                 values_to = "estimate") %>%
+    mutate(variable = str_remove_all(variable, "beta_b\\[1,"),
+           sid = parse_number(variable)) %>%
+    left_join(sid) %>%
+    group_by(state) %>%
+    tidybayes::median_qi(estimate, .width = c(0.66, 0.95)) %>%
+    write_csv("out/polls/beta_b.csv")
+
   # diagnostics
   diagnostics <-
     poll_fit %>%

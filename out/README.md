@@ -21,6 +21,11 @@ This directory contains the output of each of the models in the pipeline. Each f
 * `win_pres.csv`: Harris' forecasted probability of winning the electoral college.
 * `win_state.csv`: Harris' forecasted probability of winning in each state.
 * `conditional_probabilities.csv`: Harris' forecasted probability of winning the electoral college conditional on having won/lost in each state.
+* `beta_b.csv`: State-level polling bias.
+* `beta_c.csv`: Sponsor-party polling bias.
+* `beta_g.csv`: Group (population) polling bias.
+* `beta_m.csv`: Mode polling bias.
+* `beta_p.csv`: Pollster bias.
 
 ## priors/
 
