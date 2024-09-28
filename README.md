@@ -27,6 +27,32 @@ and the full output can be explored
 
 ## Version history
 
+### 2.10
+
+###### 2024-09-28
+
+- Use `pollster_rating_name` rather than `pollster` to uniquely identify
+  pollsters.
+- This coalesces pollsters who appear under multiple name into one
+  (e.g., *HarrisX* and *HarrisX/Harris Poll* now both fall under *Harris
+  Insights & Analytics*, rather than being considered separate
+  pollsters).
+- This affects the following pollsters:
+  - **SurveyUSA**: previously *SurveyUSA* or *SurveyUSA/High Point
+    University*
+  - **Quantus Insights**: previously *Quantus Insights* or *Quantus
+    Polls and News*
+  - **YouGov**: previously *YouGov* or *YouGov Blue*
+  - **Harris Insights & Analytics**: previously *HarrisX* or
+    *HarrisX/Harris Poll*
+  - **Change Research**: previously *Change Research* or *Embold
+    Research*
+  - **SoCal Research**: previously *SoCal Research* or *SoCal
+    Strategies*
+  - **Fabrizio, Lee & Associates**: previously *Fabrizio* or *Fabrizio
+    Ward*
+  - **The Tyson Group**: previously *The Tyson Group* or *P2 Insights*
+
 ### 2.9
 
 ###### 2024-09-27

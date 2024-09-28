@@ -138,7 +138,7 @@ run_poll_model <- function(run_date) {
            question_id,
            state,
            sample_size,
-           pollster,
+           pollster = pollster_rating_name,
            start_date,
            end_date,
            created_at,
