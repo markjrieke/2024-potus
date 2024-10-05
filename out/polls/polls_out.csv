@@ -1047,6 +1047,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88494,Arizona,465,HighGround Inc.,2024-09-29,lv,Live Phone,None,TRUE,Harris,238,152,3,11,52,1,10,4,1,0
 88499,Pennsylvania,752,OnMessage Inc.,2024-09-29,lv,Unknown,REP,TRUE,Harris,376,152,42,19,82,1,31,2,1,0
 88503,North Carolina,566,High Point University Survey Research Center,2024-09-29,lv,Online Panel,None,TRUE,Harris,283,152,37,16,51,1,23,4,1,0
+88517,National,1519,Redfield & Wilton Strategies,2024-09-29,lv,Online Panel,None,TRUE,Harris,776,152,55,0,96,1,23,4,1,0
 88450,Arizona,775,InsiderAdvantage,2024-09-30,lv,Text,None,TRUE,Harris,382,153,3,11,55,1,27,4,1,0
 88451,Nevada,781,InsiderAdvantage,2024-09-30,lv,Text,None,TRUE,Harris,387,153,32,6,55,1,27,4,1,0
 88452,North Carolina,790,InsiderAdvantage,2024-09-30,lv,Text,None,TRUE,Harris,394,153,37,16,55,1,27,4,1,0
@@ -1060,3 +1061,4 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88506,National,1268,Marist College,2024-10-01,lv,Live Phone/Online Panel/Text-to-Web,None,TRUE,Harris,647,154,55,0,68,1,15,4,1,0
 88507,New Hampshire,1999,Saint Anselm College Survey Center,2024-10-02,lv,Online Panel,None,TRUE,Harris,1073,155,33,4,102,1,23,4,1,0
 88513,National,2906,RMG Research,2024-10-03,lv,Online Panel,None,TRUE,Harris,1453,156,55,0,95,1,23,4,1,0
+88515,National,1150,Data for Progress,2024-10-03,lv,Online Panel,None,TRUE,Harris,593,156,55,0,27,1,23,4,1,0
