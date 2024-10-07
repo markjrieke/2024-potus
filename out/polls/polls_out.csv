@@ -1060,5 +1060,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88496,National,988,Emerson College,2024-10-01,lv,IVR/Online Panel/Text-to-Web,None,TRUE,Harris,502,154,55,0,34,1,7,4,1,0
 88506,National,1268,Marist College,2024-10-01,lv,Live Phone/Online Panel/Text-to-Web,None,TRUE,Harris,647,154,55,0,68,1,15,4,1,0
 88507,New Hampshire,1999,Saint Anselm College Survey Center,2024-10-02,lv,Online Panel,None,TRUE,Harris,1073,155,33,4,102,1,23,4,1,0
+88526,Arizona,752,RMG Research,2024-10-02,lv,Online Panel,None,TRUE,Harris,360,155,3,11,95,1,23,4,1,0
 88513,National,2906,RMG Research,2024-10-03,lv,Online Panel,None,TRUE,Harris,1453,156,55,0,95,1,23,4,1,0
 88515,National,1150,Data for Progress,2024-10-03,lv,Online Panel,None,TRUE,Harris,593,156,55,0,27,1,23,4,1,0
+88523,National,948,TIPP Insights,2024-10-04,lv,Online Panel,None,TRUE,Harris,489,157,55,0,116,1,23,4,1,0
