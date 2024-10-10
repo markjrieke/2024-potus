@@ -143,6 +143,7 @@ run_poll_model <- function(run_date) {
            end_date,
            created_at,
            population,
+           internal,
            mode = methodology,
            candidate_sponsored = partisan,
            candidate = answer,
@@ -248,6 +249,7 @@ run_poll_model <- function(run_date) {
              mode,
              candidate_sponsored,
              post_announcement,
+             internal,
              candidate,
              dem_candidate) %>%
     summarise(pct = mean(pct)) %>%
@@ -289,7 +291,12 @@ run_poll_model <- function(run_date) {
     # drop any late-arrive biden polls
     mutate(late_biden = dem_candidate == "Biden" & post_announcement) %>%
     filter(!late_biden) %>%
-    select(-late_biden)
+    select(-late_biden) %>%
+
+    # add indicator for partisan internals
+    mutate(internal = case_when(internal & candidate_sponsored == "DEM" ~ 1,
+                                internal & candidate_sponsored == "REP" ~ -1,
+                                .default = 0))
 
   # add mapping ids by day
   polls <-
@@ -376,6 +383,7 @@ run_poll_model <- function(run_date) {
       c_ref = cid %>% filter(candidate_sponsored == "None") %>% pull(cid),
       h_ref = hid %>% filter(dem_candidate == "Harris") %>% pull(hid),
       hyp = polls$hyp,
+      trn = polls$internal,
       F_r = F_r,
       wt = wt,
       K = polls$K,
@@ -383,6 +391,7 @@ run_poll_model <- function(run_date) {
       beta_g_sigma = 0.02,
       beta_c_sigma = 0.015,
       beta_hyp_sigma = 0.25,
+      beta_trn_sigma = 0.05,
       sigma_n_sigma = 0.02,
       sigma_p_sigma = 0.05,
       sigma_m_sigma = 0.02,

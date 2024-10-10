@@ -144,6 +144,7 @@ Polling bias, $\delta_{i,h,s}$ is comprised of several sources:
 * $\beta_g$: polling group/polling population bias
 * $\beta_m$: poll mode bias
 * $\beta_c$: candidate-sponsorship (i.e., if the poll was sponsored by a particular party)
+* $\beta_i$: internal poll bias
 * $\beta_p$: pollster bias
 * $\beta_n$: a parameter to capture other unmodeled polling biases
 
@@ -153,7 +154,7 @@ Thus, for each poll, $i$, $\delta_{i,h,s}$ is:
 
 $$
 \begin{align*}
-\delta_{i,s} &= \beta_{h,b[i]} + \beta_{g[i]} + \beta_{m[i]} + \beta_{c[i]} + \beta_{p[i]} + \beta_{y[i]} + \beta_{n[i]}
+\delta_{i,s} &= \beta_{h,b[i]} + \beta_{g[i]} + \beta_{m[i]} + \beta_{c[i]} + \beta_{i[i]} + \beta_{p[i]} + \beta_{y[i]} + \beta_{n[i]}
 \end{align*}
 $$
 
@@ -183,7 +184,7 @@ $$
 \end{align*}
 $$
 
-The remaining parameters, $\beta_g$, $\beta_c$, and $\beta_y$, have too few subgroups to be modeled hierarchically. As such, they are modeled as fixed effects with the "likely voter" group as the reference condition in $\beta_g$, "no sponsor" as the reference condition in $\beta_c$, and "non-hypothetical candidate" as the reference condition in $\beta_y$. 
+The remaining parameters, $\beta_g$, $\beta_c$, $\beta_i$, and $\beta_y$, have too few subgroups to be modeled hierarchically. As such, they are modeled as fixed effects with the "likely voter" group as the reference condition in $\beta_g$, "no sponsor" as the reference condition in $\beta_c$, "non-internal" as the reference condition in $\beta_i$, and "non-hypothetical candidate" as the reference condition in $\beta_y$. 
 
 For Harris, $h=1$. Thus, the polling model generates a series of outputs that are referenced throughout the site:
 

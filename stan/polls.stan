@@ -32,6 +32,9 @@ data {
   // Hypothetical Candidate Corrections
   vector<lower=0, upper=1>[N] hyp;     // Takes value of (1) for Harris polls prior to announcement
 
+  // Internal Poll Corrections
+  vector<lower=-1, upper=1>[N] trn;    // Takes value of (1) for Harris internals and (-1) for Trump internals
+
   // Raw state data
   matrix[R, R] F_r;                    // Raw state distance matrix in feature space
   array[A] vector[R] wt;               // Raw weights per aggregate state
@@ -44,6 +47,7 @@ data {
   real<lower=0> beta_g_sigma;          // Scale for the group (population) bias
   real<lower=0> beta_c_sigma;          // Scale for the candidate sponsor bias
   real<lower=0> beta_hyp_sigma;        // Scale for the pre-announcement bias
+  real<lower=0> beta_trn_sigma;        // Scale for the internal-poll bias
 
   // Random effect priors
   real<lower=0> sigma_n_sigma;         // Scale for half-normal prior for raw poll bias
@@ -86,6 +90,7 @@ parameters {
   vector[G-1] eta_g;                   // Group (population) bias
   vector[C-1] eta_c;                   // Candidate sponsor bias
   real eta_hyp;                        // Hypothetical candidate correction
+  real<lower=0> eta_trn;               // Internal poll correction
 
   // Random effects
   vector[N] eta_n;                     // Raw poll bias
@@ -114,6 +119,7 @@ transformed parameters{
   vector[G] beta_g = add_reference(eta_g, g_ref);
   vector[C] beta_c = add_reference(eta_c, c_ref);
   vector[N] beta_hyp = eta_hyp * hyp;
+  vector[N] beta_trn = eta_trn * trn;
 
   // Extract random parameters
   vector[N] beta_n = eta_n * sigma_n;
@@ -163,6 +169,7 @@ transformed parameters{
           + beta_c[cid[n]]
           + beta_p[pid[n]]
           + beta_hyp[n]
+          + beta_trn[n]
           + beta_n[n];
   }
 }
@@ -172,6 +179,7 @@ model {
   target += normal_lpdf(eta_g | 0, beta_g_sigma);
   target += normal_lpdf(eta_c | 0, beta_c_sigma);
   target += normal_lpdf(eta_hyp | 0, beta_hyp_sigma);
+  target += normal_lpdf(eta_trn | 0, beta_trn_sigma);
 
   // Priors over random effects
   target += std_normal_lpdf(eta_n);

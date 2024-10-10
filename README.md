@@ -27,6 +27,14 @@ and the full output can be explored
 
 ## Version history
 
+### 2.11
+
+###### 2024-10-10
+
+- Added a paramter, $\beta_i$, to model the effect of internal polls.
+- $\beta_i$ is separate from $\beta_c$, which models the effect of
+  party-sponsored polls.
+
 ### 2.10
 
 ###### 2024-09-28
