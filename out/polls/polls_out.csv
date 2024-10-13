@@ -1160,3 +1160,5 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88661,Georgia,578,Redfield & Wilton Strategies,2024-10-09,lv,Online Panel,None,TRUE,0,Harris,286,162,11,16,103,1,23,4,1,0
 88662,Pennsylvania,664,Redfield & Wilton Strategies,2024-10-09,lv,Online Panel,None,TRUE,0,Harris,325,162,42,19,103,1,23,4,1,0
 88647,National,2856,RMG Research,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,1472,163,55,0,102,1,23,4,1,0
+88664,Pennsylvania,831,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,428,163,42,19,129,1,10,4,1,0
+88665,Arizona,784,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,372,163,3,11,129,1,10,4,1,0
