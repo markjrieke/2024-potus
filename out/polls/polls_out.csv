@@ -1105,6 +1105,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88545,Michigan,546,Glengariff Group,2024-10-04,lv,Live Phone,None,TRUE,0,Harris,281,157,24,15,47,1,10,4,1,0
 88556,Texas,579,The New York Times/Siena College,2024-10-04,lv,Live Phone,None,TRUE,0,Harris,271,157,47,40,129,1,10,4,1,0
 88622,National,2198,Noble Predictive Insights,2024-10-04,lv,Online Panel,None,TRUE,0,Harris,1122,157,55,0,87,1,23,4,1,0
+88669,Florida,575,Mason-Dixon Polling & Strategy,2024-10-04,lv,Live Phone,None,TRUE,0,Harris,269,157,10,30,77,1,10,4,1,0
 88551,Massachusetts,467,Suffolk University,2024-10-05,lv,Live Phone,None,TRUE,0,Harris,306,158,23,11,119,1,10,4,1,0
 88528,National,940,Research Co.,2024-10-06,lv,Online Panel,None,TRUE,0,Harris,490,159,55,0,107,1,23,4,1,0
 88550,National,3216,The New York Times/Siena College,2024-10-06,lv,Live Phone,None,TRUE,0,Harris,1659,159,55,0,129,1,10,4,1,0
@@ -1115,7 +1116,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88601,Wisconsin,665,Arc Insights,2024-10-06,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,329,159,53,10,9,1,17,4,1,0
 88634,National,3984,Pew Research Center,2024-10-06,rv,Probability Panel,None,TRUE,0,Harris,2012,159,55,0,93,2,26,4,1,0
 88552,Arizona,709,SoCal Research,2024-10-07,lv,Online Panel,REP,TRUE,0,Harris,358,160,3,11,114,1,23,2,1,0
-88558,National,1076,Ipsos,2024-10-07,lv,Probability Panel,None,TRUE,0,Harris,549,160,55,0,62,1,26,4,1,0
 88574,Michigan,446,Research Co.,2024-10-07,lv,Online Panel,None,TRUE,0,Harris,230,160,24,15,107,1,23,4,1,0
 88575,Pennsylvania,445,Research Co.,2024-10-07,lv,Online Panel,None,TRUE,0,Harris,225,160,42,19,107,1,23,4,1,0
 88576,Wisconsin,441,Research Co.,2024-10-07,lv,Online Panel,None,TRUE,0,Harris,225,160,53,10,107,1,23,4,1,0
@@ -1147,6 +1147,9 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88644,Pennsylvania,558,"Fabrizio, Lee & Associates/GBAO",2024-10-08,rv,Unknown,None,TRUE,0,Harris,276,161,42,19,40,2,31,4,1,0
 88645,Wisconsin,576,"Fabrizio, Lee & Associates/GBAO",2024-10-08,rv,Unknown,None,TRUE,0,Harris,288,161,53,10,40,2,31,4,1,0
 88646,Nebraska,564,Torchlight Strategies,2024-10-08,lv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,222,161,56,2,133,1,17,2,1,0
+88666,National,960,Hart Research Associates/Public Opinion Strategies,2024-10-08,rv,Live Phone,None,TRUE,0,Harris,480,161,55,0,53,2,10,4,1,0
+88667,National,1697,Ipsos,2024-10-08,lv,Probability Panel,None,TRUE,0,Harris,874,161,55,0,62,1,26,4,1,0
+88671,Pennsylvania,752,J.L. Partners,2024-10-08,lv,Live Phone/Online Panel/Text-to-Web,None,TRUE,0,Harris,376,161,42,19,64,1,15,4,1,0
 88624,Arizona,760,"Fabrizio, Lee & Associates/McLaughlin & Associates",2024-10-09,lv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,368,162,3,11,41,1,17,2,1,0
 88625,Georgia,760,"Fabrizio, Lee & Associates/McLaughlin & Associates",2024-10-09,lv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,360,162,11,16,41,1,17,2,1,0
 88626,Michigan,776,"Fabrizio, Lee & Associates/McLaughlin & Associates",2024-10-09,lv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,384,162,24,15,41,1,17,2,1,0
@@ -1162,3 +1165,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88647,National,2856,RMG Research,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,1472,163,55,0,102,1,23,4,1,0
 88664,Pennsylvania,831,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,428,163,42,19,129,1,10,4,1,0
 88665,Arizona,784,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,372,163,3,11,129,1,10,4,1,0
+88673,Georgia,710,RMG Research,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,344,163,11,16,102,1,23,4,1,0
+88670,National,2685,YouGov,2024-10-11,lv,Online Panel,None,TRUE,0,Harris,1383,164,55,0,150,1,23,4,1,0
+88672,National,1152,TIPP Insights,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,594,166,55,0,124,1,23,4,1,0
