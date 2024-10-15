@@ -1109,7 +1109,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88551,Massachusetts,467,Suffolk University,2024-10-05,lv,Live Phone,None,TRUE,0,Harris,306,158,23,11,119,1,10,4,1,0
 88528,National,940,Research Co.,2024-10-06,lv,Online Panel,None,TRUE,0,Harris,490,159,55,0,107,1,23,4,1,0
 88550,National,3216,The New York Times/Siena College,2024-10-06,lv,Live Phone,None,TRUE,0,Harris,1659,159,55,0,129,1,10,4,1,0
-88553,National,11012,Morning Consult,2024-10-06,lv,Online Panel,None,TRUE,0,Harris,5790,159,55,0,83,1,23,4,1,0
 88555,Florida,597,The New York Times/Siena College,2024-10-06,lv,Live Phone,None,TRUE,0,Harris,255,159,10,30,129,1,10,4,1,0
 88561,National,1797,Redfield & Wilton Strategies,2024-10-06,lv,Online Panel,None,TRUE,0,Harris,915,159,55,0,103,1,23,4,1,0
 88569,Texas,737,Florida Atlantic University PolCom Lab/Mainstreet Research,2024-10-06,lv,IVR/Online Panel/Text-to-Web,None,TRUE,0,Harris,349,159,47,40,43,1,7,4,1,0
@@ -1150,6 +1149,8 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88666,National,960,Hart Research Associates/Public Opinion Strategies,2024-10-08,rv,Live Phone,None,TRUE,0,Harris,480,161,55,0,53,2,10,4,1,0
 88667,National,1697,Ipsos,2024-10-08,lv,Probability Panel,None,TRUE,0,Harris,874,161,55,0,62,1,26,4,1,0
 88671,Pennsylvania,752,J.L. Partners,2024-10-08,lv,Live Phone/Online Panel/Text-to-Web,None,TRUE,0,Harris,376,161,42,19,64,1,15,4,1,0
+88687,Florida,777,Tarrance Group,2024-10-08,rv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,360,161,10,30,126,2,17,2,1,0
+88695,Tennessee,884,Targoz Market Research,2024-10-08,lv,Unknown,None,TRUE,0,Harris,340,161,46,11,125,1,31,4,1,0
 88624,Arizona,760,"Fabrizio, Lee & Associates/McLaughlin & Associates",2024-10-09,lv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,368,162,3,11,41,1,17,2,1,0
 88625,Georgia,760,"Fabrizio, Lee & Associates/McLaughlin & Associates",2024-10-09,lv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,360,162,11,16,41,1,17,2,1,0
 88626,Michigan,776,"Fabrizio, Lee & Associates/McLaughlin & Associates",2024-10-09,lv,Live Phone/Text-to-Web,REP,TRUE,-1,Harris,384,162,24,15,41,1,17,2,1,0
@@ -1166,5 +1167,12 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88664,Pennsylvania,831,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,428,163,42,19,129,1,10,4,1,0
 88665,Arizona,784,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,372,163,3,11,129,1,10,4,1,0
 88673,Georgia,710,RMG Research,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,344,163,11,16,102,1,23,4,1,0
+88686,Texas,1289,University of Houston Hobby School of Public Affairs,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,611,163,47,40,139,1,23,4,1,0
+88688,Massachusetts,602,University of Massachusetts Department of Political Science/YouGov,2024-10-10,a,Online Panel,None,TRUE,0,Harris,392,163,23,11,140,4,23,4,1,0
+88690,Pennsylvania,1153,American Pulse Research & Polling,2024-10-10,lv,Unknown,None,TRUE,0,Harris,568,163,42,19,7,1,31,4,1,0
 88670,National,2685,YouGov,2024-10-11,lv,Online Panel,None,TRUE,0,Harris,1383,164,55,0,150,1,23,4,1,0
-88672,National,1152,TIPP Insights,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,594,166,55,0,124,1,23,4,1,0
+88676,National,2596,Harris Insights & Analytics,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,1324,166,55,0,52,1,23,4,1,0
+88684,National,8302,Morning Consult,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,4324,166,55,0,83,1,23,4,1,0
+88689,Michigan,671,SoCal Research,2024-10-13,lv,Online Panel,REP,TRUE,0,Harris,339,166,24,15,114,1,23,2,1,0
+88685,National,1138,TIPP Insights,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,587,167,55,0,124,1,23,4,1,0
+88691,Wisconsin,795,Patriot Polling,2024-10-14,rv,IVR,None,TRUE,0,Harris,393,167,53,10,92,2,2,4,1,0
