@@ -164,6 +164,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87196,North Carolina,552,Spry Strategies,2024-06-11,lv,IVR/Live Phone/Text,None,FALSE,0,Biden,264,42,37,16,118,1,4,4,2,0
 87162,National,962,Echelon Insights,2024-06-12,lv,Online Panel,None,FALSE,0,Biden,486,43,55,0,32,1,23,4,2,0
 87164,National,744,Ipsos,2024-06-12,rv,Probability Panel,None,FALSE,0,Biden,363,43,55,0,62,2,27,4,2,0
+87166,Virginia,698,co/efficient,2024-06-12,lv,IVR/Text,REP,FALSE,-1,Biden,349,43,50,13,156,1,8,2,2,0
 87182,National,924,Redfield & Wilton Strategies,2024-06-12,lv,Online Panel,None,FALSE,0,Biden,468,43,55,0,104,1,23,4,2,0
 87192,National,1160,Marist College,2024-06-12,rv,Live Phone/Text/Online Panel,None,FALSE,0,Biden,580,43,55,0,74,2,20,4,2,0
 87214,Montana,470,Public Opinion Strategies,2024-06-13,lv,Live Phone,REP,FALSE,-1,Biden,185,44,28,4,96,1,10,2,2,0
@@ -213,7 +214,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 87274,Montana,560,Torchlight Strategies,2024-06-26,rv,IVR/Live Phone/Text-to-Web,REP,FALSE,0,Biden,228,57,28,4,134,2,5,2,2,0
 87277,Michigan,564,EPIC-MRA,2024-06-26,lv,Live Phone,None,FALSE,0,Biden,270,57,24,15,30,1,10,4,2,0
 87356,National,4831,PureSpectrum,2024-06-26,a,Online Panel,None,FALSE,0,Biden,2196,57,55,0,100,4,23,4,2,0
-87270,New Jersey,656,co/efficient,2024-06-27,lv,IVR/Text,None,FALSE,0,Biden,324,58,34,14,156,1,8,4,2,0
+87270,New Jersey,656,co/efficient,2024-06-27,lv,IVR/Text,REP,FALSE,0,Biden,324,58,34,14,156,1,8,2,2,0
 87307,Texas,558,Manhattan Institute,2024-06-27,lv,Live Phone/Text-to-Web,None,FALSE,0,Biden,246,58,47,40,73,1,17,4,2,0
 87324,National,510,SoCal Research,2024-06-27,rv,Online Ad,None,FALSE,0,Biden,246,58,55,0,115,2,22,4,2,0
 87391,National,3416,Lord Ashcroft Polls,2024-06-27,rv,Online Panel,None,FALSE,0,Biden,1749,58,55,0,72,2,23,4,2,0
@@ -1169,6 +1170,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88661,Georgia,578,Redfield & Wilton Strategies,2024-10-09,lv,Online Panel,None,TRUE,0,Harris,286,162,11,16,104,1,23,4,1,0
 88662,Pennsylvania,664,Redfield & Wilton Strategies,2024-10-09,lv,Online Panel,None,TRUE,0,Harris,325,162,42,19,104,1,23,4,1,0
 88717,Alaska,1254,Alaska Survey Research,2024-10-09,lv,Text-to-Web,None,TRUE,0,Harris,577,162,2,3,6,1,29,4,1,0
+88737,Pennsylvania,728,University of Massachusetts Lowell Center for Public Opinion,2024-10-09,lv,Online Panel,None,TRUE,0,Harris,368,162,42,19,142,1,23,4,1,0
 88647,National,2856,RMG Research,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,1472,163,55,0,103,1,23,4,1,0
 88664,Pennsylvania,831,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,428,163,42,19,130,1,10,4,1,0
 88665,Arizona,784,The New York Times/Siena College,2024-10-10,lv,Live Phone,None,TRUE,0,Harris,372,163,3,11,130,1,10,4,1,0
@@ -1178,6 +1180,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88690,Pennsylvania,1193,American Pulse Research & Polling,2024-10-10,lv,IVR/Live Phone/Text-to-Web,None,TRUE,0,Harris,591,163,42,19,7,1,5,4,1,0
 88711,National,1387,Marist College,2024-10-10,lv,Online Panel/Text-to-Web,None,TRUE,0,Harris,729,163,55,0,74,1,26,4,1,0
 88712,National,652,Marquette University Law School,2024-10-10,lv,Probability Panel,None,TRUE,0,Harris,326,163,55,0,76,1,27,4,1,0
+88738,New Hampshire,546,University of Massachusetts Lowell Center for Public Opinion,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,300,163,33,4,142,1,23,4,1,0
 88670,National,2685,YouGov,2024-10-11,lv,Online Panel,None,TRUE,0,Harris,1383,164,55,0,153,1,23,4,1,0
 88708,Michigan,533,Marketing Resource Group (MRG),2024-10-11,lv,Live Phone,None,TRUE,0,Harris,269,164,24,15,75,1,10,4,1,0
 88676,National,2596,Harris Insights & Analytics,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,1324,166,55,0,52,1,23,4,1,0
@@ -1186,6 +1189,21 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88703,National,699,Ipsos,2024-10-13,lv,Probability Panel,None,TRUE,0,Harris,361,166,55,0,62,1,27,4,1,0
 88691,Wisconsin,795,Patriot Polling,2024-10-14,rv,IVR,None,TRUE,0,Harris,393,167,53,10,92,2,2,4,1,0
 88719,National,782,Fairleigh Dickinson University,2024-10-14,rv,Live Phone/Text-to-Web,None,TRUE,0,Harris,403,167,55,0,42,2,17,4,1,0
+88721,California,976,Emerson College,2024-10-14,lv,IVR/Online Panel,None,TRUE,0,Harris,610,167,5,54,36,1,6,4,1,0
+88722,Washington,647,SurveyUSA,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,401,167,51,12,123,1,23,4,1,0
+88724,North Carolina,583,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,285,167,37,16,104,1,23,4,1,0
+88725,Arizona,1073,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,525,167,3,11,104,1,23,4,1,0
+88726,Florida,948,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,444,167,10,30,104,1,23,4,1,0
+88727,Georgia,598,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,299,167,11,16,104,1,23,4,1,0
+88728,Michigan,642,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,321,167,24,15,104,1,23,4,1,0
+88729,Minnesota,511,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,277,167,25,10,104,1,23,4,1,0
+88730,Nevada,788,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,394,167,32,6,104,1,23,4,1,0
+88731,New Mexico,359,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,187,167,35,5,104,1,23,4,1,0
+88732,Pennsylvania,1584,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,792,167,42,19,104,1,23,4,1,0
+88733,Wisconsin,609,Redfield & Wilton Strategies,2024-10-14,lv,Online Panel,None,TRUE,0,Harris,308,167,53,10,104,1,23,4,1,0
+88734,Georgia,1302,Quinnipiac University,2024-10-14,lv,Live Phone,None,TRUE,0,Harris,611,167,11,16,102,1,10,4,1,0
+88735,North Carolina,1001,Quinnipiac University,2024-10-14,lv,Live Phone,None,TRUE,0,Harris,516,167,37,16,102,1,10,4,1,0
+88736,National,853,Beacon Research/Shaw & Co. Research,2024-10-14,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,418,167,55,0,12,1,17,4,1,0
 88707,Georgia,768,InsiderAdvantage,2024-10-15,rv,Unknown,None,TRUE,0,Harris,376,168,11,16,61,2,32,4,1,0
 88710,National,1235,YouGov,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,644,168,55,0,153,1,23,4,1,0
-88715,National,1198,TIPP Insights,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,624,168,55,0,125,1,23,4,1,0
+88739,National,1167,TIPP Insights,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,602,169,55,0,125,1,23,4,1,0
