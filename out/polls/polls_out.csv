@@ -1181,8 +1181,11 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88711,National,1387,Marist College,2024-10-10,lv,Online Panel/Text-to-Web,None,TRUE,0,Harris,729,163,55,0,74,1,26,4,1,0
 88712,National,652,Marquette University Law School,2024-10-10,lv,Probability Panel,None,TRUE,0,Harris,326,163,55,0,76,1,27,4,1,0
 88738,New Hampshire,546,University of Massachusetts Lowell Center for Public Opinion,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,300,163,33,4,142,1,23,4,1,0
+88768,Texas,1058,YouGov,2024-10-10,lv,Online Panel,None,TRUE,0,Harris,502,163,47,40,153,1,23,4,1,0
 88670,National,2685,YouGov,2024-10-11,lv,Online Panel,None,TRUE,0,Harris,1383,164,55,0,153,1,23,4,1,0
 88708,Michigan,533,Marketing Resource Group (MRG),2024-10-11,lv,Live Phone,None,TRUE,0,Harris,269,164,24,15,75,1,10,4,1,0
+88759,National,1692,Harris Insights & Analytics,2024-10-11,lv,Online Panel,None,TRUE,0,Harris,863,164,55,0,52,1,23,4,1,0
+88757,Washington,357,Elway Research,2024-10-12,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,229,165,51,12,35,1,17,4,1,0
 88676,National,2596,Harris Insights & Analytics,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,1324,166,55,0,52,1,23,4,1,0
 88684,National,8302,Morning Consult,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,4324,166,55,0,83,1,23,4,1,0
 88689,Michigan,671,SoCal Research,2024-10-13,lv,Online Panel,REP,TRUE,0,Harris,339,166,24,15,115,1,23,2,1,0
@@ -1204,6 +1207,24 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88734,Georgia,1302,Quinnipiac University,2024-10-14,lv,Live Phone,None,TRUE,0,Harris,611,167,11,16,102,1,10,4,1,0
 88735,North Carolina,1001,Quinnipiac University,2024-10-14,lv,Live Phone,None,TRUE,0,Harris,516,167,37,16,102,1,10,4,1,0
 88736,National,853,Beacon Research/Shaw & Co. Research,2024-10-14,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,418,167,55,0,12,1,17,4,1,0
+88744,Michigan,565,Mitchell Research & Communications,2024-10-14,lv,Unknown,None,TRUE,0,Harris,279,167,24,15,81,1,32,4,1,0
+88758,North Carolina,563,Cygnal,2024-10-14,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,280,167,37,16,26,1,17,4,1,0
 88707,Georgia,768,InsiderAdvantage,2024-10-15,rv,Unknown,None,TRUE,0,Harris,376,168,11,16,61,2,32,4,1,0
 88710,National,1235,YouGov,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,644,168,55,0,153,1,23,4,1,0
-88739,National,1167,TIPP Insights,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,602,169,55,0,125,1,23,4,1,0
+88746,Arizona,633,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,320,168,3,11,83,1,23,4,1,0
+88747,Georgia,972,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,481,168,11,16,83,1,23,4,1,0
+88748,Maryland,466,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,314,168,22,10,83,1,23,4,1,0
+88749,Michigan,1023,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,522,168,24,15,83,1,23,4,1,0
+88750,Nevada,466,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,243,168,32,6,83,1,23,4,1,0
+88751,North Carolina,1040,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,515,168,37,16,83,1,23,4,1,0
+88752,Ohio,1205,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,559,168,39,17,83,1,23,4,1,0
+88753,Pennsylvania,1354,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,684,168,42,19,83,1,23,4,1,0
+88754,Texas,1966,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,942,168,47,40,83,1,23,4,1,0
+88755,Wisconsin,501,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,248,168,53,10,83,1,23,4,1,0
+88756,Wisconsin,780,RMG Research,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,386,169,53,10,103,1,23,4,1,0
+88760,Michigan,774,RMG Research,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,387,169,24,15,103,1,23,4,1,0
+88762,Arizona,1421,YouGov,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,689,169,3,11,153,1,23,4,1,0
+88765,National,987,Emerson College,2024-10-16,lv,IVR/Online Panel/Text-to-Web,None,TRUE,0,Harris,495,169,55,0,36,1,7,4,1,0
+88764,National,1207,TIPP Insights,2024-10-17,lv,Online Panel,None,TRUE,0,Harris,616,170,55,0,125,1,23,4,1,0
+88766,Washington,542,Public Policy Polling,2024-10-17,lv,IVR/Text,DEM,TRUE,0,Harris,314,170,51,12,98,1,8,1,1,0
+88767,Oregon,673,Public Policy Polling,2024-10-17,lv,IVR/Text,DEM,TRUE,0,Harris,379,170,41,8,98,1,8,1,1,0
