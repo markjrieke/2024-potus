@@ -1230,7 +1230,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88775,National,2921,RMG Research,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,1475,169,55,0,104,1,23,4,1,0
 88782,National,2540,Gateway Political Strategies,2024-10-16,rv,Online Panel,None,TRUE,0,Harris,1346,169,55,0,47,2,23,4,1,0
 88783,Georgia,787,TIPP Insights,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,393,169,11,16,126,1,23,4,1,0
-88764,National,1207,TIPP Insights,2024-10-17,lv,Online Panel,None,TRUE,0,Harris,616,170,55,0,126,1,23,4,1,0
 88766,Washington,542,Public Policy Polling,2024-10-17,lv,IVR/Text,DEM,TRUE,0,Harris,314,170,51,12,99,1,8,1,1,0
 88767,Oregon,673,Public Policy Polling,2024-10-17,lv,IVR/Text,DEM,TRUE,0,Harris,379,170,41,8,99,1,8,1,1,0
 88769,Florida,780,RMG Research,2024-10-17,lv,Online Panel,None,TRUE,0,Harris,370,170,10,30,104,1,23,4,1,0
@@ -1238,3 +1237,4 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88779,Michigan,588,The Bullfinch Group,2024-10-17,lv,Online Panel,None,TRUE,0,Harris,318,170,24,15,130,1,23,4,1,0
 88780,Pennsylvania,588,The Bullfinch Group,2024-10-17,lv,Online Panel,None,TRUE,0,Harris,294,170,42,19,130,1,23,4,1,0
 88781,Wisconsin,582,The Bullfinch Group,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,300,171,53,10,130,1,23,4,1,0
+88793,National,1162,TIPP Insights,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,587,171,55,0,126,1,23,4,1,0
