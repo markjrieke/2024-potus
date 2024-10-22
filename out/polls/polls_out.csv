@@ -1115,7 +1115,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88555,Florida,597,The New York Times/Siena College,2024-10-06,lv,Live Phone,None,TRUE,0,Harris,255,159,10,30,131,1,10,4,1,0
 88561,National,1797,Redfield & Wilton Strategies,2024-10-06,lv,Online Panel,None,TRUE,0,Harris,915,159,55,0,105,1,24,4,1,0
 88569,Texas,737,Florida Atlantic University PolCom Lab/Mainstreet Research,2024-10-06,lv,IVR/Online Panel/Text-to-Web,None,TRUE,0,Harris,349,159,47,40,43,1,7,4,1,0
-88601,Wisconsin,665,Arc Insights,2024-10-06,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,329,159,53,10,9,1,17,4,1,0
+88601,Wisconsin,665,Arc Insights,2024-10-06,lv,Live Phone/Text-to-Web,REP,TRUE,0,Harris,329,159,53,10,9,1,17,2,1,0
 88634,National,3984,Pew Research Center,2024-10-06,rv,Probability Panel,None,TRUE,0,Harris,2012,159,55,0,94,2,28,4,1,0
 88552,Arizona,709,SoCal Research,2024-10-07,lv,Online Panel,REP,TRUE,0,Harris,358,160,3,11,116,1,24,2,1,0
 88574,Michigan,446,Research Co.,2024-10-07,lv,Online Panel,None,TRUE,0,Harris,230,160,24,15,109,1,24,4,1,0
@@ -1187,7 +1187,6 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88759,National,1692,Harris Insights & Analytics,2024-10-11,lv,Online Panel,None,TRUE,0,Harris,863,164,55,0,53,1,24,4,1,0
 88757,Washington,357,Elway Research,2024-10-12,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,229,165,51,12,35,1,17,4,1,0
 88676,National,2596,Harris Insights & Analytics,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,1324,166,55,0,53,1,24,4,1,0
-88684,National,8302,Morning Consult,2024-10-13,lv,Online Panel,None,TRUE,0,Harris,4324,166,55,0,84,1,24,4,1,0
 88689,Michigan,671,SoCal Research,2024-10-13,lv,Online Panel,REP,TRUE,0,Harris,339,166,24,15,116,1,24,2,1,0
 88703,National,699,Ipsos,2024-10-13,lv,Probability Panel,None,TRUE,0,Harris,361,166,55,0,63,1,28,4,1,0
 88691,Wisconsin,795,Patriot Polling,2024-10-14,rv,IVR,None,TRUE,0,Harris,393,167,53,10,93,2,2,4,1,0
@@ -1222,13 +1221,13 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88753,Pennsylvania,1354,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,684,168,42,19,84,1,24,4,1,0
 88754,Texas,1966,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,942,168,47,40,84,1,24,4,1,0
 88755,Wisconsin,501,Morning Consult,2024-10-15,lv,Online Panel,None,TRUE,0,Harris,248,168,53,10,84,1,24,4,1,0
-88809,Arizona,545,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,255,168,3,11,133,1,18,4,1,0
-88810,Georgia,686,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,365,168,11,16,133,1,18,4,1,0
-88811,Michigan,639,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,316,168,24,15,133,1,18,4,1,0
-88812,Nevada,593,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,306,168,32,6,133,1,18,4,1,0
-88813,North Carolina,907,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,434,168,37,16,133,1,18,4,1,0
-88814,Pennsylvania,671,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,346,168,42,19,133,1,18,4,1,0
-88815,Wisconsin,668,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,348,168,53,10,133,1,18,4,1,0
+88809,Arizona,551,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,267,168,3,11,133,1,18,4,1,0
+88810,Georgia,715,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,372,168,11,16,133,1,18,4,1,0
+88811,Michigan,660,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,337,168,24,15,133,1,18,4,1,0
+88812,Nevada,626,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,313,168,32,6,133,1,18,4,1,0
+88813,North Carolina,936,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,454,168,37,16,133,1,18,4,1,0
+88814,Pennsylvania,678,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,346,168,42,19,133,1,18,4,1,0
+88815,Wisconsin,675,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-15,lv,Live Phone/Text-to-Web/Email/Mail-to-Web,None,TRUE,0,Harris,348,168,53,10,133,1,18,4,1,0
 88756,Wisconsin,780,RMG Research,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,386,169,53,10,104,1,24,4,1,0
 88760,Michigan,774,RMG Research,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,387,169,24,15,104,1,24,4,1,0
 88762,Arizona,1421,YouGov,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,689,169,3,11,154,1,24,4,1,0
@@ -1237,6 +1236,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88775,National,2921,RMG Research,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,1475,169,55,0,104,1,24,4,1,0
 88782,National,2540,Gateway Political Strategies,2024-10-16,rv,Online Panel,None,TRUE,0,Harris,1346,169,55,0,47,2,24,4,1,0
 88783,Georgia,787,TIPP Insights,2024-10-16,lv,Online Panel,None,TRUE,0,Harris,393,169,11,16,126,1,24,4,1,0
+88859,Georgia,900,University of Georgia School of Public and International Affairs,2024-10-16,lv,Unknown,None,TRUE,0,Harris,430,169,11,16,140,1,33,4,1,0
 88766,Washington,542,Public Policy Polling,2024-10-17,lv,IVR/Text,DEM,TRUE,0,Harris,314,170,51,12,99,1,8,1,1,0
 88767,Oregon,673,Public Policy Polling,2024-10-17,lv,IVR/Text,DEM,TRUE,0,Harris,379,170,41,8,99,1,8,1,1,0
 88769,Florida,780,RMG Research,2024-10-17,lv,Online Panel,None,TRUE,0,Harris,370,170,10,30,104,1,24,4,1,0
@@ -1251,7 +1251,22 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88799,North Carolina,1662,AtlasIntel,2024-10-17,lv,Online Ad,None,TRUE,0,Harris,845,170,37,16,10,1,23,4,1,0
 88800,Pennsylvania,1993,AtlasIntel,2024-10-17,lv,Online Ad,None,TRUE,0,Harris,971,170,42,19,10,1,23,4,1,0
 88801,Wisconsin,908,AtlasIntel,2024-10-17,lv,Online Ad,None,TRUE,0,Harris,457,170,53,10,10,1,23,4,1,0
+88841,New York,846,Siena College,2024-10-17,lv,Live Phone,None,TRUE,0,Harris,506,170,36,28,114,1,10,4,1,0
 88781,Wisconsin,582,The Bullfinch Group,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,300,171,53,10,130,1,24,4,1,0
 88805,National,984,Suffolk University,2024-10-18,lv,Live Phone,None,TRUE,0,Harris,497,171,55,0,121,1,10,4,1,0
 88808,Florida,938,University of North Florida Public Opinion Research Lab,2024-10-18,lv,Live Phone,None,TRUE,0,Harris,420,171,10,30,145,1,10,4,1,0
-88806,National,1182,TIPP Insights,2024-10-20,lv,Online Panel,None,TRUE,0,Harris,585,173,55,0,126,1,24,4,1,0
+88821,New Mexico,932,Research & Polling Inc.,2024-10-18,lv,Live Phone,None,TRUE,0,Harris,512,171,35,5,108,1,10,4,1,0
+88828,Arizona,657,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,318,171,3,11,105,1,24,4,1,0
+88829,Florida,1199,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,574,171,10,30,105,1,24,4,1,0
+88830,Michigan,948,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,474,171,24,15,105,1,24,4,1,0
+88831,Nevada,492,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,243,171,32,6,105,1,24,4,1,0
+88832,Wisconsin,578,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,292,171,53,10,105,1,24,4,1,0
+88833,North Carolina,784,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,379,171,37,16,105,1,24,4,1,0
+88834,Georgia,968,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,479,171,11,16,105,1,24,4,1,0
+88835,Pennsylvania,1206,Redfield & Wilton Strategies,2024-10-18,lv,Online Panel,None,TRUE,0,Harris,603,171,42,19,105,1,24,4,1,0
+88836,Pennsylvania,828,Quantus Insights,2024-10-20,lv,Online Panel,REP,TRUE,0,Harris,405,173,42,19,102,1,24,2,1,0
+88842,Nevada,765,InsiderAdvantage,2024-10-20,lv,Unknown,None,TRUE,0,Harris,382,173,32,6,62,1,33,4,1,0
+88843,Arizona,772,InsiderAdvantage,2024-10-20,lv,Unknown,None,TRUE,0,Harris,376,173,3,11,62,1,33,4,1,0
+88856,National,8227,Morning Consult,2024-10-20,lv,Online Panel,None,TRUE,0,Harris,4285,173,55,0,84,1,24,4,1,0
+88857,National,1218,TIPP Insights,2024-10-21,lv,Online Panel,None,TRUE,0,Harris,609,174,55,0,126,1,24,4,1,0
+88858,National,3075,Ipsos,2024-10-21,lv,Probability Panel,None,TRUE,0,Harris,1587,174,55,0,63,1,28,4,1,0
