@@ -32,16 +32,16 @@ because I think it looks nifty.
 Weekly change in probability of winning the presidency:
 
 - Harris: **48%** → **46%**
-- Trump: **51%** → **54%**
+- Trump: **52%** → **54%**
 
 Weekly change in state ratings:
 
-| state    | last_week       | today      |
-|:---------|:----------------|:-----------|
-| Alabama  | Very likely Rep | Safe Rep   |
-| Arizona  | Uncertain       | Likely Rep |
-| Georgia  | Uncertain       | Likely Rep |
-| Kentucky | Very likely Rep | Safe Rep   |
+| state      | last_week       | today           |
+|:-----------|:----------------|:----------------|
+| Alabama    | Very likely Rep | Safe Rep        |
+| Kentucky   | Very likely Rep | Safe Rep        |
+| Maine CD-2 | Likely Rep      | Very likely Rep |
+| Minnesota  | Very likely Dem | Likely Dem      |
 
 ![](REVIEW_files/figure-commonmark/unnamed-chunk-4-1.png)
 
