@@ -1343,4 +1343,5 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 88959,Virginia,924,The Washington Post/George Mason University Schar School of Policy and Government,2024-10-23,lv,Live Phone/Text-to-Web,None,TRUE,0,Harris,492,176,50,13,139,1,17,4,1,0
 88950,Virginia,702,Quantus Insights,2024-10-24,lv,Online Panel,REP,TRUE,0,Harris,355,177,50,13,106,1,26,2,1,0
 88956,National,986,Emerson College,2024-10-24,lv,IVR/Online Panel/Text-to-Web,None,TRUE,0,Harris,493,177,55,0,38,1,7,4,1,0
+88960,New Jersey,553,Cygnal,2024-10-24,lv,Unknown,None,TRUE,0,Harris,311,177,34,14,27,1,35,4,1,0
 88958,National,1280,TIPP Insights,2024-10-25,lv,Online Panel,None,TRUE,0,Harris,640,178,55,0,131,1,26,4,1,0
