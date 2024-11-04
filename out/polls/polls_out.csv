@@ -1493,6 +1493,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 89259,Arizona,644,Morning Consult,2024-10-30,lv,Online Panel,None,TRUE,0,Harris,322,183,3,11,94,1,28,4,1,0
 89261,Georgia,984,Morning Consult,2024-10-30,lv,Online Panel,None,TRUE,0,Harris,484,183,11,16,94,1,28,4,1,0
 89269,Pennsylvania,441,Muhlenberg College Institute of Public Opinion,2024-10-30,lv,Live Phone,None,TRUE,0,Harris,225,183,42,19,95,1,11,4,1,0
+89316,Colorado,547,YouGov,2024-10-30,lv,Online Panel,None,TRUE,0,Harris,296,183,6,10,176,1,28,4,1,0
 89141,National,3413,AtlasIntel,2024-10-31,lv,Online Ad,None,TRUE,0,Harris,1682,184,55,0,10,1,27,4,1,0
 89142,North Carolina,1341,AtlasIntel,2024-10-31,lv,Online Ad,None,TRUE,0,Harris,645,184,37,16,10,1,27,4,1,0
 89143,Arizona,983,AtlasIntel,2024-10-31,lv,Online Ad,None,TRUE,0,Harris,470,184,3,11,10,1,27,4,1,0
@@ -1537,6 +1538,7 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 89266,Pennsylvania,1476,Morning Consult,2024-10-31,lv,Online Panel,None,TRUE,0,Harris,738,184,42,19,94,1,28,4,1,0
 89267,Texas,2050,Morning Consult,2024-10-31,lv,Online Panel,None,TRUE,0,Harris,954,184,47,40,94,1,28,4,1,0
 89268,Wisconsin,517,Morning Consult,2024-10-31,lv,Online Panel,None,TRUE,0,Harris,257,184,53,10,94,1,28,4,1,0
+89288,National,1117,YouGov,2024-10-31,lv,Online Panel,None,TRUE,0,Harris,564,184,55,0,176,1,28,4,1,0
 89198,Massachusetts,535,MassINC Polling Group,2024-11-01,lv,Online Panel/Text-to-Web,None,TRUE,0,Harris,355,185,23,11,85,1,31,4,1,0
 89221,Florida,448,Stetson University Center for Public Opinion Research,2024-11-01,lv,Online Panel,None,TRUE,0,Harris,208,185,10,30,135,1,28,4,1,0
 89253,National,2154,Ipsos,2024-11-01,lv,Probability Panel,None,TRUE,0,Harris,1111,185,55,0,69,1,32,4,1,0
@@ -1562,3 +1564,38 @@ poll_id,state,K,pollster,end_date,group,mode,candidate_sponsored,post_announceme
 89274,Michigan,938,The New York Times/Siena College,2024-11-02,lv,Live Phone,None,TRUE,0,Harris,469,186,24,15,149,1,11,4,1,0
 89275,Pennsylvania,1466,The New York Times/Siena College,2024-11-02,lv,Live Phone,None,TRUE,0,Harris,733,186,42,19,149,1,11,4,1,0
 89276,Wisconsin,1252,The New York Times/Siena College,2024-11-02,lv,Live Phone,None,TRUE,0,Harris,639,186,53,10,149,1,11,4,1,0
+89297,New Hampshire,2729,University of New Hampshire Survey Center,2024-11-02,lv,Probability Panel,None,TRUE,0,Harris,1435,186,33,4,165,1,32,4,1,0
+89298,Maine,1381,University of New Hampshire Survey Center,2024-11-02,lv,Probability Panel,None,TRUE,0,Harris,772,186,57,2,165,1,32,4,1,0
+89299,Massachusetts,699,University of New Hampshire Survey Center,2024-11-02,lv,Probability Panel,None,TRUE,0,Harris,446,186,23,11,165,1,32,4,1,0
+89302,Arizona,760,InsiderAdvantage,2024-11-02,lv,Unknown,None,TRUE,0,Harris,368,186,3,11,68,1,37,4,1,0
+89303,Michigan,752,InsiderAdvantage,2024-11-02,lv,Unknown,None,TRUE,0,Harris,376,186,24,15,68,1,37,4,1,0
+89304,Wisconsin,776,InsiderAdvantage,2024-11-02,lv,Unknown,None,TRUE,0,Harris,384,186,53,10,68,1,37,4,1,0
+89305,Pennsylvania,776,InsiderAdvantage,2024-11-02,lv,Unknown,None,TRUE,0,Harris,384,186,42,19,68,1,37,4,1,0
+89307,Vermont,1097,University of New Hampshire Survey Center,2024-11-02,lv,Probability Panel,None,TRUE,0,Harris,735,186,49,3,165,1,32,4,1,0
+89308,North Carolina,768,InsiderAdvantage,2024-11-02,lv,Unknown,None,TRUE,0,Harris,376,186,37,16,68,1,37,4,1,0
+89309,Maine CD-1,769,University of New Hampshire Survey Center,2024-11-02,lv,Probability Panel,None,TRUE,0,Harris,481,186,20,1,165,1,32,4,1,0
+89310,Maine CD-2,629,University of New Hampshire Survey Center,2024-11-02,lv,Probability Panel,None,TRUE,0,Harris,301,186,21,1,165,1,32,4,1,0
+89312,Michigan,573,Mitchell Research & Communications,2024-11-02,lv,Text-to-Web,None,TRUE,0,Harris,292,186,24,15,90,1,34,4,1,0
+89289,National,1087,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,551,187,55,0,104,2,10,4,1,0
+89290,Pennsylvania,888,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,440,187,42,19,104,2,10,4,1,0
+89291,Michigan,838,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,422,187,24,15,104,2,10,4,1,0
+89292,Wisconsin,816,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,409,187,53,10,104,2,10,4,1,0
+89293,North Carolina,794,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,391,187,37,16,104,2,10,4,1,0
+89294,Georgia,810,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,398,187,11,16,104,2,10,4,1,0
+89295,Arizona,790,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,381,187,3,11,104,2,10,4,1,0
+89296,Nevada,783,Patriot Polling,2024-11-03,rv,IVR/Text-to-Web,None,TRUE,0,Harris,391,187,32,6,104,2,10,4,1,0
+89311,National,868,Leger,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,438,187,55,0,78,1,28,4,1,0
+89313,Iowa,418,SoCal Research,2024-11-03,lv,Online Panel,REP,TRUE,0,Harris,191,187,16,6,130,1,28,2,1,0
+89318,National,1354,TIPP Insights,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,677,187,55,0,142,1,28,4,1,0
+89319,Georgia,772,InsiderAdvantage,2024-11-03,lv,Unknown,None,TRUE,0,Harris,382,187,11,16,68,1,37,4,1,0
+89320,California,432,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,288,187,5,54,121,1,28,4,1,0
+89321,Florida,428,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,198,187,10,30,121,1,28,4,1,0
+89322,Michigan,432,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,220,187,24,15,121,1,28,4,1,0
+89323,Minnesota,428,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,230,187,25,10,121,1,28,4,1,0
+89324,Missouri,419,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,176,187,27,10,121,1,28,4,1,0
+89325,New Jersey,436,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,256,187,34,14,121,1,28,4,1,0
+89326,New York,440,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,256,187,36,28,121,1,28,4,1,0
+89327,Pennsylvania,428,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,216,187,42,19,121,1,28,4,1,0
+89328,Virginia,432,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,230,187,50,13,121,1,28,4,1,0
+89329,Washington,419,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,243,187,51,12,121,1,28,4,1,0
+89330,Wisconsin,427,Research Co.,2024-11-03,lv,Online Panel,None,TRUE,0,Harris,220,187,53,10,121,1,28,4,1,0
