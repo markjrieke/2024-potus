@@ -31,13 +31,14 @@ because I think it looks nifty.
 
 Weekly change in probability of winning the presidency:
 
-- Harris: **43%** → **44%**
-- Trump: **57%** → **56%**
+- Harris: **47%** → **47%**
+- Trump: **53%** → **53%**
 
 Weekly change in state ratings:
 
 | state      | last_week       | today    |
 |:-----------|:----------------|:---------|
+| Colorado   | Very likely Dem | Safe Dem |
 | Louisiana  | Very likely Rep | Safe Rep |
 | New Jersey | Very likely Dem | Safe Dem |
 
