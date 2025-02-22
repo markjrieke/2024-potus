@@ -97,6 +97,8 @@ table_polls <- function(state = "National",
                 column_labels.border.bottom.style = "none",
                 column_labels.border.bottom.width = 1,
                 column_labels.border.bottom.color = "#334422",
+                table.font.names = "IBM Plex Sans",
+                table.font.size = "14px",
                 table_body.border.top.style = "none",
                 table_body.border.bottom.color = "white",
                 heading.border.bottom.style = "none",
@@ -115,26 +117,9 @@ table_polls <- function(state = "National",
       }
     ) %>%
 
-    # rewrirte label_date_ordinal() in a way that gt will accept
-    text_transform(
-      fn = function(x) {
-        paste(month(x, label = TRUE, abbr = FALSE), scales::label_ordinal()(day(x)))
-      },
-      locations = cells_body(columns = end_date)
-    ) %>%
-
-    # rewrite scales::label_comma() in a way that gt will accept
-    text_transform(
-      fn = function(x) {
-        xchar <- as.character(x)
-        xchar <-
-          if_else(nchar(xchar) > 3,
-                  paste(str_sub(xchar, 1, -4), str_sub(xchar, -3, -1), sep = ","),
-                  xchar)
-        return(xchar)
-      },
-      locations = cells_body(columns = sample_size)
-    ) %>%
+    # I really hate that gt made me rewrite this
+    fmt_date(end_date, date_style = "day_month") %>%
+    fmt_number(sample_size, decimals = 0) %>%
 
     # apply html formatting directly since interactivity breaks text formatting in gt
     text_transform(
